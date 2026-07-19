@@ -1,0 +1,68 @@
+---
+title: FAQ
+description: Accounts, data handling, supported standards, SmartScreen, the Bridge, and where to get help.
+---
+
+## Accounts and access
+
+<AccordionGroup>
+  <Accordion title="Do I need an account?">
+    Not for Post's core loop: free generation and validation work without an account, in the desktop app and the CLI. Flock, Loft, Migrate, and the Pidgeon launcher require a Pidgeon account sign-in.
+  </Accordion>
+
+  <Accordion title="Which apps do I need to install?">
+    Each product is a separate installer: Post, Flock, Loft, Migrate, and the Pidgeon launcher. Install only what you use. The launcher is optional; it gives you one grid showing installed apps, versions, and entitlements.
+  </Accordion>
+</AccordionGroup>
+
+## Data handling
+
+<AccordionGroup>
+  <Accordion title="Does message content leave my machine?">
+    Local workflows run locally. Generation, validation, and de-identification run on the Bridge sidecar bound to a loopback port on your machine; message content is not sent to a cloud service to do that work. Loft processes watched sources on your network and redacts alert payloads before they go out to a notification channel.
+  </Accordion>
+
+  <Accordion title="Is there PHI involved?">
+    Generated data is synthetic from scratch: no production data is masked, so no PHI ever exists in that pipeline. De-identification of real messages runs on-device. If you point Loft at production interface traffic, that content stays on your network; Loft's posture there is zero egress, not "no PHI".
+  </Accordion>
+
+  <Accordion title="Do the AI features send my data to a cloud model?">
+    AI features are optional and run on-device by default. Bring-your-own-key cloud endpoints are an explicit opt-in, never a requirement.
+  </Accordion>
+</AccordionGroup>
+
+## Standards
+
+<AccordionGroup>
+  <Accordion title="Which standards and versions are supported?">
+    HL7 v2.3 through v2.8 for structural generation and validation, with capability signaled per message type and version. FHIR R4 for generation, and FHIR conformance checking against the currently supported IG scope (US Core, Da Vinci PAS 2.1). NCPDP SCRIPT support uses a bring-your-own standards package, reflecting NCPDP's membership licensing.
+  </Accordion>
+
+  <Accordion title="What does 'validated against the spec' mean?">
+    Validation rules are derived from the published standard's machine-readable definitions, not hand-coded alongside the generator. The generator and validator can't drift from the spec or from each other. The claim is structural conformance; it is not a claim of semantic or clinical correctness.
+  </Accordion>
+</AccordionGroup>
+
+## Install and runtime
+
+<AccordionGroup>
+  <Accordion title="Why does Windows SmartScreen warn about a signed installer?">
+    SmartScreen reputation is earned from download volume, separately from the signature. Pidgeon installers are signed by the verified publisher Pattern Engine LLC; early in the beta SmartScreen may still warn until reputation accrues. See [Install on Windows](/getting-started/install-windows) for how to verify the signature yourself.
+  </Accordion>
+
+  <Accordion title="What is the Bridge?">
+    The Bridge is the local engine sidecar each desktop app starts: Loft on `localhost:5100`, Post on `localhost:5101`, Flock on `localhost:5102`. It binds to loopback only. When an app reports the Bridge as offline, open Settings → Connection in that app and retry.
+  </Accordion>
+
+  <Accordion title="Can I script everything the apps do?">
+    The CLI exposes generate, validate, conform, and de-identify from a terminal with Unix exit codes (`0` success, `1` failure). Start with the [CLI quickstart](/getting-started/quickstart-cli).
+  </Accordion>
+</AccordionGroup>
+
+## Support
+
+<AccordionGroup>
+  <Accordion title="How do I report a problem?">
+    Email [support@pidgeon.health](mailto:support@pidgeon.health) with the app name, version (shown in the status bar), your OS, and what you expected versus what happened. Check [Troubleshooting](/support/troubleshooting) and [Known issues](/support/known-issues) first; your problem may already be listed with a next action or workaround.
+  </Accordion>
+</AccordionGroup>

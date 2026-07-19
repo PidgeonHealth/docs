@@ -1,0 +1,103 @@
+---
+title: Analytics
+description: Time-series queries, dashboards, reports, and CSV exports for Loft interface analytics.
+---
+
+Seven endpoints for analytics and reporting. All **public**.
+
+## GET /api/loft/analytics/timeseries
+
+Query time-series data for an interface.
+
+| Query Param | Type | Default | Description |
+|-------------|------|---------|-------------|
+| `interfaceId` | string | — | Filter to specific interface |
+| `since` | ISO 8601 | 24h ago | Start time |
+| `until` | ISO 8601 | Now | End time |
+| `granularity` | string | `"oneHour"` | `oneMinute`, `oneHour`, `oneDay` |
+| `metric` | string | `"messagesTotal"` | `messagesTotal`, `messagesFailed`, `messagesSuccessful` |
+
+```bash curl
+curl "http://localhost:5100/api/loft/analytics/timeseries?interfaceId=intf-001&granularity=oneHour&since=2026-02-22T00:00:00Z"
+```
+
+---
+
+## GET /api/loft/analytics/topn
+
+Get top N interfaces ranked by a metric.
+
+| Query Param | Type | Default | Description |
+|-------------|------|---------|-------------|
+| `metric` | string | `"messagesTotal"` | Metric to rank by |
+| `n` | int | `10` | Number of results |
+| `since` | ISO 8601 | 24h ago | Start time |
+
+```bash curl
+curl "http://localhost:5100/api/loft/analytics/topn?metric=messagesFailed&n=5"
+```
+
+---
+
+## POST /api/loft/analytics/query
+
+Custom filter query with advanced criteria.
+
+```bash curl
+curl -X POST http://localhost:5100/api/loft/analytics/query \
+  -H "Content-Type: application/json" \
+  -d '{"filters": {"interfaceId": "intf-001", "severity": "critical"}, "since": "2026-02-20T00:00:00Z"}'
+```
+
+---
+
+## GET /api/loft/analytics/dashboards/{template}
+
+Get pre-built dashboard data.
+
+```bash curl
+curl "http://localhost:5100/api/loft/analytics/dashboards/overview?since=2026-02-15T00:00:00Z"
+```
+
+---
+
+## POST /api/loft/analytics/reports/schedule
+
+Schedule a recurring report.
+
+```bash curl
+curl -X POST http://localhost:5100/api/loft/analytics/reports/schedule \
+  -H "Content-Type: application/json" \
+  -d '{"frequency": "daily", "format": "html", "recipients": ["team@hospital.org"]}'
+```
+
+---
+
+## POST /api/loft/analytics/reports/generate
+
+Generate a report immediately.
+
+```bash curl
+curl -X POST http://localhost:5100/api/loft/analytics/reports/generate \
+  -H "Content-Type: application/json" \
+  -d '{"format": "html", "since": "2026-02-15T00:00:00Z"}'
+```
+
+---
+
+## GET /api/loft/analytics/export/csv
+
+Export analytics data as CSV.
+
+| Query Param | Type | Default | Description |
+|-------------|------|---------|-------------|
+| `interfaceId` | string | — | Interface to export |
+| `since` | ISO 8601 | 24h ago | Start time |
+| `until` | ISO 8601 | Now | End time |
+| `granularity` | string | `"oneHour"` | Data resolution |
+| `metric` | string | `"messagesTotal"` | Metric to export |
+
+```bash curl
+curl "http://localhost:5100/api/loft/analytics/export/csv?interfaceId=intf-001&granularity=oneDay" \
+  -o metrics.csv
+```

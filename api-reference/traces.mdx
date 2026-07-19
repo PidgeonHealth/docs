@@ -1,0 +1,95 @@
+---
+title: Traces & Gaps
+description: Trace patient journeys across interfaces, detect message gaps, and measure interface latency.
+---
+
+Five endpoints for message tracing and gap detection. All **public**.
+
+## GET /api/loft/traces
+
+Trace a patient's messages across all monitored interfaces.
+
+| Query Param | Type | Description |
+|-------------|------|-------------|
+| `patient_id` | string | Patient MRN |
+| `account_number` | string | Account/visit number |
+| `control_id` | string | Message control ID |
+| `since` | ISO 8601 | Start time |
+| `limit` | int | Max results |
+
+```bash curl
+curl "http://localhost:5100/api/loft/traces?patient_id=MRN12345&since=2026-02-01T00:00:00Z"
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "patientId": "MRN12345",
+    "totalSpanMs": 14400000,
+    "events": [
+      {"interface": "ER ADT", "messageType": "ADT^A01", "timestamp": "2026-02-20T08:30:00Z", "status": "valid"},
+      {"interface": "Lab", "messageType": "ORU^R01", "timestamp": "2026-02-20T09:15:00Z", "status": "valid"},
+      {"interface": "ER ADT", "messageType": "ADT^A03", "timestamp": "2026-02-20T12:30:00Z", "status": "valid"}
+    ],
+    "gaps": []
+  },
+  "error": null
+}
+```
+
+---
+
+## GET /api/loft/traces/{traceId}
+
+Get a specific trace by ID (treated as patient_id lookup).
+
+```bash curl
+curl http://localhost:5100/api/loft/traces/MRN12345
+```
+
+---
+
+## GET /api/loft/gaps
+
+Detect gaps in message sequences.
+
+| Query Param | Type | Description |
+|-------------|------|-------------|
+| `interface_id` | string | Interface to check |
+| `sequence` | string | Expected sequence |
+| `since` | ISO 8601 | Start time |
+| `patient_id` | string | Filter by patient |
+
+```bash curl
+curl "http://localhost:5100/api/loft/gaps?interface_id=intf-001&since=2026-02-20T00:00:00Z"
+```
+
+---
+
+## GET /api/loft/latency
+
+Measure message latency between interfaces.
+
+| Query Param | Type | Description |
+|-------------|------|-------------|
+| `from_interface` | string | Source interface ID |
+| `to_interface` | string | Destination interface ID |
+| `message_type` | string | Filter by message type |
+| `since` | ISO 8601 | Start time |
+
+```bash curl
+curl "http://localhost:5100/api/loft/latency?from_interface=intf-001&to_interface=intf-002"
+```
+
+---
+
+## GET /api/loft/sequences
+
+List all known message sequences.
+
+```bash curl
+curl http://localhost:5100/api/loft/sequences
+```

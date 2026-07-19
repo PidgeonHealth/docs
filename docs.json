@@ -1,0 +1,241 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Pidgeon Health",
+  "colors": {
+    "primary": "#E8A838",
+    "light": "#F0B840",
+    "dark": "#0D0D12"
+  },
+  "favicon": "/favicon.ico",
+  "logo": {
+    "light": "/logo/pidgeon.png",
+    "dark": "/logo/pidgeon.png"
+  },
+  "appearance": {
+    "default": "dark"
+  },
+  "search": {
+    "prompt": "Search Pidgeon docs..."
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "icon": "rocket",
+            "pages": [
+              "getting-started/introduction",
+              "getting-started/quickstart-cli",
+              "getting-started/quickstart-desktop",
+              "getting-started/account"
+            ]
+          },
+          {
+            "group": "Install",
+            "icon": "download",
+            "pages": [
+              "getting-started/install-windows",
+              "getting-started/install-macos"
+            ]
+          },
+          {
+            "group": "Desktop Apps",
+            "icon": "grid-2",
+            "pages": [
+              "getting-started/launcher",
+              "getting-started/post",
+              "getting-started/flock",
+              "getting-started/loft",
+              "getting-started/migrate"
+            ]
+          },
+          {
+            "group": "Post (Testing Tool)",
+            "icon": "paper-plane",
+            "pages": [
+              "post/message-generation",
+              "post/validation",
+              "post/de-identification",
+              "post/vendor-profiles",
+              "post/workflow-wizard",
+              "post/ai-triage",
+              "post/datasets"
+            ]
+          },
+          {
+            "group": "Flock (Population Engine)",
+            "icon": "users",
+            "pages": [
+              "flock/overview",
+              "flock/schema-intelligence",
+              "flock/population-generation",
+              "flock/output-formats"
+            ]
+          },
+          {
+            "group": "Loft (Observability)",
+            "icon": "tower-observation",
+            "pages": [
+              "loft/overview",
+              "loft/interface-monitoring",
+              "loft/alerting"
+            ]
+          },
+          {
+            "group": "Guides & Tutorials",
+            "icon": "book-open",
+            "pages": [
+              "guides/generate-realistic-test-data",
+              "guides/de-identify-real-messages",
+              "guides/build-test-scenarios",
+              "guides/monitor-mirth-with-loft",
+              "guides/seed-database-with-flock"
+            ]
+          },
+          {
+            "group": "Support",
+            "icon": "life-ring",
+            "pages": [
+              "support/faq",
+              "support/troubleshooting",
+              "support/known-issues"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "icon": "code",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Core APIs",
+            "icon": "paper-plane",
+            "pages": [
+              "api-reference/generate",
+              "api-reference/validate",
+              "api-reference/diff"
+            ]
+          },
+          {
+            "group": "Loft APIs",
+            "icon": "tower-observation",
+            "pages": [
+              "api-reference/loft-interfaces",
+              "api-reference/loft-alerts",
+              "api-reference/loft-status",
+              "api-reference/ai-triage",
+              "api-reference/analytics",
+              "api-reference/traces"
+            ]
+          },
+          {
+            "group": "Flock APIs",
+            "icon": "users",
+            "pages": [
+              "api-reference/flock"
+            ]
+          },
+          {
+            "group": "Admin & Enterprise",
+            "icon": "shield-check",
+            "pages": [
+              "api-reference/admin",
+              "api-reference/enterprise"
+            ]
+          },
+          {
+            "group": "Live Updates",
+            "icon": "bolt",
+            "pages": [
+              "api-reference/signalr"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "CLI Reference",
+        "groups": [
+          {
+            "group": "CLI",
+            "icon": "square-terminal",
+            "pages": [
+              "cli/global-options",
+              "cli/post-commands",
+              "cli/conform-commands",
+              "cli/flock-commands",
+              "cli/loft-commands",
+              "cli/migrate-commands",
+              "cli/data-commands",
+              "cli/config-commands"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "MCP",
+        "groups": [
+          {
+            "group": "MCP Server",
+            "icon": "plug",
+            "pages": [
+              "mcp/overview",
+              "mcp/tools"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "GitHub",
+          "href": "https://github.com/PidgeonHealth",
+          "icon": "github"
+        },
+        {
+          "anchor": "Community",
+          "href": "https://discord.gg/ktMpYfEp",
+          "icon": "discord"
+        }
+      ]
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@pidgeon.health"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get Started",
+      "href": "https://account.pidgeon.health"
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "claude",
+      "cursor",
+      "mcp"
+    ]
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/PidgeonHealth",
+      "x": "https://x.com/pidgeonhealth",
+      "linkedin": "https://linkedin.com/company/pidgeon-health"
+    }
+  }
+}

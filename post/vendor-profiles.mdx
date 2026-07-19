@@ -1,0 +1,52 @@
+---
+title: Vendor Profiles
+description: Learn your vendor's real message patterns once, then generate and validate against them everywhere. Portable across engagements.
+---
+
+Point Post at a sample directory, and it extracts field population rates, segment ordering, value set preferences, and formatting conventions into a reusable profile. Three commands: analyze, generate, validate.
+
+## Workflow
+
+<Steps>
+  <Step title="Analyze sample messages">
+    ```bash
+    pidgeon config analyze --samples ./epic-messages --save epic_er
+    ```
+  </Step>
+  <Step title="Generate with the profile">
+    ```bash
+    pidgeon generate ADT^A01 --vendor epic_er --count 20
+    ```
+  </Step>
+  <Step title="Validate against the profile">
+    ```bash
+    pidgeon validate --file test.hl7 --profile epic_er
+    ```
+  </Step>
+</Steps>
+
+## What a Profile Captures
+
+| Pattern | Description |
+|---------|-------------|
+| Field population | Which fields are populated and how often |
+| Segment ordering | The order segments appear in messages |
+| Value set preferences | Which coded values the system uses |
+| Field formatting | Date formats, name formats, ID patterns |
+| Optional field usage | Which optional fields are treated as required |
+
+## Built-in Vendor Baselines
+
+Post includes baseline profiles for Epic, Cerner (Oracle Health), AllScripts, and Meditech.
+
+<Info>Built-in profiles provide a starting point. For best results, create custom profiles from your actual message samples — every installation is different.</Info>
+
+## Profile Management
+
+```bash
+pidgeon config list              # List saved profiles
+pidgeon config show epic_er      # Show profile details
+pidgeon config use epic_er       # Set as default
+pidgeon config export epic_er    # Export as JSON
+pidgeon config diff epic_er cerner_lab  # Compare two profiles
+```

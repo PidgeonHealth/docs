@@ -1,0 +1,57 @@
+---
+title: Compare Messages
+description: Compare two healthcare messages field-by-field via the Bridge API.
+---
+
+## POST /api/diff
+
+Compare two messages and return field-level differences. **Public** — no authentication required.
+
+### Request Body
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `leftMessage` | string | Required | Baseline message |
+| `rightMessage` | string | Required | Comparison message |
+| `standard` | string | Auto-detect | `hl7`, `fhir`, `ncpdp` |
+| `ignoredFields` | string[] | `[]` | Fields to exclude (e.g., `["PID.3", "MSH.10"]`) |
+
+### Example
+
+```bash curl
+curl -X POST http://localhost:5101/api/diff \
+  -H "Content-Type: application/json" \
+  -d '{
+    "leftMessage": "MSH|^~\\&|SENDER|FAC|RECV|DEST|20260222||ADT^A01|12345|P|2.3\rPID|1||MRN001^^^MRN||DOE^JOHN||19800101|M",
+    "rightMessage": "MSH|^~\\&|SENDER|FAC|RECV|DEST|20260222||ADT^A01|12345|P|2.3\rPID|1||MRN001^^^MRN||DOE^JANE||19800101|F",
+    "standard": "hl7",
+    "ignoredFields": ["MSH.10"]
+  }'
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "differences": [
+      {
+        "field": "PID.5.1",
+        "leftValue": "JOHN",
+        "rightValue": "JANE",
+        "changeType": "modified"
+      },
+      {
+        "field": "PID.8",
+        "leftValue": "M",
+        "rightValue": "F",
+        "changeType": "modified"
+      }
+    ],
+    "totalDifferences": 2,
+    "ignoredFields": ["MSH.10"]
+  },
+  "error": null
+}
+```

@@ -1,0 +1,22 @@
+All API responses use a standard envelope format:
+
+```json Success response
+{
+  "success": true,
+  "data": {
+    // Response payload
+  },
+  "error": null
+}
+```
+
+```json Error response
+{
+  "success": false,
+  "data": null,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Human-readable error description"
+  }
+}
+```

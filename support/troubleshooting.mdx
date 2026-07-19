@@ -1,0 +1,83 @@
+---
+title: Troubleshooting
+description: What each app shows when the Bridge is offline, input is invalid, or credentials are missing — and the next action for every case.
+---
+
+Every Pidgeon app fails the same way on purpose: the window chrome and navigation stay on screen, the error is bounded and names what happened, and there's a clear next action — usually a **Retry**. You should never see a blank wall. This page lists, per surface, what a failure actually looks like and what to do.
+
+## First thing to check: the Bridge
+
+Each desktop app starts a local engine sidecar — the **Bridge** — on a loopback port. Most "the app won't do anything" reports are a Bridge that isn't running yet or has stopped.
+
+| App | Bridge port | How the app reaches it |
+|---|---|---|
+| Loft | `localhost:5100` | HTTP health poll |
+| Post | `localhost:5101` | HTTP API |
+| Flock | `localhost:5102` | HTTP health poll |
+| Migrate | (Tauri-invoke) | desktop bridge call, not an HTTP port |
+| Pidgeon launcher | — | no Bridge of its own; probes each product directly |
+
+When an app reports the Bridge offline, the fix is the same: make sure the app finished starting, then use the in-app **Retry** (or **Settings → Connection**). The Bridge binds to loopback only — nothing listens on your network.
+
+## Post
+
+| What you see | What it means | Next action |
+|---|---|---|
+| **"Cannot reach Post API"** with a **Retry** | The Bridge on `localhost:5101` isn't reachable | Retry; your message input is preserved across the reconnect, so you won't lose what you typed. |
+| A validation panel reporting field-level errors | The message is reachable but doesn't conform | Read the field path in each error and fix the input; this is Post doing its job, not a failure. |
+| A capability isn't available for a type/version | That message type or version isn't supported at the level you asked for | Post tells you what is supported; pick a covered type/version or check [supported standards](/support/faq). |
+
+## Flock
+
+| What you see | What it means | Next action |
+|---|---|---|
+| Centered hero **"Flock can't reach the Pidgeon Bridge"** + a top banner naming port `:5102`, both with **Retry**; a red **"Bridge offline"** pill in the footer | The Bridge on `localhost:5102` isn't reachable | Retry once the app has finished starting. Your schema and configuration input are preserved. |
+| A schema error before generation | The DDL or schema connection couldn't be parsed or read | Fix the schema input; Flock explains what failed and keeps what you entered. |
+
+## Loft
+
+| What you see | What it means | Next action |
+|---|---|---|
+| Full Loft chrome and sidebar render; only the data pane shows **"Loft can't reach the Pidgeon Bridge"** with `http://localhost:5100`, a **Retry**, and **"Open Bridge settings"**; a **"Bridge offline"** footer | The Bridge on `localhost:5100` isn't reachable | Retry, or click **Open Bridge settings** to check the connection. The rest of the app stays usable. |
+| A watched source shows no messages arriving | The source path/connection is wrong, or nothing has arrived yet | Confirm the source in settings; use **Test Bridge connection** on the Settings page. |
+
+## Migrate
+
+| What you see | What it means | Next action |
+|---|---|---|
+| A banner **"Bridge API unreachable"** and a second **"Tauri bridge unavailable"**, both with **Retry**; a red **"Bridge offline"** footer pill | Migrate's desktop bridge call isn't resolving | Retry once the app has fully started. |
+| The **"Start export wizard"** button is **disabled** | The wizard is gated until the Bridge is available (it does not crash) | Restore the Bridge connection; the button enables when the app can reach it. |
+| **"No migrations yet"** empty state | No migration has been run on this machine | Expected on a fresh install; run the Dashboard preflight to begin. |
+
+## Pidgeon launcher
+
+| What you see | What it means | Next action |
+|---|---|---|
+| The product grid renders with a **"Session unavailable"** banner + **Retry** | The account service couldn't be reached or the session expired | The grid never blanks. Sign in again or retry once you're back online. |
+| Product cards show **UNKNOWN** version badges and **"Installation status unavailable"** | The launcher couldn't probe one or more products | Give detection a moment; if it persists, relaunch. The apps still open directly from the OS. |
+| A card reads **Not installed** | That app isn't on this machine | Install it from the [downloads catalog](/getting-started/account); the card flips to Installed. |
+
+## CLI
+
+The CLI follows Unix conventions: exit `0` on success, exit `1` on failure — so it slots straight into CI gates.
+
+| What you see | What it means | Next action |
+|---|---|---|
+| `pidgeon generate "ZZZ^Q99"` prints suggestions and exits `1` | The message type isn't recognized | Use one of the suggested types, or run `pidgeon generate --help`. |
+| `pidgeon conform --endpoint <url>` errors with `--resource/--profile` and `--walk` examples, exits `1` | Required arguments are missing | Add `--resource` and `--profile`, or `--walk` to crawl an endpoint. |
+| Strict-mode validation exits `1` | The message has conformance issues | Read the reported issues; exit `1` is the intended CI signal, not a tool crash. |
+
+<Note>
+On macOS, if the installed tool can't find a runtime, set `DOTNET_ROOT` to your dotnet install path (for example `/usr/local/share/dotnet`) before running `pidgeon`.
+</Note>
+
+## Account portal
+
+| What you see | What it means | Next action |
+|---|---|---|
+| You land on the **Sign-in** page unexpectedly | You're signed out or the session expired | Sign in again (email/password, magic link, Google, or Microsoft); you'll return to where you were headed. |
+| The downloads catalog reads **"No artifacts published yet"** | No signed build has published yet | Expected during the beta ramp; check [Known issues](/support/known-issues) for publish status. |
+
+## Still stuck?
+
+Email [support@pidgeon.health](mailto:support@pidgeon.health) with the app name, version (status bar), your OS, whether the Bridge status pill showed online or offline, and what you expected versus what happened. Check [Known issues](/support/known-issues) first — your problem may already have a workaround.

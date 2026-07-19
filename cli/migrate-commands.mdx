@@ -1,0 +1,70 @@
+---
+title: Migrate Commands
+description: Export healthcare data to FHIR R4 Bulk Data NDJSON, with de-identification, reconciliation, and resume.
+---
+
+Migrate moves healthcare data between systems via FHIR R4 Bulk Data Access (NDJSON per the HL7 IG). v1 ships the `run` export workflow reading from Centricity / athenaPractice 23.0 `FHIR_*` views.
+
+<Note>Migrate requires a Pidgeon account sign-in. It is built for migration projects, not synthetic test data — for populations, see [Flock](/cli/flock-commands).</Note>
+
+## pidgeon migrate run
+
+Export from a source EHR to FHIR R4 Bulk Data NDJSON — one file per resource type plus a `manifest.json` conforming to the HL7 FHIR Bulk Data Access IG.
+
+```bash
+pidgeon migrate run --source <connection-string> --output <dir> [options]
+```
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--source` | string | **Required** | Source DB connection string (Postgres or SQL Server; auto-detected by shape) |
+| `--output` | string | **Required** | Output directory. Created if missing; existing files overwritten unless `--resume` |
+| `--mapping` | string | sane defaults | Mapping YAML for per-field retain/redact/date-shift policy (per-customer override) |
+| `--source-adapter` | string | `centricity` | Source EHR adapter key |
+| `--resources` | string | Patient,Encounter,Observation,Condition,MedicationRequest,Procedure | Comma-separated resource list |
+| `--since` | string | — | Incremental cursor (ISO 8601). v1: recorded in the manifest, full export still runs |
+| `--batch-size` | int | `1000` | NDJSON flush batch size |
+| `--deidentify` | flag | off | Run emitted resources through de-identification before write; cross-resource references stay coherent |
+| `--deident-salt` | string | random | Deterministic hashing salt for cross-run reference consistency |
+| `--deident-date-shift` | string | — | Uniform date shift, `+Nd` or `-Nd` (e.g. `+30d`) |
+| `--resume` | flag | off | Resume from `.checkpoint.json` in the output directory |
+| `--dry-run` | flag | off | Read + transform + reconcile without writing NDJSON; manifest still emitted |
+
+```bash
+# Full export with de-identification
+pidgeon migrate run --source "Host=localhost;Database=centricity;..." --output ./export --deidentify --deident-date-shift +30d
+
+# Validate the mapping before a real run
+pidgeon migrate run --source "Host=localhost;Database=centricity;..." --output ./export --dry-run
+
+# Resume an interrupted export
+pidgeon migrate run --source "Host=localhost;Database=centricity;..." --output ./export --resume
+```
+
+## pidgeon migrate analyst
+
+Deterministic migration analysis: assess a source, review the mapping and loss catalog, convert a bounded sample, cluster exceptions, analyze reconciliation, and assemble cutover-readiness evidence. Read/derive-only — results are local evidence artifacts.
+
+```bash
+pidgeon migrate analyst <subcommand> [options]
+```
+
+Subcommands cover source assessment, mapping-plan review, bounded sample conversion, exception clustering, reconciliation analysis, and cutover-readiness evidence. Sample sizes are bounded (1–25 rows) so a run is fast and reproducible.
+
+## pidgeon migrate to-xds
+
+Read a FHIR R4 bundle, generate a C-CDA, and submit it to an IHE XDS.b registry via ITI-41 Provide and Register. With `--verify` (default), it confirms the round-trip by ITI-18 FindDocuments + ITI-43 Retrieve and asserts the document is byte-identical.
+
+```bash
+pidgeon migrate to-xds --bundle <bundle.json> [options]
+```
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--bundle` | string | **Required** | Path to a FHIR R4 bundle JSON file |
+| `--registry` | string | mock-network default | XDS toolkit base URL |
+| `--verify` | flag | on | Assert a byte-identical ITI-18/ITI-43 round-trip after submit |
+
+## Desktop app
+
+The Migrate desktop app runs the same `run` workflow with a preflight checklist, a live migration log, and reconciliation — see [Get started with Migrate](/getting-started/migrate).

@@ -1,0 +1,77 @@
+---
+title: Output Formats
+description: Flock generates synthetic data as SQL INSERT statements, CSV files, HL7 message streams, or FHIR Bundles.
+---
+
+Pick the format that matches your target system. All four preserve referential integrity across generated records.
+
+## SQL INSERT
+
+FK-ordered INSERT statements ready for direct database seeding.
+
+```bash
+pidgeon flock generate --count 1000 --format sql --output ./seed-data/
+```
+
+```sql
+INSERT INTO patients (id, mrn, last_name, first_name, dob, sex, race)
+VALUES ('a1b2c3', 'MRN001234', 'Johnson', 'Maria', '1987-04-15', 'F', '2106-3');
+
+INSERT INTO encounters (id, patient_id, admit_date, discharge_date, type)
+VALUES ('e4f5g6', 'a1b2c3', '2026-02-20 08:30:00', '2026-02-22 14:00:00', 'inpatient');
+```
+
+## CSV
+
+Flat files for import into any system.
+
+```bash
+pidgeon flock generate --count 1000 --format csv --output ./seed-data/
+```
+
+Generates one CSV per table with headers matching your schema columns.
+
+## HL7 Streams
+
+ADT and ORU messages for integration engine testing.
+
+```bash
+pidgeon flock generate --count 500 --format hl7 --output ./hl7-data/
+```
+
+Generates ADT^A01 admission messages with linked ORU^R01 lab results for each patient.
+
+## FHIR Bundles
+
+Transaction bundles for FHIR server seeding.
+
+```bash
+pidgeon flock generate --count 200 --format fhir --output ./fhir-data/
+```
+
+Generates FHIR Transaction Bundles with proper reference integrity across the same 24 spec-validated resource types Post generates, including Patient, Encounter, Condition, Observation, MedicationRequest, Procedure, DiagnosticReport, AllergyIntolerance, Immunization, Organization, Practitioner, Location, and Coverage.
+
+## Seeding and Cleanup
+
+```bash
+# Seed the connected database
+pidgeon flock seed
+
+# Preview SQL without executing
+pidgeon flock seed --dry-run
+
+# Remove all synthetic data
+pidgeon flock seed --cleanup
+```
+
+<Warning>Cleanup removes all records tagged as synthetic. This cannot be undone.</Warning>
+
+## Generation Analytics
+
+After generating a population, Flock produces an analytics report with statistics on:
+
+- Record counts per table
+- Demographic distributions (age, gender, race)
+- Clinical distributions (conditions, medications)
+- Referential integrity validation
+- Seed plan validation (dry-run results)

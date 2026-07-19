@@ -1,0 +1,71 @@
+---
+title: Get started with Post
+description: Generate an HL7 message, validate it against the published spec, check FHIR conformance, and export the proof. Free generation and validation, no account required.
+---
+
+Post generates, validates, and delivers test messages: HL7 v2.3 through v2.8, FHIR R4, and NCPDP SCRIPT. Validation is derived from the published standard's machine-readable definitions, so the generator and validator can't drift from the spec or from each other.
+
+Free generation and validation work without an account. Pro features require a Pidgeon account sign-in.
+
+## Before you start
+
+- [Install Post](/getting-started/install-windows) (or on [macOS](/getting-started/install-macos)).
+- Post runs its engine in a local Bridge sidecar on `localhost:5101`. It starts with the app; you don't manage it separately.
+
+## One loop: generate, validate, prove
+
+<Steps>
+  <Step title="Generate a message">
+    Open the **Generate** panel (under **Compose** in the sidebar). Pick a message type, for example `ADT^A01`, set a count, and generate. The message appears in the output pane with syntax highlighting.
+
+    The same operation from the CLI:
+    ```bash
+    pidgeon generate ADT^A01 --count 10 --output admissions.hl7
+    ```
+  </Step>
+
+  <Step title="Validate it">
+    Open the **Validate** panel (under **Inspect**). Paste your generated message or load the file, then choose a mode: **strict** (the published spec) or **compatibility** (real-world tolerance). Results show field-level issues with rule IDs, expected/actual values, and a fix suggestion per issue.
+
+    CLI equivalent:
+    ```bash
+    pidgeon validate --file admissions.hl7 --mode strict
+    ```
+    Exit code `0` means validation passed; `1` means issues were found. That makes it a CI gate with no extra wiring.
+  </Step>
+
+  <Step title="Inspect a field you don't recognize">
+    Every validation issue links into the built-in standards reference. You can also look up any segment or field directly:
+
+    ```bash
+    pidgeon lookup PID.3
+    ```
+  </Step>
+
+  <Step title="Run a conformance check">
+    Open the **Conformance** panel (under **Inspect**) to probe a FHIR endpoint against a published Implementation Guide and read the pass/fail result per rule. Current IG scope includes US Core and Da Vinci PAS 2.1.
+
+    CLI equivalent:
+    ```bash
+    pidgeon conform --endpoint https://api.example.org/fhir --ig davinci-pas-2.1 --ci
+    ```
+  </Step>
+
+  <Step title="Export the proof">
+    Open **Reports** (under **Library**) to export validation and conformance results as self-contained HTML you can attach to a ticket or hand to a stakeholder.
+  </Step>
+</Steps>
+
+## When something fails
+
+| What you see | What it means | Next action |
+|---|---|---|
+| Status bar pill shows **Offline**, and panels report "Pidgeon Bridge is offline" | The local engine sidecar isn't reachable. Generation and validation run on it. | Open **Settings → Connection** and retry. The connection tab shows the port (`5101`) and live status. |
+| Validation issues with rule IDs (for example `HL7-REQ-002`) | Your input message has a problem; this is the product working, not an error state | Each issue carries an expected/actual pair and a fix suggestion. Use the `pidgeon lookup` tip on the issue to open the reference. |
+| A message type or version combination is marked unsupported | Post signals capability per message type and version rather than emitting a partial message | Pick a supported type/version pair from the picker, or check [Message Generation](/post/message-generation) for what's covered. |
+
+## Next steps
+
+- [Message generation in depth](/post/message-generation)
+- [Validation modes](/post/validation)
+- [CLI quickstart](/getting-started/quickstart-cli)

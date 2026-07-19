@@ -1,0 +1,82 @@
+---
+title: Loft Commands
+description: CLI commands for Loft interface monitoring — watch directories, check status, view alerts, and generate reports.
+---
+
+## pidgeon loft watch
+
+Start monitoring a directory for incoming healthcare messages.
+
+```bash
+pidgeon loft watch --directory <path> [options]
+```
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--directory <path>` | string | Required | Directory to watch for messages |
+| `--profile <name>` | string | — | Vendor profile for validation |
+| `--file-pattern <glob>` | string | `*.hl7` | File pattern to match |
+
+```bash
+# Watch a Mirth output directory
+pidgeon loft watch --directory /var/mirth/outbound/er --profile epic_er
+
+# Watch with custom file pattern
+pidgeon loft watch --directory /var/loft/lab --file-pattern "*.txt"
+```
+
+---
+
+## pidgeon loft status
+
+Show current monitoring status across all watched interfaces.
+
+```bash
+pidgeon loft status
+```
+
+---
+
+## pidgeon loft alerts
+
+List recent alerts from monitored interfaces.
+
+```bash
+pidgeon loft alerts [options]
+```
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--severity <level>` | string | All | Filter: `critical`, `warning`, `info` |
+| `--since <duration>` | string | `24h` | Time window (e.g., `1h`, `12h`, `7d`) |
+
+```bash
+# View critical alerts from the last 6 hours
+pidgeon loft alerts --severity critical --since 6h
+
+# View all recent alerts
+pidgeon loft alerts --since 1h
+```
+
+---
+
+## pidgeon loft report
+
+Generate a monitoring report.
+
+```bash
+pidgeon loft report [options]
+```
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--format <fmt>` | string | `text` | Report format: `text`, `html`, `json` |
+| `--since <duration>` | string | `24h` | Time range for the report |
+
+```bash
+# Text report for the last 24 hours
+pidgeon loft report
+
+# HTML report for the last week
+pidgeon loft report --format html --since 7d --output report.html
+```

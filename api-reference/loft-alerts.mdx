@@ -1,0 +1,48 @@
+---
+title: Loft Alerts
+description: Query and acknowledge monitoring alerts via the Bridge API.
+---
+
+## GET /api/loft/alerts
+
+List alerts with optional filters. **Public**.
+
+| Query Param | Type | Default | Description |
+|-------------|------|---------|-------------|
+| `severity` | string | All | Filter: `critical`, `warning`, `info` |
+| `sinceHours` | int | `24` | Time window |
+
+```bash curl
+curl "http://localhost:5100/api/loft/alerts?severity=critical&sinceHours=6"
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "alert-5012",
+      "interfaceId": "intf-001",
+      "interfaceName": "ER Interface",
+      "severity": "critical",
+      "title": "Validation failure rate exceeded threshold",
+      "message": "12.3% failure rate in the last 15 minutes (threshold: 5%)",
+      "triggeredAt": "2026-02-22T14:15:00Z",
+      "acknowledgedAt": null
+    }
+  ],
+  "error": null
+}
+```
+
+---
+
+## POST /api/loft/alerts/{id}/acknowledge
+
+Acknowledge an alert. **Public**.
+
+```bash curl
+curl -X POST http://localhost:5100/api/loft/alerts/alert-5012/acknowledge
+```

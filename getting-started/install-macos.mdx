@@ -1,0 +1,63 @@
+---
+title: Install on macOS
+description: Download the signed, notarized macOS apps from the downloads catalog, verify checksums, and launch.
+---
+
+{/* BETA-GATE(Stage 2): downloads.pidgeon.health catalog goes live with artifacts + checksums. */}
+
+Pidgeon ships five macOS desktop apps: **Post**, **Flock**, **Loft**, **Migrate**, and the **Pidgeon** launcher. Each is a separate download. Install only what you need.
+
+Current beta release: `0.2.0-beta.1`.
+
+## Requirements
+
+- macOS 12 (Monterey) or later
+- AI features (optional) run on-device and recommend 16 GB RAM; everything else runs comfortably below that
+
+## Download and install
+
+<Steps>
+  <Step title="Download from the catalog">
+    Get the apps from the downloads catalog at [downloads.pidgeon.health](https://downloads.pidgeon.health). The catalog lists every app, its current version, and a SHA-256 checksum per file.
+  </Step>
+
+  <Step title="Verify the checksum (optional but recommended)">
+    ```bash
+    shasum -a 256 ~/Downloads/Post_0.2.0-beta.1_universal.dmg
+    ```
+
+    Compare the output against the checksum shown in the catalog. If they differ, do not install: re-download, and contact [support@pidgeon.health](mailto:support@pidgeon.health) if it still differs.
+  </Step>
+
+  <Step title="Install">
+    Open the `.dmg` and drag the app into **Applications**.
+  </Step>
+
+  <Step title="First launch">
+    The macOS apps are signed with an Apple Developer ID certificate (**Pattern Engine LLC**) and notarized by Apple, so Gatekeeper opens them normally — you won't see the "cannot be opened because Apple cannot verify it" block. On the very first launch macOS may show a one-time "downloaded from the internet" confirmation; click **Open**.
+
+    To confirm the signature and notarization yourself:
+
+    ```bash
+    codesign -dv --verbose=4 /Applications/Post.app
+    spctl -a -vvv /Applications/Post.app   # → "accepted", source: Notarized Developer ID
+    ```
+  </Step>
+
+  <Step title="Sign in (where needed)">
+    Each app starts its local Bridge sidecar (the engine process) on a loopback port: Loft on `localhost:5100`, Post on `localhost:5101`, Flock on `localhost:5102`. The Bridge binds to loopback only; nothing listens on your network.
+
+    Post works without an account. Flock, Loft, Migrate, and the launcher ask you to sign in with your Pidgeon account.
+  </Step>
+</Steps>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Get started with the launcher" icon="rocket" href="/getting-started/launcher">
+    One sign-in, one place to see your installed apps.
+  </Card>
+  <Card title="Get started with Post" icon="paper-plane" href="/getting-started/post">
+    Generate and validate your first message. No account needed.
+  </Card>
+</CardGroup>

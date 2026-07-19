@@ -1,0 +1,47 @@
+---
+title: AI Triage
+description: Stop deciphering cryptic validation errors. Get plain-English root cause analysis and fix suggestions, on-device by default.
+---
+
+<Note>Pro feature — requires a Pidgeon account with Post Pro entitlement.</Note>
+
+Pass validation failures through an on-device model for root cause analysis — including vendor-specific context like "this is a common Epic-to-downstream mapping issue." On-device is the default posture: $0 marginal cost, and no message content leaves your machine unless you explicitly opt into a cloud provider.
+
+## Setup
+
+AI Triage runs on-device out of the box; no configuration is required. To opt into a cloud provider instead (BYOK — your keys, your cost control), set the egress policy and your provider key:
+
+```bash
+pidgeon ai egress --mode byok-cloud --baa-opt-in true
+export PIDGEON_OPENAI_KEY="sk-..."
+# or
+export PIDGEON_ANTHROPIC_KEY="sk-ant-..."
+```
+
+`pidgeon ai egress` (no arguments) shows the current PHI-egress policy. Every call that resolves to a non-local provider is audit-logged. See [CLI Reference](/cli/post-commands) for the full set of AI modes.
+
+## Usage
+
+```bash
+pidgeon validate --file broken.hl7 --ai-triage
+```
+
+## Example Output
+
+```text
+AI Triage Analysis:
+
+Root Cause: The PID.8 field contains "MALE" instead of the HL7 Table 0001
+coded value "M". This is a common Epic-to-downstream mapping issue where
+the sending system uses descriptive text instead of coded values.
+
+Suggested Fix: Configure a Mirth transformer on Channel 12 to map
+PID.8 values: "MALE" → "M", "FEMALE" → "F", "OTHER" → "O"
+
+Confidence: 94%
+Similar issues found: 23 messages in the last 24 hours
+```
+
+## API
+
+The AI Triage API is available at `POST /api/loft/triage`. See the [API Reference](/api-reference/ai-triage) for details.

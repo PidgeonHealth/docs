@@ -1,0 +1,63 @@
+---
+title: Interface Monitoring
+description: Point Loft at your Mirth output directories and know immediately when something breaks — before the help desk does.
+---
+
+One command to start watching. Every new message file picked up from a watched source is parsed and validated against your vendor profile, with metrics tracked per interface.
+
+## Creating Interfaces
+
+<CodeGroup>
+```bash CLI
+pidgeon loft watch --directory /var/mirth/outbound/er --profile epic_er --file-pattern "*.hl7"
+```
+
+```bash API
+curl -X POST http://localhost:5100/api/loft/interfaces \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "ER Interface",
+    "directoryPath": "/var/mirth/outbound/er",
+    "profileName": "epic_er",
+    "filePattern": "*.hl7"
+  }'
+```
+</CodeGroup>
+
+## Interface Metrics
+
+Each interface tracks:
+- **Messages total** — Total messages processed
+- **Success rate** — Percentage passing validation
+- **Error rate** — Messages with validation failures
+- **Throughput** — Messages per minute/hour
+- **Latency** — Average and p99 processing time
+
+```bash
+curl "http://localhost:5100/api/loft/interfaces/{id}/metrics?sinceHours=24"
+```
+
+## Managing Interfaces
+
+```bash
+# List all interfaces
+curl http://localhost:5100/api/loft/interfaces
+
+# Update an interface
+curl -X PUT http://localhost:5100/api/loft/interfaces/{id} \
+  -H "Content-Type: application/json" \
+  -d '{"enabled": false}'
+
+# Delete an interface
+curl -X DELETE http://localhost:5100/api/loft/interfaces/{id}
+```
+
+## Status Overview
+
+```bash
+# CLI
+pidgeon loft status
+
+# API
+curl http://localhost:5100/api/loft/status
+```

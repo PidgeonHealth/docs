@@ -1,0 +1,66 @@
+---
+title: API Reference
+description: The Pidgeon Bridge API — a local sidecar each desktop app runs, not a hosted cloud API. Authentication, response format, and endpoint overview.
+---
+
+Each desktop app (Post, Flock, Loft, Migrate) starts a local **Bridge** — an ASP.NET Core sidecar — on a fixed port while it's running. The desktop apps themselves use this same API. There is no public hosted API today: every request in this reference is local to the machine running the app, on a loopback port reachable only while that app is open.
+
+**Base URL**: `http://localhost:<port>`, where the port depends on which app's Bridge you're calling:
+
+| App | Port |
+|-----|------|
+| Loft | `5100` |
+| Post | `5101` |
+| Flock | `5102` |
+
+The endpoints below (Loft interfaces/alerts/status/analytics/traces, Flock, Admin, Enterprise) are Loft- and Flock-scoped and default to their Bridge's port in the examples that follow; substitute the port for the app you're integrating with.
+
+<Note>This reference documents the local Bridge HTTP contract for automation and integration against a running desktop app. It has not been exhaustively cross-checked against every current Bridge route — if an example here 404s, prefer the CLI equivalent and treat the mismatch as a docs bug.</Note>
+
+## Authentication
+
+Two authentication schemes are supported. Include one on protected endpoints:
+
+<Snippet file="/snippets/auth-header.mdx" />
+
+## Response Format
+
+<Snippet file="/snippets/api-response-format.mdx" />
+
+## Authorization Policies
+
+| Policy | Requirement |
+|--------|-------------|
+| Public | No authentication required |
+| Authenticated | Valid JWT or API Key |
+| OrgMember | Authenticated + `org_id` claim |
+| LoftViewer | OrgMember + Viewer role |
+| LoftOperator | OrgMember + Operator role |
+| LoftEditor | OrgMember + Editor role |
+| LoftAdmin | OrgMember + Admin role |
+
+## Usage limits
+
+Because the Bridge runs locally, there's no network-abuse rate limit to enforce — usage limits instead follow your account's plan and entitlements (for example, Flock's population size caps in the desktop app's **Population** panel). Where a response includes rate-limit headers, they reflect the entitlement-based cap for that endpoint, not a fixed per-tier number documented here.
+
+## Endpoint Groups
+
+| Group | Auth | Description |
+|-------|------|-------------|
+| [Generate](/api-reference/generate) | Public | Synthetic message generation |
+| [Validate](/api-reference/validate) | Public | Message validation |
+| [Diff](/api-reference/diff) | Public | Message comparison |
+| [AI Triage](/api-reference/ai-triage) | Public | AI-powered failure analysis |
+| [Loft Interfaces](/api-reference/loft-interfaces) | Public | Interface CRUD + metrics |
+| [Loft Alerts](/api-reference/loft-alerts) | Public | Alert management |
+| [Loft Status](/api-reference/loft-status) | Public | Status and reports |
+| [Analytics](/api-reference/analytics) | Public | Time-series and dashboards |
+| [Traces](/api-reference/traces) | Public | Patient tracing and gaps |
+| [Flock](/api-reference/flock) | Public | Population generation |
+| [Admin](/api-reference/admin) | LoftAdmin | RBAC, workspaces, SLA |
+| [Enterprise](/api-reference/enterprise) | LoftAdmin | SSO, audit, observability |
+| [SignalR](/api-reference/signalr) | JWT/API Key | Live updates |
+
+## Content Type
+
+All request and response bodies use JSON. Set `Content-Type: application/json` on all requests with a body.

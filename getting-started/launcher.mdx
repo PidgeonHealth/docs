@@ -1,0 +1,54 @@
+---
+title: Get started with Pidgeon (the launcher)
+description: One sign-in, one place to see which Pidgeon apps are installed, what version they're on, and what your account includes.
+---
+
+Pidgeon is the launcher app: one sign-in and a single grid showing all four products (Post, Flock, Loft, Migrate), whether each is installed, what your account entitles you to, and a button to open each one. You don't need it to use any individual app, but it's the fastest way to see everything at once.
+
+## Before you start
+
+- [Install Pidgeon](/getting-started/install-windows) (or on [macOS](/getting-started/install-macos)).
+
+## One loop: sign in, see your products, launch one
+
+<Steps>
+  <Step title="Sign in">
+    Launch Pidgeon and sign in with your Pidgeon account. The launcher requires sign-in; there is no anonymous mode here (Post is the app that works without an account).
+  </Step>
+
+  <Step title="Read the product grid">
+    The **Products** view shows a card per product. Each card carries:
+
+    - Installation status: **Installed**, **Not installed**, or **Checking…** while it resolves
+    - An entitlement badge showing what your account includes for that product
+    - **Open** when the app is installed and entitled
+  </Step>
+
+  <Step title="Launch an app">
+    Click **Open** on an installed product, or press <kbd>mod</kbd>+<kbd>K</kbd> for the command palette, arrow to a product, and hit <kbd>Enter</kbd>.
+  </Step>
+
+  <Step title="Check versions and updates">
+    The status bar shows the launcher version. Product cards show installed versions.
+
+    {/* BETA-GATE(Stage 2 / Launcher S1): update-check copy below goes live with the updater channel; keep it conditional until updater keys + channel config ship. */}
+    When the beta update channel is live, the launcher surfaces an update prompt on a product card when a newer version exists.
+  </Step>
+</Steps>
+
+## When something fails
+
+| What you see | What it means | Next action |
+|---|---|---|
+| A product card shows **Not installed** | That app isn't on this machine; the launcher doesn't bundle the products | Download its installer from [downloads.pidgeon.health](https://downloads.pidgeon.health), install, and the card flips to Installed. |
+| An error banner about your session, with the product grid still visible | The account service couldn't be reached or the session expired | The grid never goes blank; entitlements show as unknown. Sign in again or retry once you're back online. |
+| Cards stuck on **Checking…** | Installation detection is still resolving (or could not complete) | Give it a moment; if it persists, relaunch the launcher. The apps themselves still launch directly from the OS. |
+
+## Next steps
+
+- [Your Pidgeon account](/getting-started/account)
+- [Get started with Post](/getting-started/post)
+- [Get started with Flock](/getting-started/flock)
+- [Get started with Loft](/getting-started/loft)
+- [Get started with Migrate](/getting-started/migrate)
+- [Troubleshooting](/support/troubleshooting)

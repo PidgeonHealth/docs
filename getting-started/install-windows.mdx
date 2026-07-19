@@ -1,0 +1,79 @@
+---
+title: Install on Windows
+description: Download the signed installers from the downloads catalog, verify the publisher and checksum, and know what to expect from SmartScreen.
+---
+
+{/* BETA-GATE(Stage 2): downloads.pidgeon.health catalog goes live with signed artifacts + checksums. Resolve this placeholder by confirming the catalog URL and artifact names at beta publish. */}
+
+Pidgeon ships five Windows desktop apps: **Post**, **Flock**, **Loft**, **Migrate**, and the **Pidgeon** launcher. Each is a separate installer. Install only what you need; the launcher can detect and open the others later.
+
+Current beta release: `0.2.0-beta.1`.
+
+## Requirements
+
+- Windows 10 or Windows 11, 64-bit
+- No admin rights required for a per-user install
+- AI features (optional) run on-device and recommend 16 GB RAM; everything else runs comfortably below that
+
+## Download and install
+
+<Steps>
+  <Step title="Download from the catalog">
+    Get installers from the downloads catalog at [downloads.pidgeon.health](https://downloads.pidgeon.health). The catalog lists every app, its current version, and a SHA-256 checksum per file.
+
+    Download the `.exe` installer for each app you want.
+  </Step>
+
+  <Step title="Verify the checksum (optional but recommended)">
+    ```powershell
+    Get-FileHash .\Post_0.2.0-beta.1_x64-setup.exe -Algorithm SHA256
+    ```
+
+    Compare the output against the checksum shown in the catalog. If they differ, do not run the installer: re-download, and contact [support@pidgeon.health](mailto:support@pidgeon.health) if it still differs.
+  </Step>
+
+  <Step title="Run the installer">
+    Each installer is Authenticode-signed under the verified publisher **Pattern Engine LLC** (SHA-256, timestamped). When Windows shows a publisher, it should read Pattern Engine LLC, never "Unknown publisher".
+
+    If Microsoft Defender SmartScreen shows a "Windows protected your PC" prompt, see [What to expect from SmartScreen](#what-to-expect-from-smartscreen) below. Click **More info**, confirm the publisher reads Pattern Engine LLC, then **Run anyway**.
+  </Step>
+
+  <Step title="First launch">
+    Each app starts its local Bridge sidecar (the engine process) on a loopback port: Loft on `localhost:5100`, Post on `localhost:5101`, Flock on `localhost:5102`. The Bridge binds to loopback only; nothing listens on your network.
+
+    Post works without an account. Flock, Loft, Migrate, and the launcher ask you to sign in with your Pidgeon account.
+  </Step>
+</Steps>
+
+## What to expect from SmartScreen
+
+SmartScreen reputation is earned from download volume across a wide audience, and Pidgeon is a focused tool for healthcare integration teams. So early in the beta you may see the SmartScreen prompt even though every installer is signed by a verified publisher. That prompt is not a signature problem; it fades as installs accrue under the Pattern Engine LLC identity. As of August 2024 no certificate type clears SmartScreen instantly (Microsoft removed the instant-reputation advantage EV certificates once had).
+
+To check a signature yourself before running anything:
+
+1. Right-click the `.exe`, open **Properties**, then the **Digital Signatures** tab.
+2. Select the signature, click **Details**, and confirm the publisher name is Pattern Engine LLC and the signature is valid.
+3. Confirm a timestamp is present.
+
+If the Digital Signatures tab is missing or the publisher name is wrong, do not install. Contact [support@pidgeon.health](mailto:support@pidgeon.health).
+
+## Deploying to a managed fleet
+
+If you are rolling Pidgeon out across a Windows fleet, you can skip the interactive SmartScreen prompt entirely:
+
+- **Intune / SCCM / GPO**: push the signed installers through your existing management tooling. Apps deployed by an administrator do not trigger the interactive prompt.
+- **Trusted source**: host installers on an internal share or portal mapped to the Local intranet or Trusted sites zone, so downloads carry no Mark-of-the-Web.
+- **SmartScreen policy**: on managed devices, configure Defender SmartScreen enforcement via Intune settings catalog or Group Policy to match your risk posture.
+
+Want `.intunewin` packages or a deployment script? Email [support@pidgeon.health](mailto:support@pidgeon.health).
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Get started with the launcher" icon="rocket" href="/getting-started/launcher">
+    One sign-in, one place to see your installed apps.
+  </Card>
+  <Card title="Get started with Post" icon="paper-plane" href="/getting-started/post">
+    Generate and validate your first message. No account needed.
+  </Card>
+</CardGroup>

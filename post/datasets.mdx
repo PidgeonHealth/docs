@@ -1,0 +1,53 @@
+---
+title: Datasets & Data Packages
+description: Generated messages use real ICD-10 codes, real LOINC identifiers, and real NDC numbers — not placeholder values that fail downstream validation.
+---
+
+Eight datasets ship with Pidgeon, from ICD-10 diagnosis codes to NDC drug products. Free tier includes basic subsets; Pro unlocks full datasets plus RxNorm, HCPCS, and CPT.
+
+## Available Datasets
+
+| Dataset | Codes | Free | Pro |
+|---------|-------|------|-----|
+| LOINC 2.81 | 108K lab/clinical codes | Basic subset | Full |
+| SNOMED CT US | 350K+ clinical terms | Basic subset | Full |
+| ICD-10-CM 2026 | 74K diagnosis codes | Full | Full |
+| ICD-9-CM v32 | DX + Procedure codes | Full | Full |
+| NDC | 110K drug products | Basic subset | Full |
+| CVX | 288 vaccine codes | Full | Full |
+| RxNorm | Drug terminology | — | Full |
+| HCPCS | Procedure/service codes | — | Full |
+| CPT | Procedure codes | — | Add-on ($30/user/yr) |
+
+<Info>The CPT dataset requires a separate license add-on due to AMA royalty requirements.</Info>
+
+## Managing Datasets
+
+```bash
+# List available and installed datasets
+pidgeon data list
+
+# Install a dataset
+pidgeon data install loinc
+pidgeon data install snomed
+
+# Import a custom dataset
+pidgeon data import ./custom-codes.csv
+
+# Update all installed datasets
+pidgeon data update
+```
+
+## Custom Datasets
+
+Import your own code sets via CSV with columns for code, display name, and system URI:
+
+```csv
+code,display,system
+LOCAL001,Custom Lab Test,http://hospital.org/labs
+LOCAL002,Custom Procedure,http://hospital.org/procedures
+```
+
+```bash
+pidgeon data import ./custom-codes.csv
+```

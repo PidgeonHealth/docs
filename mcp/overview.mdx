@@ -1,0 +1,108 @@
+---
+title: MCP Server
+description: Drive Pidgeon's HL7 / FHIR / NCPDP engine from Claude, Cursor, VS Code, or any MCP client. Two transport modes, tier-gated tools, on-device AI by default.
+---
+
+The Pidgeon MCP server (`@pidgeonhealth/mcp`) exposes the same generate / validate / conform / seed / monitor operations you run in the CLI and the desktop apps as agent tools over the [Model Context Protocol](https://modelcontextprotocol.io). One surface, two drivers: a human works the panes in the apps; an agent reads those same operations over MCP.
+
+<Note>The MCP transport is the delivery mechanism, not the entitlement. The free/paid line is enforced at Bridge authentication + a validated subscription — not at the transport. A free agent loop is never broken by a hard error; it degrades gracefully.</Note>
+
+## The one rule
+
+> One valid message is free. Production volume, team leverage, and live-interface tools are paid.
+
+## Install
+
+The server is an npm package that shells out to the Pidgeon CLI (CLI mode) or talks to a running desktop app's Bridge (Bridge mode).
+
+<Steps>
+  <Step title="Install the CLI">
+    ```bash
+    dotnet tool install -g pidgeon
+    ```
+  </Step>
+  <Step title="Add the server to your MCP client">
+    Point your client at the published package. Claude Desktop, Cursor, and VS Code all take the same shape:
+
+    ```json
+    {
+      "mcpServers": {
+        "pidgeon": {
+          "command": "npx",
+          "args": ["-y", "@pidgeonhealth/mcp"],
+          "env": {
+            "PIDGEON_MODE": "cli"
+          }
+        }
+      }
+    }
+    ```
+  </Step>
+</Steps>
+
+<Note>The public package publishes with the beta. Confirm the package name and version on npm at beta publish before pinning a version.</Note>
+
+## Two transport modes
+
+The `PIDGEON_MODE` environment variable selects the transport, and the transport determines which tools register.
+
+| Mode | Value | What it talks to | Which tools register |
+|------|-------|------------------|----------------------|
+| **CLI** | `PIDGEON_MODE=cli` | Spawns the `pidgeon` CLI locally | Exactly the checked-in **community** tool set — the tools the free CLI can service end to end. No account, no Bridge. |
+| **Bridge** | `PIDGEON_MODE=bridge` | HTTP to a running desktop app's local Bridge | Exactly the roster the Bridge **advertises** for your resolved tier — free tools plus any Pro tools your subscription entitles. |
+
+In Bridge mode, the server registers only what the Bridge advertises for your tier. If it can't reach an advertisement (older build, Bridge unreachable), it fails closed to the community set — it never materializes a Pro tool from a client-side label. See the [tool catalog](/mcp/tools) for the exact split.
+
+## On-device AI
+
+AI-assisted tools (for example `refine_hl7_segment`) default to a **bundled on-device model** — no API key, and no message content leaves the machine. Set it up once:
+
+```bash
+pidgeon ai download qwen3-4b
+```
+
+BYOK (a cloud provider) is optional and never required. The free `explain_error` tool needs no model at all.
+
+## Environment variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PIDGEON_MODE` | `bridge` | Transport: `bridge` or `cli`. |
+| `PIDGEON_BRIDGE_URL` | `http://localhost:5100` | Bridge API base URL (Bridge mode). |
+| `PIDGEON_API_KEY` | *(none)* | API key for an authenticated Bridge instance. |
+| `PIDGEON_CLI_PATH` | `pidgeon` | Path to the `pidgeon` executable (CLI mode). |
+| `PIDGEON_TOOLS` | *(none)* | Narrow the roster: comma-separated tool names or tiers (`free`/`pro`) to register. Empty = full roster. |
+| `PIDGEON_EXCLUDE_TOOLS` | *(none)* | Withhold tools: comma-separated names or tiers, applied after the include list. |
+
+## Guided prompts
+
+The server ships six guided prompts that chain tools into a complete workflow. Each is honest about where the free line falls — a free agent gets the full diagnosis and never a hard stop.
+
+| Prompt | Chains | Free through |
+|--------|--------|--------------|
+| `debug_hl7_error` | validate → explain_error → generate | Fully free |
+| `go_live_prep` | generate → validate | Free (profile persistence is Pro) |
+| `onboard_vendor_interface` | generate → validate | Free (saving the profile is Pro) |
+| `stand_up_interface` | generate → validate → conform → refine → send | Free through validate |
+| `reproduce_and_fix` | explain → validate → explain_error → refine → diff → send | Free through triage |
+| `seed_validate_monitor` | generate_population → run_workflow → validate → loft_status | Free through validation |
+
+<Note>In CLI mode, the three fully free workflows (`debug_hl7_error`, `go_live_prep`, `onboard_vendor_interface`) register out of the box — every tool they chain is in the community catalog. The other three chain Pro tools and appear in Bridge mode, advertised for your tier.</Note>
+
+## Reference resources
+
+Six read-only resources give an agent its bearings before it acts:
+
+| Resource | What it returns |
+|----------|-----------------|
+| `pidgeon://version` | Self-description: server version, transport mode, resolved tier, the full tool roster with per-tool tier, free-tier volume state, and the prompt/resource catalog. Read this first. |
+| `pidgeon://hl7/segments` | Every HL7 v2 segment type with descriptions. |
+| `pidgeon://hl7/segments/{segmentCode}` | Full field-by-field spec for one segment. |
+| `pidgeon://vendors` | Loaded vendor interface profiles (Bridge), or the embedded common-vendor catalog (CLI). |
+| `pidgeon://setup-guide` | Install, mode selection, environment variables, and common issues. |
+| `pidgeon://session` | Bridge-mode workspace context: active org/facility scope, saved field-pin sessions, on-device model status. |
+
+## Next steps
+
+- [MCP tool catalog](/mcp/tools) — the exact free, community, and Pro tool split
+- [CLI Reference](/cli/global-options) — the same operations from a terminal

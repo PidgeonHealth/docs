@@ -1,0 +1,129 @@
+---
+title: Monitor Mirth Connect with Loft
+description: Stop finding out about interface failures from clinical staff. Point Loft at your Mirth channels in minutes.
+---
+
+## Prerequisites
+
+- Pidgeon CLI installed (`dotnet tool install -g pidgeon`)
+- Access to Mirth Connect's file writer output directories
+- A vendor profile for your message patterns (optional but recommended)
+
+## Step 1: Identify Mirth output directories
+
+Mirth Connect file writer destinations typically save to a configured directory. Common paths:
+
+```text
+/var/mirth/outbound/er-adt/
+/var/mirth/outbound/lab-results/
+/var/mirth/outbound/pharmacy/
+```
+
+Check your Mirth channel configuration for the exact paths.
+
+## Step 2: Create a vendor profile
+
+If you have sample messages from each interface, create a profile so Loft knows what "correct" looks like:
+
+```bash
+pidgeon config analyze --samples /var/mirth/outbound/er-adt/ --save mirth_er_adt
+pidgeon config analyze --samples /var/mirth/outbound/lab-results/ --save mirth_lab
+```
+
+## Step 3: Start monitoring via CLI
+
+Watch a single interface:
+
+```bash
+pidgeon loft watch \
+  --directory /var/mirth/outbound/er-adt/ \
+  --profile mirth_er_adt \
+  --file-pattern "*.hl7"
+```
+
+Loft monitors the directory, validates each new message as it arrives, and alerts on failures.
+
+## Step 4: Create interfaces via the Bridge API
+
+For production setups, create interfaces through the Loft desktop app's local Bridge sidecar so they persist and appear in the **Sources** panel. The Bridge runs on `localhost:5100` while the Loft app is open — there is no hosted API; every call below is local to the machine running Loft:
+
+```bash
+# Create ER ADT interface
+curl -X POST http://localhost:5100/api/loft/interfaces \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Mirth ER ADT",
+    "directoryPath": "/var/mirth/outbound/er-adt/",
+    "profileName": "mirth_er_adt",
+    "filePattern": "*.hl7"
+  }'
+
+# Create Lab Results interface
+curl -X POST http://localhost:5100/api/loft/interfaces \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Mirth Lab Results",
+    "directoryPath": "/var/mirth/outbound/lab-results/",
+    "profileName": "mirth_lab",
+    "filePattern": "*.hl7"
+  }'
+```
+
+## Step 5: Configure alerting
+
+Set up alerts in the Loft desktop app or via the Bridge API. Loft supports:
+
+| Channel | Supported |
+|---------|-----------|
+| Local log | Yes |
+| Webhook | Yes |
+| Email | Yes |
+| Slack | Yes |
+| PagerDuty | Yes |
+
+Alert payloads are redacted before they go out to any notification channel.
+
+## Step 6: Monitor metrics
+
+Check interface health through the local Bridge API:
+
+```bash
+# Get metrics for the last 24 hours
+curl http://localhost:5100/api/loft/interfaces/{id}/metrics?sinceHours=24
+```
+
+Or view the dashboard in the Loft desktop app's **Dashboards** panel.
+
+## Step 7: Trace patient journeys
+
+Track a specific patient's messages across interfaces:
+
+```bash
+curl "http://localhost:5100/api/loft/traces?patient_id=MRN12345&since=2026-02-01"
+```
+
+This returns every message processed for that patient across all monitored interfaces, with timestamps and validation results.
+
+## Live updates
+
+Subscribe to live updates via SignalR for dashboard integration, against the local Bridge:
+
+```javascript
+const connection = new HubConnectionBuilder()
+  .withUrl("http://localhost:5100/hubs/loft", {
+    accessTokenFactory: () => token
+  })
+  .build();
+
+connection.on("AlertReceived", (alert) => {
+  console.log("Alert:", alert.severity, alert.message);
+});
+
+await connection.start();
+await connection.invoke("SubscribeToAll");
+```
+
+## Next steps
+
+- [Configure alerting](/loft/alerting) for your notification channels
+- [Explore analytics](/api-reference/analytics) for trend analysis and reporting

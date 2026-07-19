@@ -1,0 +1,102 @@
+---
+title: Generate Realistic Test Data
+description: Go from zero to a full test dataset in under 5 minutes — HL7, FHIR, and NCPDP messages that match your vendor's real patterns.
+---
+
+## Prerequisites
+
+- Pidgeon CLI installed (`dotnet tool install -g pidgeon`)
+- Optionally: a vendor profile from real sample messages
+
+## Generate your first messages
+
+Start with a basic HL7 ADT admission message:
+
+```bash
+pidgeon generate ADT^A01 --count 5
+```
+
+This produces 5 synthetic ADT^A01 messages with realistic patient demographics, encounter data, and properly structured segments (MSH, EVN, PID, PV1).
+
+<Tip>Use `--seed 42` for reproducible output — the same seed always generates the same messages.</Tip>
+
+## Multi-standard generation
+
+Pidgeon auto-detects the standard from the message type. You can also specify it explicitly:
+
+<CodeGroup>
+```bash HL7 v2
+pidgeon generate ADT^A01 --count 3
+pidgeon generate ORU^R01 --count 3
+pidgeon generate ORM^O01 --count 3
+```
+
+```bash FHIR R4
+pidgeon generate Patient --count 3
+pidgeon generate Bundle --count 1
+```
+
+```bash NCPDP SCRIPT (requires the licensed ncpdp-script package)
+pidgeon generate NewRx --count 3
+pidgeon generate RxFill --count 3
+```
+</CodeGroup>
+
+<Note>HL7 v2 and FHIR R4 generation are free. NCPDP SCRIPT is closed by default — install the member-supplied standards package first (`pidgeon data install ncpdp-script --accept-license`, NCPDP membership required).</Note>
+
+## Use vendor profiles for realistic patterns
+
+Real-world messages vary by EHR vendor. Use vendor profiles to match specific patterns:
+
+<Steps>
+  <Step title="Analyze sample messages">
+    If you have real messages (de-identified), analyze them to create a profile:
+    ```bash
+    pidgeon config analyze --samples ./epic-er-samples --save epic_er
+    ```
+  </Step>
+  <Step title="Generate with the profile">
+    ```bash
+    pidgeon generate ADT^A01 --vendor epic_er --count 10
+    ```
+    Generated messages now match the field population patterns, segment ordering, and value sets from your samples.
+  </Step>
+  <Step title="Validate against the profile">
+    ```bash
+    pidgeon validate --file generated.hl7 --profile epic_er
+    ```
+  </Step>
+</Steps>
+
+## Batch generation with output files
+
+Save generated messages to files for use in integration testing:
+
+```bash
+# Single file with all messages
+pidgeon generate ADT^A01 --count 100 --output ./test-data/adt-batch.hl7
+
+# JSON format for FHIR
+pidgeon generate Patient --count 50 --format json --output ./test-data/patients.json
+
+# NDJSON for streaming
+pidgeon generate ORU^R01 --count 200 --format ndjson --output ./test-data/labs.ndjson
+```
+
+## Common message type combinations
+
+Here are typical combinations for integration testing scenarios:
+
+| Scenario | Message Types | Description |
+|----------|--------------|-------------|
+| ED Visit | ADT^A01, ORU^R01, ADT^A03 | Admit, lab results, discharge |
+| Pharmacy | ORM^O01, RDE^O11 | Order, dispense |
+| Lab Order | ORM^O01, ORU^R01 | Order, result |
+| Immunization | VXU^V04 | Vaccination record |
+| Billing | DFT^P03 | Charge posting |
+
+## Next steps
+
+- [Validate your generated messages](/post/validation) to catch structural issues
+- [Build multi-step scenarios](/guides/build-test-scenarios) with the Workflow Wizard
+- [Set up vendor profiles](/post/vendor-profiles) for environment-specific testing

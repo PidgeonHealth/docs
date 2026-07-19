@@ -1,0 +1,647 @@
+{
+  "schemaVersion": 1,
+  "surface": "docs",
+  "targetRepository": "PidgeonHealth/docs",
+  "upstreamSha": "54adac98b9e9a0296e11f00cc99d7752c691bc0c",
+  "sourceRef": "origin/main",
+  "manifestSha256": "40f7b66a131b5b6765bcfaac35cabaa47d69cac0e04f444cc9a96849b0437b5c",
+  "projectorPath": "scripts/public-release/project.mjs",
+  "projectorSha256": "c96f26914304c9f5c369443192b943c8e197f5efb5fe2c2b73fcc923c97a7043",
+  "compositionManifestPath": null,
+  "compositionManifestSha256": null,
+  "secretScanner": "pidgeon-public-projection-v1",
+  "files": [
+    {
+      "path": "CONTRIBUTING.md",
+      "sha256": "1d0b18e31952f4896f892fe001ed68cffbc5a2eb9395fe114c3fedee08b2b5bc",
+      "size": 1507,
+      "mode": "100644",
+      "source": "config/public-projections/scaffold/shared/CONTRIBUTING.md",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "DCO",
+      "sha256": "f7ac75b443f4ca16b503241344b41aeff9503b0c30bedc2b119551d83cb0fa90",
+      "size": 1366,
+      "mode": "100644",
+      "source": "config/public-projections/scaffold/shared/DCO",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "aa1c351f9d2cbfc60989b46c56cd409babf7ab997da9a16150472bba1855f480",
+      "size": 15115,
+      "mode": "100644",
+      "source": "config/public-projections/scaffold/shared/LICENSE",
+      "license": "MPL-2.0"
+    },
+    {
+      "path": "NOTICE.md",
+      "sha256": "41607e809b218caab8f1318a3e7d6d4db269acb85cec5d14f76dce7afd163aa3",
+      "size": 1178,
+      "mode": "100644",
+      "source": "config/public-projections/scaffold/shared/NOTICE.md",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "README.md",
+      "sha256": "4767684d535bf35f593bde3fe10271dbc2f8f2c441d5e8e63af24d0a6d880a91",
+      "size": 1054,
+      "mode": "100644",
+      "source": "config/public-projections/scaffold/docs/README.md",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "SECURITY.md",
+      "sha256": "8a512507d3ea20d64014b4cc18d8ae0ff3d8e4dd1bc20b99ee1f59b1451f0034",
+      "size": 2648,
+      "mode": "100644",
+      "source": "config/public-projections/scaffold/shared/SECURITY.md",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "api-reference/admin.mdx",
+      "sha256": "eb8ca3d96398a536e9e927e33fb26abdec76c6f6347ceefbd106cf4486e2ef2d",
+      "size": 2936,
+      "mode": "100644",
+      "source": "pidgeon-docs/api-reference/admin.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "api-reference/ai-triage.mdx",
+      "sha256": "259190765c6762955b7df5e9fd2f1b312cecbf0285132417918972ccd6d37fe9",
+      "size": 1527,
+      "mode": "100644",
+      "source": "pidgeon-docs/api-reference/ai-triage.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "api-reference/analytics.mdx",
+      "sha256": "f74144415a2417a7bf4d213fc714270ef8ecd35d148639e606dc4c7ca29dccb7",
+      "size": 2902,
+      "mode": "100644",
+      "source": "pidgeon-docs/api-reference/analytics.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "api-reference/diff.mdx",
+      "sha256": "c9a599445fe065ca881a0d3dc6144e4ccabc124998b9335c3072c5b032d16f39",
+      "size": 1474,
+      "mode": "100644",
+      "source": "pidgeon-docs/api-reference/diff.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "api-reference/enterprise.mdx",
+      "sha256": "1950f9f16aa5da85d3e9ab167771771725b42a76aff217364d5ed11bd0c7312c",
+      "size": 3112,
+      "mode": "100644",
+      "source": "pidgeon-docs/api-reference/enterprise.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "api-reference/flock.mdx",
+      "sha256": "383e4e42669445c331901363ddd942062974ac05009ecf6b8de9c64af45b1635",
+      "size": 3210,
+      "mode": "100644",
+      "source": "pidgeon-docs/api-reference/flock.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "api-reference/generate.mdx",
+      "sha256": "7a205229e830408ef11521079b266499010d5ed1da5bfc81e7bb98c7ef5fcdd3",
+      "size": 1282,
+      "mode": "100644",
+      "source": "pidgeon-docs/api-reference/generate.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "api-reference/introduction.mdx",
+      "sha256": "c23b0b5c20d08dad0ea5efa8cdb0beef54e158e0d0d71d5f28584be0387728ff",
+      "size": 3455,
+      "mode": "100644",
+      "source": "pidgeon-docs/api-reference/introduction.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "api-reference/loft-alerts.mdx",
+      "sha256": "b02c1dd6fe1414bedca87fe288103be3bce663a0a68a17db79a052cbe2bbe464",
+      "size": 1087,
+      "mode": "100644",
+      "source": "pidgeon-docs/api-reference/loft-alerts.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "api-reference/loft-interfaces.mdx",
+      "sha256": "138b7db2663e685e10df9f89f23d6f9dcef025e6cab40c03b50930849dc9e9c0",
+      "size": 2129,
+      "mode": "100644",
+      "source": "pidgeon-docs/api-reference/loft-interfaces.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "api-reference/loft-status.mdx",
+      "sha256": "40aeaf1cc98c104dbdf2708fd71678b32a64d6f76acbf8e83484c785d4d20a2e",
+      "size": 647,
+      "mode": "100644",
+      "source": "pidgeon-docs/api-reference/loft-status.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "api-reference/signalr.mdx",
+      "sha256": "0a265c7d78342d05e39eeb2351b5545940f2756e041767fa5d38e1e289b134b2",
+      "size": 2602,
+      "mode": "100644",
+      "source": "pidgeon-docs/api-reference/signalr.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "api-reference/traces.mdx",
+      "sha256": "0ff121fe88676e5c494a6c04c9c631927871208cec9c8eaff1cedfd8cc6f5727",
+      "size": 2382,
+      "mode": "100644",
+      "source": "pidgeon-docs/api-reference/traces.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "api-reference/validate.mdx",
+      "sha256": "10d753678a8b908b520506d1ef6caf90ad55058893e10b6bbd9cd54bc561f99b",
+      "size": 1652,
+      "mode": "100644",
+      "source": "pidgeon-docs/api-reference/validate.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "cli/config-commands.mdx",
+      "sha256": "596434fa917b5b5c67599d82e9ec59ffdcf8d6e6115605cfa3332a09140c4da8",
+      "size": 2182,
+      "mode": "100644",
+      "source": "pidgeon-docs/cli/config-commands.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "cli/conform-commands.mdx",
+      "sha256": "8c4aa821f091001c8e106fccb42758b4c64aca7a70bf7ddaeb954946108de271",
+      "size": 3833,
+      "mode": "100644",
+      "source": "pidgeon-docs/cli/conform-commands.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "cli/data-commands.mdx",
+      "sha256": "ea4adc14c9f195ae51cf7544d95c9e3e32b30433bbef2ce3a63326198f515680",
+      "size": 1959,
+      "mode": "100644",
+      "source": "pidgeon-docs/cli/data-commands.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "cli/flock-commands.mdx",
+      "sha256": "0dbf8f73a4a79e1f382b6200ee684167348fab9773dc49c84c69fcd8d7e8eb09",
+      "size": 2586,
+      "mode": "100644",
+      "source": "pidgeon-docs/cli/flock-commands.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "cli/global-options.mdx",
+      "sha256": "c70b2b98d87c48a829008642a56a26b6bb4218d47febebf8ddfba4907e8e98b7",
+      "size": 1908,
+      "mode": "100644",
+      "source": "pidgeon-docs/cli/global-options.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "cli/loft-commands.mdx",
+      "sha256": "a163dda3d0bcf2e802e8ae512671477deed5536fa9b9586019d9652dc0360471",
+      "size": 1980,
+      "mode": "100644",
+      "source": "pidgeon-docs/cli/loft-commands.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "cli/migrate-commands.mdx",
+      "sha256": "df00e4c61f4b54d2fd20ec49c589232740fb27110bd97a329388db620c247fd8",
+      "size": 4040,
+      "mode": "100644",
+      "source": "pidgeon-docs/cli/migrate-commands.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "cli/post-commands.mdx",
+      "sha256": "fd9c8c58c637283f549567b889dde9a84dc03ba0d0a4ed88f50634ccde2f6d61",
+      "size": 5141,
+      "mode": "100644",
+      "source": "pidgeon-docs/cli/post-commands.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "docs.json",
+      "sha256": "de68861c2ab24e688b309ccac4aed3c41a7025dea09c3ec08fe876229146b32f",
+      "size": 6004,
+      "mode": "100644",
+      "source": "pidgeon-docs/docs.json",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "favicon.ico",
+      "sha256": "4c41cd09609288211d34134c2ed553caf24a6612bee6a348c398f7524159d20e",
+      "size": 44089,
+      "mode": "100644",
+      "source": "pidgeon-docs/favicon.ico",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "flock/output-formats.mdx",
+      "sha256": "dc0b17fd155e62c091f826ec98a0502af70935639003b2b4a2530bd1166e4559",
+      "size": 2279,
+      "mode": "100644",
+      "source": "pidgeon-docs/flock/output-formats.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "flock/overview.mdx",
+      "sha256": "9797dd84c4c16a89100259efaadf644d838a935d61cc0ad28417f112ef55c330",
+      "size": 1767,
+      "mode": "100644",
+      "source": "pidgeon-docs/flock/overview.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "flock/population-generation.mdx",
+      "sha256": "cc0c4e20500efb09e25f6e6cbda06f7d6e3949dd828c433a63a1f10725695632",
+      "size": 1668,
+      "mode": "100644",
+      "source": "pidgeon-docs/flock/population-generation.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "flock/schema-intelligence.mdx",
+      "sha256": "047b3bc23da073368601223e35b28cc04c2b08aa04461ae2772450a782049373",
+      "size": 1355,
+      "mode": "100644",
+      "source": "pidgeon-docs/flock/schema-intelligence.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "getting-started/account.mdx",
+      "sha256": "bae24147256fc56dd965daa8b7760f6e142edc5a80daa967d39dc85aa05f647a",
+      "size": 3627,
+      "mode": "100644",
+      "source": "pidgeon-docs/getting-started/account.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "getting-started/flock.mdx",
+      "sha256": "79ae15fbfb40b79ebdde71db6f4fb61ae3342619c05a16ab8238060b3c322c79",
+      "size": 3265,
+      "mode": "100644",
+      "source": "pidgeon-docs/getting-started/flock.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "getting-started/install-macos.mdx",
+      "sha256": "67e555f4163ce77e56d9a2ec2b5ee50648239dd7e700f0f4b10bc439d2a6a546",
+      "size": 2736,
+      "mode": "100644",
+      "source": "pidgeon-docs/getting-started/install-macos.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "getting-started/install-windows.mdx",
+      "sha256": "99a34cbab6c9005736a64c9aa27721fd15fe0bc8dadcd996178eb7496b51e465",
+      "size": 4622,
+      "mode": "100644",
+      "source": "pidgeon-docs/getting-started/install-windows.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "getting-started/introduction.mdx",
+      "sha256": "fc8e691fc35c8c6f611c114323ccd01551b1c8395d4f5e52e6b19c52aff5ec60",
+      "size": 4593,
+      "mode": "100644",
+      "source": "pidgeon-docs/getting-started/introduction.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "getting-started/launcher.mdx",
+      "sha256": "1c3b4879e100687060525f93a4db55b129fdf174ad15fefabf94f1f1b6eb049b",
+      "size": 3002,
+      "mode": "100644",
+      "source": "pidgeon-docs/getting-started/launcher.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "getting-started/loft.mdx",
+      "sha256": "25157ec00514f783fc2f636e047601e60af13c31698ddc6ab0c21f269368b32d",
+      "size": 3524,
+      "mode": "100644",
+      "source": "pidgeon-docs/getting-started/loft.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "getting-started/migrate.mdx",
+      "sha256": "f4e2f1929f435d5101a30f8f9663bb0ebeaeed907e773dc08d0b42068597b237",
+      "size": 2909,
+      "mode": "100644",
+      "source": "pidgeon-docs/getting-started/migrate.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "getting-started/post.mdx",
+      "sha256": "fcce67d095069f2b3a6bcdf063e505e1b80da581799371b22c2011fc0fe07a98",
+      "size": 3747,
+      "mode": "100644",
+      "source": "pidgeon-docs/getting-started/post.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "getting-started/quickstart-cli.mdx",
+      "sha256": "4bcf725d6bb40e7836a86a835d337f58e39703f10fca5eec1ca41eda5b80bcd5",
+      "size": 4023,
+      "mode": "100644",
+      "source": "pidgeon-docs/getting-started/quickstart-cli.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "getting-started/quickstart-desktop.mdx",
+      "sha256": "b3c64ecca11a1fb2f4dc2e9560f1073236e861910409376fa56857683bf19b34",
+      "size": 2761,
+      "mode": "100644",
+      "source": "pidgeon-docs/getting-started/quickstart-desktop.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "guides/build-test-scenarios.mdx",
+      "sha256": "4a0f7ae5cffd74c3c19a59b96ed85a23f41d389e25a4bd2ae0c7b7c840db50cd",
+      "size": 3473,
+      "mode": "100644",
+      "source": "pidgeon-docs/guides/build-test-scenarios.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "guides/de-identify-real-messages.mdx",
+      "sha256": "72d87600ad76daf1e91e5f52a5e93a09332fd481862c1a29d512bc1f47db22f0",
+      "size": 3710,
+      "mode": "100644",
+      "source": "pidgeon-docs/guides/de-identify-real-messages.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "guides/generate-realistic-test-data.mdx",
+      "sha256": "e296c0d6e5c615517d479999e803dca1bd014ac6398890cae27d6afdaf367c2d",
+      "size": 3350,
+      "mode": "100644",
+      "source": "pidgeon-docs/guides/generate-realistic-test-data.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "guides/monitor-mirth-with-loft.mdx",
+      "sha256": "20c2067c0055d1237dede84c878dd53064ecfab6ad8c0cc75123acaee4039f86",
+      "size": 3751,
+      "mode": "100644",
+      "source": "pidgeon-docs/guides/monitor-mirth-with-loft.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "guides/seed-database-with-flock.mdx",
+      "sha256": "0dd7139e95d0cf96b411378de6d4b16b7d2d018199bbe754f333a1e4ce6562ae",
+      "size": 3854,
+      "mode": "100644",
+      "source": "pidgeon-docs/guides/seed-database-with-flock.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "images/brand/icons/flock.png",
+      "sha256": "501565fccaad503595129b39f6b0c228ed521759b768e7f084df33220e728d83",
+      "size": 12922,
+      "mode": "100644",
+      "source": "pidgeon-docs/images/brand/icons/flock.png",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "images/brand/icons/loft.png",
+      "sha256": "b28d0398438e52cd78e854008bec91b0c9c81687e7bf3277f3f00d7c089949e7",
+      "size": 6872,
+      "mode": "100644",
+      "source": "pidgeon-docs/images/brand/icons/loft.png",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "images/brand/icons/migrate.png",
+      "sha256": "67bbcf6e60d2f6fecf982d9f1c41bcd0af3f8bf13ba0bef3a4c5cb4e135e0d56",
+      "size": 6932,
+      "mode": "100644",
+      "source": "pidgeon-docs/images/brand/icons/migrate.png",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "images/brand/icons/pidgeon.png",
+      "sha256": "a846572f785c076331480b53b3ca3e01ed890d279e238141e870fe62760f027d",
+      "size": 13836,
+      "mode": "100644",
+      "source": "pidgeon-docs/images/brand/icons/pidgeon.png",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "images/brand/icons/post.png",
+      "sha256": "c02f57a499eefee3f1c8cd00167756012c073ccd1670d830acb59ade96644e6d",
+      "size": 9130,
+      "mode": "100644",
+      "source": "pidgeon-docs/images/brand/icons/post.png",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "images/brand/wordmarks/flock.png",
+      "sha256": "b1447ded08db93a3449f74aa6a72f46fd61d8be646646cd41aa84e45fb18ba27",
+      "size": 17738,
+      "mode": "100644",
+      "source": "pidgeon-docs/images/brand/wordmarks/flock.png",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "images/brand/wordmarks/loft.png",
+      "sha256": "8c29289ee712656bbf2a0cbc0675964289326b79ce22ed39da57e9b9ea16526b",
+      "size": 11227,
+      "mode": "100644",
+      "source": "pidgeon-docs/images/brand/wordmarks/loft.png",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "images/brand/wordmarks/migrate.png",
+      "sha256": "2dca6d0362e2f7972f780d5ec592fbbac2dcfe8ff613863fa82dbe61c9acbcea",
+      "size": 22701,
+      "mode": "100644",
+      "source": "pidgeon-docs/images/brand/wordmarks/migrate.png",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "images/brand/wordmarks/pidgeon.png",
+      "sha256": "c25da61391b154daefe1c0f97101598a716323b9b264dc7a8d519cc36e7be435",
+      "size": 22791,
+      "mode": "100644",
+      "source": "pidgeon-docs/images/brand/wordmarks/pidgeon.png",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "images/brand/wordmarks/post.png",
+      "sha256": "de1ffe74952d4f5ec64383d9d9b1373cdc488cde24822da9096fa60117b57acb",
+      "size": 17648,
+      "mode": "100644",
+      "source": "pidgeon-docs/images/brand/wordmarks/post.png",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "index.mdx",
+      "sha256": "d79c9751b5fe3d7c4e826ff15b82b944d890cb52dc6799a1e224fcac71ff05d1",
+      "size": 2156,
+      "mode": "100644",
+      "source": "pidgeon-docs/index.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "loft/alerting.mdx",
+      "sha256": "618bd9683c04b2ea184dd12986052b11d1ff9642a4e3aad5ca8d31a9368df331",
+      "size": 2107,
+      "mode": "100644",
+      "source": "pidgeon-docs/loft/alerting.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "loft/interface-monitoring.mdx",
+      "sha256": "38d0bd0dde41c89869ed0801c982b80e081c67408a7087a70298b04768f3b02f",
+      "size": 1602,
+      "mode": "100644",
+      "source": "pidgeon-docs/loft/interface-monitoring.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "loft/overview.mdx",
+      "sha256": "4383bc469dc526a8c9ea318de0e637702a82f9f90d4d412095354704d67f585a",
+      "size": 1791,
+      "mode": "100644",
+      "source": "pidgeon-docs/loft/overview.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "logo/pidgeon.png",
+      "sha256": "a4168f0352fc6cbf5abbb281c4fcf804faf4509806851c51d2463606693ac306",
+      "size": 82604,
+      "mode": "100644",
+      "source": "pidgeon-docs/logo/pidgeon.png",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "mcp/overview.mdx",
+      "sha256": "d54d71600211578b9b8b39d97fa76a7aa357a80790b33e1c1db0b0518ff041c3",
+      "size": 5931,
+      "mode": "100644",
+      "source": "pidgeon-docs/mcp/overview.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "mcp/tools.mdx",
+      "sha256": "fa84e5db95960272ee17e7e202f6f72f436d2446d93705f2e484a4ed0287cbe1",
+      "size": 4449,
+      "mode": "100644",
+      "source": "pidgeon-docs/mcp/tools.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "post/ai-triage.mdx",
+      "sha256": "4bdb6f3fd8703efa50ee7d29d40418f765bd15146ce3cd3265257304f87f9935",
+      "size": 1797,
+      "mode": "100644",
+      "source": "pidgeon-docs/post/ai-triage.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "post/datasets.mdx",
+      "sha256": "32ad047d63361fadd3599e0d1c4361040d12677dcb5166399c8dd5dcef3447d0",
+      "size": 1623,
+      "mode": "100644",
+      "source": "pidgeon-docs/post/datasets.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "post/de-identification.mdx",
+      "sha256": "cbdf04dfa30bcca1d550bc71735ccb739dac6669302b848cee5052e9c5ad663e",
+      "size": 3642,
+      "mode": "100644",
+      "source": "pidgeon-docs/post/de-identification.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "post/message-generation.mdx",
+      "sha256": "51d0ce490dac819b5825c57b69f955187fa5a7563d3f1c44f0777490223a6d92",
+      "size": 7837,
+      "mode": "100644",
+      "source": "pidgeon-docs/post/message-generation.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "post/validation.mdx",
+      "sha256": "54faf41c3d3927a1b8c75989c80a3609563562900f9080f3e7524b68846c28cb",
+      "size": 3929,
+      "mode": "100644",
+      "source": "pidgeon-docs/post/validation.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "post/vendor-profiles.mdx",
+      "sha256": "f60b2cdfe93c1e87d1dbaca33a56c07b9f35269a18a8687f8fd1083dffdec269",
+      "size": 1824,
+      "mode": "100644",
+      "source": "pidgeon-docs/post/vendor-profiles.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "post/workflow-wizard.mdx",
+      "sha256": "281ba2e608af0fa6c017f27f1f3a6b6086b02570ee9289490ee19f28669611d2",
+      "size": 1597,
+      "mode": "100644",
+      "source": "pidgeon-docs/post/workflow-wizard.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "snippets/api-response-format.mdx",
+      "sha256": "27013372a9452b9c0fb3e63bd12b4c4b577eb20bf3dedfb1c9dedfc80418dcbf",
+      "size": 327,
+      "mode": "100644",
+      "source": "pidgeon-docs/snippets/api-response-format.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "snippets/auth-header.mdx",
+      "sha256": "54bc70a68db79787cf7532245fcd5a0252dd6b70bb902d2bf151a7629d461110",
+      "size": 561,
+      "mode": "100644",
+      "source": "pidgeon-docs/snippets/auth-header.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "support/faq.mdx",
+      "sha256": "742ef45f4598d8f1bb1751350c7cf61e3892854b0b7292d730737e2bc705fb8c",
+      "size": 4202,
+      "mode": "100644",
+      "source": "pidgeon-docs/support/faq.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "support/known-issues.mdx",
+      "sha256": "6480991e9787f4baebba1b6ebaab752ea9793612e1c78cd2b95aed55e907b7b7",
+      "size": 1769,
+      "mode": "100644",
+      "source": "pidgeon-docs/support/known-issues.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    },
+    {
+      "path": "support/troubleshooting.mdx",
+      "sha256": "cc752eb2831a018d0c2a3ec160ca9fd306690a32c54c31c7989415b1697fe343",
+      "size": 6273,
+      "mode": "100644",
+      "source": "pidgeon-docs/support/troubleshooting.mdx",
+      "license": "Pidgeon-Public-Documentation"
+    }
+  ]
+}

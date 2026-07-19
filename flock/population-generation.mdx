@@ -1,0 +1,50 @@
+---
+title: Population Generation
+description: Generate patient populations that look like your real data — age distributions, comorbidity correlations, temporal coherence — without a single real patient.
+---
+
+Demographics from US Census, condition correlations from CDC WONDER and NHANES, temporal ordering enforced across all clinical events.
+
+## Demographics
+
+Population demographics are drawn from US Census data:
+- **Age distribution** — Matches census age brackets for the selected geographic region
+- **Gender ratio** — Reflects actual population ratios
+- **Race/ethnicity** — Census-derived distributions
+- **Geographic distribution** — ZIP code and county-level population data
+
+## Comorbidity Correlation
+
+Conditions are correlated realistically:
+- Diabetes → Hypertension (70% co-occurrence)
+- Obesity → Sleep apnea, Type 2 diabetes
+- Smoking → COPD, lung cancer
+- Age → Increased chronic conditions
+
+## Temporal Coherence
+
+All temporal relationships are maintained:
+- Admission timestamps precede discharge timestamps
+- Lab orders precede lab results
+- Medication start dates precede end dates
+- Patient age is consistent with date of birth
+
+## Family Linkage
+
+Realistic household structures:
+- Spouse relationships with shared addresses
+- Parent-child relationships with age-appropriate gaps
+- Emergency contact cross-references
+
+## CLI Usage
+
+```bash
+# Generate 1000 patients
+pidgeon flock generate --count 1000 --format sql --geographic-focus us
+
+# Reproducible generation
+pidgeon flock generate --count 500 --format csv --seed 42
+
+# Generate as FHIR bundles
+pidgeon flock generate --count 200 --format fhir --output ./fhir-data/
+```

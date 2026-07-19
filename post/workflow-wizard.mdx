@@ -1,0 +1,52 @@
+---
+title: Workflow Wizard
+description: Define admit-to-discharge or order-to-result test scenarios in YAML and run them repeatedly. No more rebuilding test sequences by hand.
+---
+
+<Note>Pro feature — requires a Pidgeon account with Post Pro entitlement, in the desktop app or the CLI.</Note>
+
+Define multi-step clinical scenarios in YAML — admission, orders, results, discharge — with relative timing between steps. Patient data stays consistent across every message in the sequence.
+
+## Interactive Mode
+
+```bash
+pidgeon workflow wizard
+```
+
+Guides you through naming a scenario, adding message steps with timing, configuring patient demographics, and saving as YAML.
+
+## Scenario Files
+
+```yaml
+name: Emergency Department Visit
+description: Full ED workflow from admission through discharge
+steps:
+  - type: ADT^A01
+    description: Patient admission
+    delay: 0
+  - type: ORM^O01
+    description: Stat lab order
+    delay: 5m
+  - type: ORU^R01
+    description: Lab results returned
+    delay: 45m
+  - type: RDE^O11
+    description: Medication dispensed
+    delay: 1h
+  - type: ADT^A03
+    description: Patient discharged
+    delay: 4h
+```
+
+## Running Scenarios
+
+```bash
+pidgeon workflow run ed-visit.yaml --output ./results
+pidgeon workflow run ed-visit.yaml --output ./results --vendor epic_er --seed 42
+```
+
+Output includes one file per step with consistent patient data and a `scenario_summary.json` with run metadata.
+
+## Timing
+
+Delays are relative to scenario start. Supported units: `m` (minutes), `h` (hours), `d` (days). All timestamps across messages are temporally coherent.

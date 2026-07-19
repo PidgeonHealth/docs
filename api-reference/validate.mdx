@@ -1,0 +1,72 @@
+---
+title: Validate Messages
+description: Validate healthcare messages against standard specifications via the Bridge API.
+---
+
+## POST /api/validate
+
+Validate a healthcare message. **Public** — no authentication required.
+
+### Request Body
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `messageContent` | string | Required | Raw message content |
+| `standard` | string | Auto-detect | `hl7`, `fhir`, `ncpdp` |
+| `mode` | string | `"strict"` | `strict` or `compatibility` |
+
+### Example
+
+```bash curl
+curl -X POST http://localhost:5101/api/validate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messageContent": "MSH|^~\\&|SENDER|FAC|RECV|DEST|20260222||ADT^A01|12345|P|2.3\rPID|1||MRN001^^^MRN||DOE^JOHN||19800101|M\rPV1|1|I|ER^101^A",
+    "standard": "hl7",
+    "mode": "strict"
+  }'
+```
+
+### Valid Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "isValid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "field": "PID.11",
+        "code": "RECOMMENDED_FIELD_EMPTY",
+        "message": "Patient address (PID.11) is recommended for ADT messages",
+        "severity": "warning"
+      }
+    ]
+  },
+  "error": null
+}
+```
+
+### Invalid Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "isValid": false,
+    "errors": [
+      {
+        "field": "PID.5",
+        "code": "REQUIRED_FIELD_MISSING",
+        "message": "Patient name (PID.5) is required but missing",
+        "severity": "error"
+      }
+    ],
+    "warnings": []
+  },
+  "error": null
+}
+```
+
+<Note>The outer `success` field indicates whether the API call succeeded. Check `data.isValid` for the validation outcome.</Note>

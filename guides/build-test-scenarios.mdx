@@ -1,0 +1,116 @@
+---
+title: Build Test Scenarios with Workflow Wizard
+description: Define admit-to-discharge test sequences once and run them repeatedly. Stop rebuilding multi-step test scenarios from scratch for every go-live.
+---
+
+<Note>The Workflow Wizard is a Pro feature, available in the Post desktop app and the CLI with a Post Pro entitlement.</Note>
+
+Testing a single ADT message doesn't prove your interface works. Real go-lives need admit → lab order → result → discharge sequences — and you need to run them repeatedly as you iterate. Define the scenario once in YAML, run it as many times as you need.
+
+## Interactive wizard
+
+Launch the interactive wizard to build a scenario step by step:
+
+```bash
+pidgeon workflow wizard
+```
+
+The wizard guides you through:
+1. Naming your scenario
+2. Adding message steps (type, delay, dependencies)
+3. Configuring vendor profiles per step
+4. Setting validation checkpoints
+5. Saving as a reusable YAML file
+
+## YAML scenario files
+
+Define scenarios as YAML for version control and CI/CD integration:
+
+```yaml
+name: Emergency Department Visit
+description: Complete ED workflow from admission to discharge
+vendor: epic_er
+steps:
+  - type: ADT^A01
+    description: Patient arrives at ED
+    delay: 0
+
+  - type: ORM^O01
+    description: Stat lab order
+    delay: 5m
+
+  - type: ORU^R01
+    description: Lab results returned
+    delay: 45m
+
+  - type: RDE^O11
+    description: Medication dispensed
+    delay: 1h
+
+  - type: ADT^A03
+    description: Patient discharged
+    delay: 4h
+```
+
+## Run a scenario
+
+Execute a scenario file and save the generated messages:
+
+```bash
+pidgeon workflow run ed-visit.yaml --output ./test-results
+```
+
+This generates each message in sequence with the specified delays and saves them to the output directory. Timestamps are coherent across all messages — the lab order timestamp is after admission, results after the order, and so on.
+
+## Validation checkpoints
+
+Add validation rules to verify each step:
+
+```yaml
+name: Lab Order to Result
+steps:
+  - type: ORM^O01
+    description: Lab order
+    delay: 0
+    validate:
+      - segment: OBR
+        field: OBR.4
+        contains: "CBC"
+
+  - type: ORU^R01
+    description: Lab result
+    delay: 30m
+    validate:
+      - segment: OBX
+        field: OBX.3
+        contains: "WBC"
+      - segment: OBX
+        field: OBX.5
+        not_empty: true
+```
+
+## Common scenario templates
+
+| Scenario | Steps | Use Case |
+|----------|-------|----------|
+| ED Visit | ADT^A01 → ORM → ORU → ADT^A03 | Emergency department flow |
+| Inpatient Stay | ADT^A01 → ORM → ORU → RDE → DFT → ADT^A03 | Full hospital stay |
+| Lab Only | ORM^O01 → ORU^R01 | Lab order-to-result |
+| Transfer | ADT^A01 → ADT^A02 → ADT^A03 | Patient transfer between units |
+| Pharmacy | ORM^O01 → RDE^O11 | Prescription order to dispense |
+
+## Run in Post
+
+The Post desktop app's Workflow Wizard provides a visual builder where you can:
+- Drag and drop message steps
+- Set delays with a timeline view
+- Preview generated messages at each step
+- Export the workflow as a YAML file for CLI use
+
+[Install Post](/getting-started/post) and sign in with a Post Pro entitlement to try the visual builder.
+
+## Next steps
+
+- [Generate test data](/guides/generate-realistic-test-data) for individual message types
+- [Monitor your interfaces](/guides/monitor-mirth-with-loft) with Loft while running scenarios
+- [Compare environments](/post/validation) using diff to verify test results

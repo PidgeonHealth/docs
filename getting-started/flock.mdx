@@ -1,0 +1,53 @@
+---
+title: Get started with Flock
+description: Connect a database schema, generate an FK-safe synthetic population, and seed your test database. No PHI ever exists.
+---
+
+Flock generates synthetic test data from your database schema: relationally consistent records that your integration engine and your database will both accept, as native HL7 v2, FHIR bundles, and FK-ordered SQL INSERTs. The data is synthetic from scratch; there is no production data to mask and no PHI at any point in the pipeline.
+
+Flock requires a Pidgeon account sign-in.
+
+{/* BETA-GATE(Stage 4): subscription/entitlement purchase flow goes public after the Stage 4 commerce gate. Until then, do not add purchase instructions here. */}
+
+## Before you start
+
+- [Install Flock](/getting-started/install-windows) (or on [macOS](/getting-started/install-macos)) and sign in.
+- Flock runs its engine in a local Bridge sidecar on `localhost:5102`. Schema introspection, learning, generation, and seeding all run locally.
+
+## One loop: schema in, seeded database out
+
+<Steps>
+  <Step title="Connect a schema">
+    From the first-run screen, choose **Connect a schema**. Point Flock at a SQL DDL file or a live database connection. Flock reads tables, columns, and foreign-key relationships; that graph is what keeps the generated data FK-safe.
+  </Step>
+
+  <Step title="Configure the population">
+    Open **Population** (under **Generate**). Pick a population size tier, set the age range and sex ratio, and optionally add edge-case profiles (Pediatric, Geriatric, Oncology, Maternal). The panel shows the generation limits for your plan before you run anything.
+  </Step>
+
+  <Step title="Generate">
+    Run the generation. Records are produced in dependency order, so every foreign key resolves. Clinical values are grounded in public epidemiology sources (CDC, NHANES, Census), which is why the cohort's condition mix looks like a real population instead of uniform noise.
+  </Step>
+
+  <Step title="Check the cohort">
+    Open **Analytics** (under **Learn**) to see the distribution of the generated cohort, and **Learn** for the epidemiological references behind it.
+  </Step>
+
+  <Step title="Seed or export">
+    Open **Seed Database** (under **Generate**). Export the population as FK-ordered SQL INSERTs, HL7 v2 messages, or FHIR bundles, or seed a target database directly.
+  </Step>
+</Steps>
+
+## When something fails
+
+| What you see | What it means | Next action |
+|---|---|---|
+| The generate button is disabled and the status pill shows **Offline** | The local Bridge sidecar isn't reachable. "Bridge sidecar is not reachable. Generation and seeding need the local Bridge." | Open **Settings → Connection** and retry. The tab shows the port (`5102`) and live status. |
+| Schema import reports an error | Flock couldn't parse part of the DDL or introspect the connection | The error names what failed. Your input is preserved; fix the named portion and re-run. |
+| Generation stops at a plan limit | You hit the record cap shown in the Population panel | Reduce the population size, or check your plan in the account portal. |
+
+## Next steps
+
+- [Flock overview](/flock/overview)
+- [Output formats](/flock/output-formats)
+- [Seed a database with Flock](/guides/seed-database-with-flock)

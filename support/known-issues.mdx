@@ -1,0 +1,26 @@
+---
+title: Known issues
+description: Current limitations in the Pidgeon beta, each with a workaround or a status.
+---
+
+Current beta release: `0.2.0-beta.1`. This page tracks known limitations in the beta. If you hit something that isn't listed, email [support@pidgeon.health](mailto:support@pidgeon.health).
+
+{/* Beta limitation entries land here as app-nucleus QA and release rehearsal surface them. Keep one row per issue: Surface / Issue / Workaround / Status. */}
+
+## Install and delivery
+
+| Surface | Issue | Workaround | Status |
+|---|---|---|---|
+| Windows | SmartScreen may warn on early downloads even though installers are signed by Pattern Engine LLC | Verify the signature (Properties → Digital Signatures), then More info → Run anyway. Details: [Install on Windows](/getting-started/install-windows) | Expected to fade as publisher reputation accrues |
+| All apps | Automatic update checks are not yet enabled in beta builds | Watch the downloads catalog for new versions and install over the existing app | Update channel is planned beta work |
+
+## Apps
+
+| Surface | Issue | Workaround | Status |
+|---|---|---|---|
+| Loft | Desktop app only; opening the UI in a browser tab shows a desktop-only notice | Use the installed desktop app | By design for the beta |
+| Migrate | Sidebar entries marked "Soon" (Export Wizard, Mappings, History) are not active | The Dashboard runs the full preflight, export, reconcile, and resume loop | Planned |
+
+## Reporting
+
+For what each app shows on failure and the next action to take, see [Troubleshooting](/support/troubleshooting). When reporting an issue, include: app name and version (status bar), OS and version, whether the Bridge status pill showed online or offline, and the steps that led to the behavior.

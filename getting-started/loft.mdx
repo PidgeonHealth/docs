@@ -1,0 +1,56 @@
+---
+title: Get started with Loft
+description: Configure a watched source, catch a content-level failure, review it with a suggested fix, and export the evidence. Message content never leaves your network.
+---
+
+Loft watches the messages flowing through your interfaces and catches what engine dashboards miss: a silently malformed med order, a misrouted lab result. Every catch lands in the **Review Queue** with a suggested fix for a human to accept or reject. Loft never changes a message on its own.
+
+Loft is a desktop app and requires a Pidgeon account sign-in. Watched sources are processed locally; message content never leaves your network, and alert payloads are redacted before they go out to a notification channel.
+
+## Before you start
+
+- [Install Loft](/getting-started/install-windows) (or on [macOS](/getting-started/install-macos)) and sign in.
+- Loft runs its engine in a local Bridge sidecar on `localhost:5100`. The desktop app can start it for you.
+- Have a directory your integration engine writes messages to (a Mirth pickup/drop folder works), or a folder of sample `.hl7` files to try it on.
+
+## One loop: watch, catch, review, prove
+
+<Steps>
+  <Step title="Configure a watched source">
+    Open **Sources** (under **Monitor**). Add the directory to watch, a file pattern (for example `*.hl7`), and the vendor profile to validate against.
+
+    CLI equivalent:
+    ```bash
+    pidgeon loft watch --directory /var/mirth/outbound/er --profile epic_er
+    ```
+  </Step>
+
+  <Step title="Let messages flow">
+    As files land in the watched directory, Loft picks them up, parses them, and validates each against the vendor profile. **Dashboards** shows the fleet overview; **Alerts** shows the live alert feed as failures are flagged.
+
+    To try it without a live feed, drop a few sample messages into the watched directory. Generate broken ones with Post if you want a guaranteed catch.
+  </Step>
+
+  <Step title="Review the catch">
+    Open **Review Queue** (under **Operate**). Each flagged message shows what failed, where, and a suggested fix. Accept or reject the suggestion: a human makes the call, and the decision is logged.
+  </Step>
+
+  <Step title="Export the evidence">
+    Open **Evidence** (under **Workspace**) to export the audit trail of catches, reviews, and outcomes as a report you can hand to your team or attach to an incident.
+  </Step>
+</Steps>
+
+## When something fails
+
+| What you see | What it means | Next action |
+|---|---|---|
+| "Loft watches your channels through the local Bridge service. It isn't running or isn't reachable right now." | The local Bridge sidecar is down; nothing is being watched | In the desktop app, use **Start Bridge**; or check **Settings → Connection** (port `5100`) and retry. |
+| A source shows no pickups | The watched directory is unreachable, empty, or the file pattern doesn't match | Check the path and pattern in **Sources**; confirm the integration engine is actually writing files there. |
+| A message fails to parse at all | The file isn't a readable message in the expected standard | It is still flagged and queued; inspect it in **Message Inspector** (under **Investigate**). |
+| Alerts aren't arriving in your channel | The alert provider is disabled or misconfigured | Check **Alerts** and the provider configuration; flagged messages still accumulate in the Review Queue regardless. |
+
+## Next steps
+
+- [Loft overview](/loft/overview)
+- [Alerting channels](/loft/alerting)
+- [Monitor Mirth with Loft](/guides/monitor-mirth-with-loft)

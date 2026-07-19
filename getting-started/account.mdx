@@ -1,0 +1,53 @@
+---
+title: Your Pidgeon account
+description: Sign in at account.pidgeon.health to manage your profile, see your plan and entitlements, and reach the downloads catalog.
+---
+
+Your Pidgeon account lives at [account.pidgeon.health](https://account.pidgeon.health). One sign-in covers every product: it's where you manage your profile, see which plan and entitlements you hold, and reach the downloads catalog. Post's core loop works without an account; Flock, Loft, Migrate, and the Pidgeon launcher sign in with this account.
+
+## One loop: sign in, check your plan, get the apps
+
+<Steps>
+  <Step title="Sign in or create an account">
+    Open [account.pidgeon.health](https://account.pidgeon.health). Four ways in:
+
+    - **Email and password**
+    - **Magic link** — enter your email, click the link it sends, no password
+    - **Google**
+    - **Microsoft**
+
+    A logged-out visit to any account page sends you here first, then returns you where you were headed.
+  </Step>
+
+  <Step title="See your plan and entitlements">
+    The account view shows the plan you're on and the entitlements it carries per product, so you know what each app includes when you sign in there.
+
+    {/* BETA-GATE(Stage 4): subscribe + live entitlement state ride on the Stripe live smoke. Until that gate clears, describe the plan view as read-only and do not claim self-serve purchase. */}
+    Self-serve subscription and billing management arrive with the paid beta. Until then the plan view is read-only; to change a plan, email [support@pidgeon.health](mailto:support@pidgeon.health).
+  </Step>
+
+  <Step title="Open the downloads catalog">
+    The downloads catalog is public — you can reach it signed out. It lists each app, its current version, and a SHA-256 checksum per file.
+
+    {/* BETA-GATE(Stage 2): catalog populates when signed artifacts + checksums publish to downloads.pidgeon.health. The honest empty state below is the current verified behavior. */}
+    Before the first signed artifacts publish, the catalog shows an honest **"No artifacts published yet"** empty state rather than dead links. Once builds land, download the installer for each app you want and follow [Install on Windows](/getting-started/install-windows) or [Install on macOS](/getting-started/install-macos).
+  </Step>
+</Steps>
+
+## When something fails
+
+| What you see | What it means | Next action |
+|---|---|---|
+| You land on the **Sign-in** page when you expected an account page | You're signed out, or the session expired | Sign in again with any of the four methods; you'll return to the page you wanted. |
+| The downloads catalog reads **"No artifacts published yet"** | No signed build has published to the catalog yet | This is expected during the beta ramp; check back, or watch [Known issues](/support/known-issues) for the publish status. |
+| An account page shows a bounded error with a **Retry** | The account service couldn't be reached | Retry once you're back online; your session and plan data are unaffected. |
+
+{/* BETA-GATE(Stage 4 / app-nucleus + commerce): entitlement-linked downloads, a devices/versions surface, and an in-portal support-contact affordance are not live yet. Document them only when those slices ship; do not claim them here. */}
+Entitlement-linked downloads and a devices-and-versions view are planned beta work and are not in the portal yet.
+
+## Next steps
+
+- [Get started with Pidgeon (the launcher)](/getting-started/launcher)
+- [Get started with Post](/getting-started/post) — no account needed
+- [Troubleshooting](/support/troubleshooting) — what each app shows when something's off
+- [FAQ](/support/faq)

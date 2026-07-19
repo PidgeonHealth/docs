@@ -1,0 +1,67 @@
+---
+title: Conform Commands
+description: Probe a live FHIR endpoint against a published Implementation Guide from CI, with a non-zero exit code and an HTML scorecard.
+---
+
+Conform is the FHIR conformance module of Post. `pidgeon conform` probes a live FHIR endpoint against a published Implementation Guide (US Core, Da Vinci PAS 2.1) and returns pass/fail with a non-zero CI exit code plus a self-contained HTML scorecard. It's the CI gate for CMS-0057-F.
+
+```bash
+pidgeon conform --endpoint <fhir-base-url> [options]
+```
+
+## Options
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--endpoint` | string | — | FHIR base URL (e.g. `https://payer.example.com/fhir`). Mutually exclusive with `--endpoint-set` |
+| `--endpoint-set` | string | — | Name of an installed conform-endpoint set (`pidgeon recipe list`) to walk every endpoint in |
+| `--resource` | string | — | Resource path `ResourceType/id` (e.g. `Patient/example`). Required unless `--walk` |
+| `--profile` | string | — | IG profile short name (e.g. `us-core-patient`) or canonical URL. Required unless `--walk` |
+| `--auth` | string | — | Authorization header value (`Bearer eyJ…`). Leave unset for unauthenticated endpoints |
+| `--walk` | flag | off | Probe every resource × profile pair declared in the endpoint's CapabilityStatement |
+| `--ci` | flag | off | CI mode: must-support warnings flip the exit to non-zero; a walk validating zero resources exits `2` |
+| `--require-full-coverage` | flag | off | Exit `2` unless every declared resource type was actually probed (walk only) |
+| `--probe-operations` | flag | off | Also POST a synthetic PAS request Bundle to `Claim/$submit` and grade the response |
+| `--check-terminology` | flag | off | Validate coded fields against a live FHIR terminology service; an unresolved code flips the exit to `1` |
+| `--only-resources` | string | — | Comma-separated resource types to walk (e.g. `Patient,Encounter`). Walk only |
+| `--ig` | string | — | Filter walk probes to profiles from this IG base URL. Walk only |
+| `--output-file` | string | stdout | Write the report to a file (pair with `--output html`) |
+| `--badge` | string | — | Write a shields.io-style pass/fail SVG status badge to this path |
+
+## Examples
+
+```bash
+# Walk an endpoint against its CapabilityStatement, CI mode
+pidgeon conform --endpoint https://api.payer.example/fhir --walk --ci
+
+# Single resource against a named profile
+pidgeon conform --endpoint https://api.payer.example/fhir --resource Patient/123 --profile us-core-patient
+
+# Da Vinci PAS with the $submit operation probe, HTML scorecard + badge
+pidgeon conform --endpoint https://api.payer.example/fhir --walk --ig http://hl7.org/fhir/us/davinci-pas/ \
+  --probe-operations --output html --output-file scorecard.html --badge conform-badge.svg
+
+# Authenticated endpoint
+pidgeon conform --endpoint https://api.payer.example/fhir --walk --auth "Bearer eyJ..."
+```
+
+## Exit codes
+
+Conform extends the CLI's `0`/`1` convention with a coverage code so a CI gate can tell "failed" from "tested nothing" apart:
+
+| Code | Meaning |
+|------|---------|
+| `0` | Report passed |
+| `1` | Report failed; or (with `--ci`) passed but carries a must-support or stub-profile warning; or an endpoint/IG load error; or a failed `--probe-operations` / `--check-terminology` probe |
+| `2` | No coverage: under `--ci`, a walk validated zero resources. `--require-full-coverage` widens this to "any declared type skipped". A real failure (`1`) always outranks the coverage gate |
+
+A minimal CI gate:
+
+```bash
+pidgeon conform --endpoint "$FHIR_URL" --walk --ci || exit 1
+```
+
+## Learn more
+
+- [Get started with Post](/getting-started/post) — the Conformance panel in the desktop app
+- [CLI Quickstart](/getting-started/quickstart-cli) — conform in a CI pipeline

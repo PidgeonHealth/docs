@@ -1,0 +1,90 @@
+---
+title: Validation
+description: Catch message errors before they reach production. Validate HL7 v2.3–v2.8, FHIR R4, and NCPDP SCRIPT against specs or your vendor's real-world patterns.
+---
+
+Two modes — **strict** for spec compliance, **compatibility** for real-world vendor tolerance — across three standards and eight HL7 versions.
+
+<CardGroup cols={2}>
+  <Card title="Strict Mode" icon="shield-check">
+    Every required field, data type, and code set is checked against the base specification. Use when building new interfaces or certifying compliance.
+  </Card>
+  <Card title="Compatibility Mode" icon="handshake">
+    Tolerates common vendor deviations. Use when testing against live systems where real-world messages deviate from spec.
+  </Card>
+</CardGroup>
+
+## Standards Coverage
+
+| Standard | Versions | What's Validated |
+|----------|----------|-----------------|
+| HL7 v2 | **v2.3, v2.3.1, v2.4, v2.5, v2.5.1, v2.6, v2.7, v2.8** | Segment structure, required fields, data types, code sets, segment ordering |
+| FHIR R4 | R4 | Required elements, cardinality, terminology bindings, 24 resource types, profile constraints |
+| NCPDP SCRIPT | 2017071 | Transaction structure, NPI Luhn check, DEA format validation, required fields |
+
+<Note>HL7 v2 and FHIR R4 validation are free. NCPDP SCRIPT validation depends on the member-only SCRIPT standards package — install it with `pidgeon data install ncpdp-script --accept-license` (NCPDP membership required) before validating NCPDP messages.</Note>
+
+## Usage
+
+<CodeGroup>
+```bash HL7 v2
+pidgeon validate --file message.hl7 --mode strict
+pidgeon validate --folder ./inbox --mode compatibility --profile epic_er
+```
+
+```bash FHIR R4
+pidgeon validate --file bundle.json --standard fhir
+pidgeon validate --file patient.json --standard fhir --ig us-core
+```
+
+```bash NCPDP (requires the licensed ncpdp-script package)
+pidgeon validate --file newrx.xml --standard ncpdp
+```
+</CodeGroup>
+
+## Example Output
+
+```text
+Validating admit.hl7 with Strict mode...
+ERROR: Validation failed with 2 error(s):
+  HL7-TABLE-001: Field PV1.2 value 'Z' is not a valid code in HL7 table 0004 (Patient Class)
+    Location: PV1.2
+    Expected: One of: E (Emergency), I (Inpatient), O (Outpatient), P (Preadmit), R (Recurring)
+    Actual:   Z
+    Fix:      Use a valid value from HL7 table 0004 (Patient Class)
+    Tip:      pidgeon lookup PV1.2
+
+  HL7-REQ-001: Required field PID.5 (Patient Name) is missing or empty
+    Location: PID.5
+    Expected: Non-empty value of type XPN (Extended Person Name)
+    Actual:   (empty)
+    Fix:      Populate PID.5 with a valid XPN value
+    Tip:      pidgeon lookup PID.5
+
+WARNING: Warnings: 1
+  HL7-REQ-002: Field EVN.1 (Event Type Code) is empty
+    Location: EVN.1
+    Tip:      pidgeon lookup EVN.1
+
+Summary: 87 fields checked, 84 of 86 rules passed (97.7% conformance) in 3ms
+```
+
+Each validation issue includes the expected value, actual value, a fix suggestion, and a `pidgeon lookup` tip that opens the built-in standards reference for that field. Run `pidgeon lookup PID.5` to see the full field definition, data type, valid values, and vendor-specific notes.
+
+## Structured Output for CI/CD
+
+```bash
+pidgeon validate --file message.hl7 --mode strict --output json
+```
+
+Returns the full `ValidationResult` as JSON — including `isValid`, all issues with diagnostic fields (`expectedValue`, `actualValue`, `suggestion`), and summary statistics (`fieldsValidated`, `conformanceScore`, `validationTime`). Exit code 0 on pass, 1 on fail.
+
+## Vendor Profile Validation
+
+Validate against your vendor's actual patterns instead of just the spec:
+
+```bash
+pidgeon validate --file test.hl7 --profile epic_er
+```
+
+Compatibility mode with a vendor profile catches the issues that matter in your specific environment — not just spec violations, but deviations from how your vendor actually sends messages. See [Vendor Profiles](/post/vendor-profiles).

@@ -1,0 +1,119 @@
+---
+title: CLI Quickstart
+description: Install the CLI, generate and validate your first HL7 message, run a FHIR conformance check, and wire the exit codes into CI. Free, no account required.
+---
+
+The CLI is one binary that exposes generate, validate, conform, and de-identify from a terminal. It follows the Unix convention (`0` success, non-zero failure), so every command below drops into a CI pipeline as-is.
+
+{/* BETA-GATE(CLI distribution): the public NuGet package ships with the beta. Confirm the package ID and version on nuget.org at beta publish, then remove this note. */}
+
+## Prerequisites
+
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later
+
+<Steps>
+  <Step title="Install the CLI">
+    ```bash
+    dotnet tool install -g pidgeon
+    ```
+
+    Verify the installation:
+    ```bash
+    pidgeon --version
+    ```
+  </Step>
+
+  <Step title="Generate your first message">
+    Generate a synthetic HL7 ADT admission message:
+
+    ```bash
+    pidgeon generate ADT^A01
+    ```
+
+    Example output:
+    ```
+    MSH|^~\&|PIDGEON|FACILITY|RECEIVING|DEST|20260222143021||ADT^A01|MSG00001|P|2.3
+    EVN|A01|20260222143021
+    PID|1||PAT98234^^^MRN||JOHNSON^MARIA^A||19870415|F||2106-3|123 OAK AVE^^AUSTIN^TX^78701
+    PV1|1|I|ER^101^A|||||||ER||||||A0||V0001^^^VISIT
+    DG1|1||J18.9^Pneumonia, unspecified organism^I10||20260222|A
+    ```
+
+    The standard is inferred from the message type: `ADT^A01` is HL7 v2, `Patient` is FHIR R4. Generate multiple messages to a folder:
+
+    ```bash
+    pidgeon generate ADT^A01 --count 10 --output ./test-data/
+    ```
+  </Step>
+
+  <Step title="Validate a message">
+    ```bash
+    pidgeon validate --file ./test-data/msg_001.hl7 --mode strict
+    ```
+
+    Example output:
+    ```text
+    Validating msg_001.hl7 with Strict mode...
+    Validation passed!
+    Warnings: 1
+      HL7-REQ-002: Field EVN.1 (Event Type Code) is empty
+        Location: EVN.1
+        Tip:      pidgeon lookup EVN.1
+
+    Summary: 42 fields checked, 42 of 42 rules passed (100.0% conformance) in 2ms
+    ```
+
+    Each issue includes expected/actual values, a fix suggestion, and a `pidgeon lookup` tip that opens the built-in standards reference. `--mode strict` checks against the published spec; `--mode compatibility` tolerates common real-world deviations.
+  </Step>
+
+  <Step title="Run a conformance check">
+    Probe a live FHIR endpoint against a published Implementation Guide and get a pass/fail with an HTML scorecard:
+
+    ```bash
+    pidgeon conform --endpoint https://api.example.org/fhir --ig davinci-pas-2.1 --ci
+    ```
+
+    Current IG scope includes US Core and Da Vinci PAS 2.1. With `--ci`, must-support warnings also produce a non-zero exit so your pipeline gate catches them; without `--ci` they stay warnings.
+  </Step>
+
+  <Step title="De-identify real messages">
+    If you have real messages to work with, de-identify them first:
+
+    ```bash
+    pidgeon deident --in ./real-messages --out ./safe-messages --date-shift 30d
+    ```
+
+    All processing happens on your machine; nothing is uploaded.
+  </Step>
+
+  <Step title="Discover the rest">
+    Help is built in at every level:
+
+    ```bash
+    pidgeon help
+    pidgeon help generate
+    pidgeon validate --help
+    ```
+  </Step>
+</Steps>
+
+## Exit codes
+
+The CLI emits exactly two exit codes, suitable for CI gates and shell scripting:
+
+| Code | Meaning | Examples |
+|---|---|---|
+| `0` | Success | Message generated; validation passed; conform report passed (without must-support warnings under `--ci`) |
+| `1` | Failure | Validation issues found in strict mode; conform report failed, or passed with must-support warnings under `--ci`; missing required argument; unknown command; endpoint/IG load error |
+
+A minimal CI gate:
+
+```bash
+pidgeon validate --folder ./messages --mode strict || exit 1
+```
+
+## Next steps
+
+- Explore the full [CLI Reference](/cli/global-options)
+- Try [FHIR and NCPDP generation](/post/message-generation)
+- [Get started with Post](/getting-started/post) for the desktop experience

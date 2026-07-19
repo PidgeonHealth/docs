@@ -1,0 +1,161 @@
+---
+title: Post Commands
+description: CLI commands for message generation, validation, de-identification, diff, and workflow management with Pidgeon Post.
+---
+
+## pidgeon generate
+
+Generate synthetic healthcare messages.
+
+```bash
+pidgeon generate <message-type> [options]
+```
+
+The standard is auto-detected from the message type: `ADT^A01` → HL7, `Patient` → FHIR, `NewRx` → NCPDP.
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `<message-type>` | positional | Required | Message type (e.g., `ADT^A01`, `Patient`, `NewRx`) |
+| `--count, -c <n>` | int | `1` | Number of messages to generate |
+| `--seed, -s <n>` | int | Random | Reproducible seed value |
+| `--vendor, -v <name>` | string | — | Vendor profile for realistic patterns |
+| `--mode, -m <mode>` | string | `procedural` | Generation mode: `procedural`, `local-ai`, `api-ai` |
+| `--hl7-version` | string | `2.3` | HL7 version: `2.3`, `2.3.1`, `2.4`, `2.5`, `2.5.1`, `2.6`, `2.7`, `2.8` |
+| `--output, -o <path>` | string | stdout | Output file or directory |
+| `--format, -f <fmt>` | string | `auto` | Output format: `auto`, `hl7`, `json`, `ndjson` |
+
+<Note>Generation modes `local-ai` and `api-ai` are Pro features requiring a Pidgeon account with Post Pro entitlement, or BYOK configuration.</Note>
+
+```bash
+# Generate 10 HL7 admission messages
+pidgeon generate ADT^A01 --count 10
+
+# Generate FHIR patients
+pidgeon generate Patient --count 5 --format json
+
+# Reproducible output
+pidgeon generate ORU^R01 --count 20 --seed 42
+
+# Vendor-specific patterns
+pidgeon generate ADT^A01 --vendor epic_er --count 10
+```
+
+---
+
+## pidgeon validate
+
+Validate messages against standard specifications.
+
+```bash
+pidgeon validate <files...> [options]
+pidgeon validate --file <path> [options]
+```
+
+Files can be passed as positional arguments (with wildcard support) or via `--file`/`--folder`.
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `<files...>` | positional | — | Files to validate (supports wildcards) |
+| `--file, -f <path>` | string | — | Single file to validate |
+| `--folder <path>` | string | — | Directory to validate |
+| `--mode <mode>` | string | `strict` | `strict` or `compatibility` |
+| `--ig <profile>` | string | — | FHIR implementation guide |
+| `--profile <name>` | string | — | Vendor profile for validation |
+
+```bash
+# Strict validation
+pidgeon validate --file message.hl7 --mode strict
+
+# Vendor-tolerant validation
+pidgeon validate --folder ./inbox --mode compatibility
+
+# FHIR with US Core profile
+pidgeon validate --file bundle.json --standard fhir --ig us-core
+```
+
+---
+
+## pidgeon deident
+
+De-identify real messages on-device. No data leaves your machine.
+
+```bash
+pidgeon deident <input> <output> [options]
+pidgeon deident --in <path> --out <path> [options]
+```
+
+Input and output can be passed as positional arguments or via `--in`/`--out`.
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `<input>` | positional | — | Input file or directory |
+| `<output>` | positional | — | Output file or directory |
+| `--in, -i <path>` | string | — | Input file or directory (alternative) |
+| `--out, -o <path>` | string | — | Output file or directory (alternative) |
+| `--date-shift <dur>` | string | `30d` | Date shift amount (e.g., `30d`, `90d`, `1y`) |
+| `--keep-ids` | flag | off | Preserve message control IDs |
+| `--salt <string>` | string | Random | Salt for deterministic hashing |
+
+```bash
+# Basic de-identification
+pidgeon deident --in ./real --out ./safe --date-shift 30d
+
+# Deterministic output for team sharing
+pidgeon deident --in ./real --out ./safe --date-shift 90d --salt "project-x"
+```
+
+---
+
+## pidgeon diff
+
+<Note>Pro feature — requires a Pidgeon account with Post Pro entitlement.</Note>
+
+Compare messages or directories with field-level analysis.
+
+```bash
+pidgeon diff <left> <right> [options]
+pidgeon diff --left <path> --right <path> [options]
+```
+
+Paths can be passed as positional arguments or via `--left`/`--right`.
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `<left> <right>` | positional | — | Files or directories to compare |
+| `--left, -l <path>` | string | — | Left file or directory |
+| `--right, -r <path>` | string | — | Right file or directory |
+| `--report, -o <path>` | string | — | Generate HTML report |
+| `--ai, -a` | flag | auto | Enable AI analysis |
+| `--no-ai` | flag | — | Force algorithmic only |
+
+```bash
+# Compare two messages
+pidgeon diff env-a/admit.hl7 env-b/admit.hl7
+
+# Generate HTML diff report
+pidgeon diff ./dev ./staging --report diff-report.html
+```
+
+---
+
+## pidgeon workflow
+
+<Note>Pro feature — requires a Pidgeon account with Post Pro entitlement.</Note>
+
+Create and run multi-step clinical test scenarios.
+
+```bash
+pidgeon workflow wizard
+pidgeon workflow run <file> [options]
+```
+
+```bash
+# Interactive scenario builder
+pidgeon workflow wizard
+
+# Run a YAML scenario
+pidgeon workflow run ed-visit.yaml --output ./results
+
+# Run with vendor profile
+pidgeon workflow run ed-visit.yaml --output ./results --vendor epic_er
+```

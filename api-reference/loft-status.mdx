@@ -1,0 +1,25 @@
+---
+title: Loft Status & Reports
+description: Get overall Loft monitoring status and generate reports via the Bridge API.
+---
+
+## GET /api/loft/status
+
+Get overall monitoring status across all interfaces. **Public**.
+
+```bash curl
+curl http://localhost:5100/api/loft/status
+```
+
+## GET /api/loft/report
+
+Generate a monitoring report. **Public**.
+
+| Query Param | Type | Default | Description |
+|-------------|------|---------|-------------|
+| `format` | string | `"text"` | Report format: `text`, `html`, `json` |
+| `sinceHours` | int | `24` | Time range |
+
+```bash curl
+curl "http://localhost:5100/api/loft/report?format=html&sinceHours=168"
+```

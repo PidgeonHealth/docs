@@ -1,0 +1,75 @@
+---
+title: Data Commands
+description: Manage healthcare reference datasets — install, import, and update LOINC, SNOMED, ICD-10, NDC, and more.
+---
+
+Pidgeon uses reference datasets for realistic code generation during message creation. These commands manage your local dataset installations.
+
+## Available Datasets
+
+| Dataset | Codes | Size | Free | Pro |
+|---------|-------|------|------|-----|
+| LOINC 2.81 | 108K | 25 MB | Basic subset | Full |
+| SNOMED CT US | 350K+ | 1.5 GB | Basic subset | Full |
+| ICD-10-CM 2026 | 74K | 15 MB | Full | Full |
+| ICD-9-CM v32 | DX + SG | 8 MB | Full | Full |
+| NDC | 110K products | 30 MB | Basic subset | Full |
+| CVX | 288 entries | 1 MB | Full | Full |
+| RxNorm | Large | 1.7 GB | — | Full |
+| HCPCS | Full set | 5 MB | — | Full |
+| CPT | — | — | — | Add-on ($30/user/yr) |
+
+## pidgeon data list
+
+List all available and installed datasets.
+
+```bash
+pidgeon data list
+```
+
+```text
+Dataset          Status      Version    Size
+─────────────────────────────────────────────
+LOINC            Installed   2.81       25 MB
+SNOMED CT US     Available   Sep 2025   1.5 GB
+ICD-10-CM        Installed   2026       15 MB
+ICD-9-CM         Installed   v32        8 MB
+NDC              Installed   Current    30 MB
+CVX              Installed   Current    1 MB
+RxNorm           Available   Feb 2026   1.7 GB
+HCPCS            Available   Jan 2026   5 MB
+```
+
+## pidgeon data install
+
+Download and install a dataset.
+
+```bash
+pidgeon data install <name>
+```
+
+```bash
+pidgeon data install loinc
+pidgeon data install snomed
+pidgeon data install rxnorm
+```
+
+## pidgeon data import
+
+Import a custom dataset from a CSV or JSON file.
+
+```bash
+pidgeon data import <path>
+```
+
+```bash
+pidgeon data import ./custom-codes.csv
+```
+
+## pidgeon data update
+
+Update all installed datasets to the latest versions.
+
+```bash
+pidgeon data update
+```

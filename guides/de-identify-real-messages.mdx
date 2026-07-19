@@ -1,0 +1,103 @@
+---
+title: De-identify Real Messages
+description: Replace manual MRN scrubbing with a single command. On-device processing — no PHI ever leaves your machine.
+---
+
+<Warning>
+De-identification assists with HIPAA compliance but does not guarantee it. Always review output and consult your compliance team before using de-identified data in non-secure environments.
+</Warning>
+
+## Prerequisites
+
+- Pidgeon CLI installed (`dotnet tool install -g pidgeon`)
+- A directory of real HL7 messages to de-identify
+
+## Basic de-identification
+
+Process an entire directory of messages:
+
+```bash
+pidgeon deident --in ./real-messages --out ./safe-messages --date-shift 30d
+```
+
+This:
+1. Reads every message file in `./real-messages`
+2. Replaces patient names, MRNs, SSNs, addresses, and phone numbers
+3. Shifts all dates forward by 30 days (preserving relative intervals)
+4. Writes clean messages to `./safe-messages`
+
+## Date shifting
+
+Date shifting moves all dates by a fixed offset while preserving the temporal relationships between events:
+
+```bash
+# Shift dates forward by 30 days
+pidgeon deident --in ./inbox --out ./clean --date-shift 30d
+
+# Shift by 1 year
+pidgeon deident --in ./inbox --out ./clean --date-shift 1y
+
+# Shift backward
+pidgeon deident --in ./inbox --out ./clean --date-shift -90d
+```
+
+<Tip>Date shifting preserves the time between events. If a lab was ordered 2 hours before results arrived, that interval stays the same after shifting.</Tip>
+
+## Consistent hashing
+
+For scenarios where you need the same input to produce the same output (e.g., matching patients across de-identified files), use a salt:
+
+```bash
+pidgeon deident --in ./inbox --out ./clean --date-shift 30d --salt "my-project-2026"
+```
+
+The same patient name with the same salt always produces the same replacement name, so you can correlate records across files.
+
+## Preserve identifiers
+
+If you need to keep certain identifiers intact (e.g., for matching across systems):
+
+```bash
+pidgeon deident --in ./inbox --out ./clean --date-shift 30d --keep-ids
+```
+
+<Warning>Using `--keep-ids` preserves MRNs and account numbers. Only use this when de-identified data stays in secure environments.</Warning>
+
+## What gets de-identified
+
+| Field Type | Action | Example |
+|-----------|--------|---------|
+| Patient name | Replaced with synthetic name | Smith, John → Martinez, Elena |
+| MRN / Patient ID | Replaced (or kept with --keep-ids) | 12345 → 98761 |
+| SSN | Removed entirely | 123-45-6789 → XXX-XX-XXXX |
+| Date of birth | Date-shifted | 1985-03-15 → 1985-04-14 |
+| Address | Replaced with synthetic address | 123 Main St → 456 Oak Ave |
+| Phone number | Replaced | 555-0100 → 555-0742 |
+| All dates | Date-shifted | Consistent offset applied |
+
+## Workflow: real messages to test data
+
+<Steps>
+  <Step title="Collect real messages">
+    Export messages from your integration engine (Mirth, Rhapsody, etc.) into a directory.
+  </Step>
+  <Step title="De-identify">
+    ```bash
+    pidgeon deident --in ./exports --out ./test-data --date-shift 30d --salt "project-x"
+    ```
+  </Step>
+  <Step title="Validate de-identified output">
+    ```bash
+    pidgeon validate --folder ./test-data --mode compatibility
+    ```
+  </Step>
+  <Step title="Use in testing">
+    The de-identified messages retain the same structure, segment ordering, and field patterns as the originals — ideal for integration testing.
+  </Step>
+</Steps>
+
+## Next steps
+
+- [Analyze de-identified messages](/post/vendor-profiles) to create vendor profiles
+- [Generate additional synthetic data](/guides/generate-realistic-test-data) matching the same patterns
+- [Build test scenarios](/guides/build-test-scenarios) using de-identified messages as templates

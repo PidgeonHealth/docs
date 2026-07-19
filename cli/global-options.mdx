@@ -1,0 +1,53 @@
+---
+title: Global Options
+description: Flags and options available on all Pidgeon CLI commands.
+---
+
+These flags are available on every `pidgeon` command.
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `-p, --project <dir>` | string | Current directory | Project directory |
+| `-s, --standard <std>` | string | Auto-detect | Force standard: `hl7`, `fhir`, or `ncpdp` |
+| `-o, --output <path>` | string | stdout | Output file or directory path |
+| `-f, --format <fmt>` | string | `auto` | Output format: `auto`, `hl7`, `json`, `ndjson` |
+| `-v, --verbose` | flag | off | Enable verbose logging |
+| `--quiet` | flag | off | Suppress all output except errors |
+| `--color <mode>` | string | `auto` | Color output: `auto`, `always`, `never` |
+| `--config <file>` | string | — | Path to configuration file |
+| `--profile <name>` | string | — | Named vendor profile to use |
+
+## Smart Standard Detection
+
+When `--standard` is omitted, Pidgeon auto-detects the standard from the message type:
+
+| Pattern | Detected Standard | Examples |
+|---------|-------------------|----------|
+| `TYPE^TRIGGER` | HL7 v2 | `ADT^A01`, `ORU^R01`, `ORM^O01` |
+| Resource name | FHIR R4 | `Patient`, `Observation`, `Bundle` |
+| Transaction type | NCPDP SCRIPT | `NewRx`, `RxFill`, `CancelRx` |
+
+## Output Formats
+
+| Format | When to Use |
+|--------|-------------|
+| `auto` | Default — picks the best format for the standard |
+| `hl7` | Raw HL7 pipe-delimited format |
+| `json` | Pretty-printed JSON (FHIR resources, structured output) |
+| `ndjson` | Newline-delimited JSON for bulk/streaming |
+
+## Examples
+
+```bash
+# Verbose output for debugging
+pidgeon generate ADT^A01 --verbose
+
+# Quiet mode for CI/CD pipelines
+pidgeon validate --folder ./messages --quiet
+
+# Force JSON output
+pidgeon generate Patient --format json
+
+# Use a vendor profile
+pidgeon generate ADT^A01 --profile epic_er
+```

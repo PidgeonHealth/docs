@@ -1,0 +1,133 @@
+---
+title: Seed a Database with Flock
+description: Go from empty test database to production-realistic patient population in minutes — zero PHI, instant compliance approval.
+---
+
+An empty test database doesn't catch real bugs. A database full of copied production data is a compliance violation. Flock gives you the third option: realistic synthetic populations seeded directly into your schema.
+
+## Prerequisites
+
+- Pidgeon CLI installed (`dotnet tool install -g pidgeon`)
+- A database with an existing schema (PostgreSQL, MySQL, or SQL Server)
+- Database credentials with read/write access
+
+## Step 1: Connect to your database
+
+```bash
+pidgeon flock connect \
+  --provider postgres \
+  --connection-string "Host=localhost;Port=5432;Database=ehr_dev;Username=dev;Password=${DB_PASSWORD}"
+```
+
+Flock analyzes the schema and reports:
+- Tables classified as patient, encounter, clinical, financial, or reference
+- Foreign key relationships mapped
+- Column types and constraints detected
+
+## Step 2: Learn patterns from existing data (optional)
+
+If your database already has sample data, Flock can learn the statistical distribution patterns:
+
+```bash
+pidgeon flock learn --tables patients,encounters,diagnoses --sample-size 500
+```
+
+This creates a profile that captures:
+- Column value distributions (age ranges, gender ratios)
+- Referential patterns (which diagnosis codes appear together)
+- Temporal patterns (encounter durations, admission-to-discharge intervals)
+
+## Step 3: Generate a synthetic population
+
+Generate 1,000 patients with related records:
+
+```bash
+pidgeon flock generate \
+  --count 1000 \
+  --format sql \
+  --geographic-focus us \
+  --seed 42
+```
+
+Flock generates:
+- **Demographics**: Age, gender, race, and geography distributions matching US Census data
+- **Comorbidities**: Realistic disease correlations (diabetes with hypertension, obesity with sleep apnea)
+- **Temporal coherence**: Admissions before discharges, lab orders before results
+- **Family linkage**: Realistic household structures and family relationships
+
+## Step 4: Preview with dry-run
+
+Before writing anything, preview the generated SQL:
+
+```bash
+pidgeon flock seed --dry-run
+```
+
+This outputs the SQL INSERT statements in foreign-key order without executing them. Review to confirm the data looks correct.
+
+## Step 5: Seed the database
+
+```bash
+pidgeon flock seed
+```
+
+Flock inserts records in FK-dependency order so referential integrity is maintained. All synthetic records are tagged for easy identification and cleanup.
+
+## Step 6: Verify the results
+
+Check that data was seeded correctly:
+
+```bash
+# Check job analytics
+pidgeon flock status
+```
+
+Or via the API:
+
+```bash
+curl http://localhost:5102/api/flock/generate/{jobId}/analytics
+```
+
+## Alternative output formats
+
+Flock can generate data in multiple formats beyond SQL:
+
+<CodeGroup>
+```bash SQL INSERT
+pidgeon flock generate --count 1000 --format sql --output ./seed-data/
+```
+
+```bash CSV
+pidgeon flock generate --count 1000 --format csv --output ./seed-data/
+```
+
+```bash HL7 Streams
+pidgeon flock generate --count 1000 --format hl7 --output ./seed-data/
+```
+
+```bash FHIR Bundles
+pidgeon flock generate --count 1000 --format fhir --output ./seed-data/
+```
+</CodeGroup>
+
+## Clean up synthetic data
+
+Remove all Flock-generated records when you're done:
+
+```bash
+pidgeon flock seed --cleanup
+```
+
+Or via the API:
+
+```bash
+curl -X DELETE "http://localhost:5102/api/flock/seed/cleanup?connectionString=Host%3Dlocalhost%3B..."
+```
+
+<Warning>Cleanup removes all records tagged as synthetic. This cannot be undone.</Warning>
+
+## Next steps
+
+- [Explore output formats](/flock/output-formats) for HL7 streams and FHIR bundles
+- [Generate test messages](/guides/generate-realistic-test-data) from seeded population data
+- [Monitor interfaces](/guides/monitor-mirth-with-loft) processing your synthetic data

@@ -1,0 +1,15 @@
+**Authentication** is required for protected endpoints on the local Bridge. Include one of:
+
+<CodeGroup>
+```bash JWT Bearer Token
+curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  http://localhost:5100/api/...
+```
+
+```bash API Key
+curl -H "X-API-Key: YOUR_API_KEY" \
+  http://localhost:5100/api/...
+```
+</CodeGroup>
+
+JWT tokens are issued by Supabase authentication when you sign in from the desktop app. API keys are generated in your [Pidgeon account](https://account.pidgeon.health) settings. The port varies by app: Loft `5100`, Post `5101`, Flock `5102`.

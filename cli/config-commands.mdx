@@ -1,0 +1,105 @@
+---
+title: Config Commands
+description: Analyze real messages to detect vendor patterns, manage named profiles, and compare configurations.
+---
+
+## pidgeon config analyze
+
+Analyze sample messages to detect vendor-specific patterns and save as a named profile.
+
+```bash
+pidgeon config analyze --samples <dir> --save <name>
+```
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--samples <dir>` | string | Directory of sample messages to analyze |
+| `--save <name>` | string | Name to save the profile as |
+
+```bash
+pidgeon config analyze --samples ./epic-er-messages --save epic_er
+```
+
+## pidgeon config list
+
+List all saved vendor profiles.
+
+```bash
+pidgeon config list
+```
+
+```text
+Profile          Standard    Message Types         Samples
+──────────────────────────────────────────────────────────
+epic_er          HL7 v2.3    ADT^A01, ADT^A08      47
+cerner_lab       HL7 v2.3    ORU^R01               23
+meditech_pharm   HL7 v2.3    RDE^O11               15
+```
+
+## pidgeon config show
+
+Display details of a saved profile.
+
+```bash
+pidgeon config show <name>
+```
+
+```bash
+pidgeon config show epic_er
+```
+
+## pidgeon config use
+
+Set a profile as the default for all commands.
+
+```bash
+pidgeon config use <name>
+```
+
+```bash
+pidgeon config use epic_er
+```
+
+## pidgeon config export
+
+Export a profile as JSON for sharing with your team.
+
+```bash
+pidgeon config export <name>
+```
+
+```bash
+pidgeon config export epic_er > epic_er_profile.json
+```
+
+## pidgeon config diff
+
+Compare two vendor profiles side by side.
+
+```bash
+pidgeon config diff <a> <b>
+```
+
+```bash
+pidgeon config diff epic_er cerner_lab
+```
+
+## Workflow Example
+
+<Steps>
+  <Step title="Analyze sample messages">
+    ```bash
+    pidgeon config analyze --samples ./epic-messages --save epic_er
+    ```
+  </Step>
+  <Step title="Generate with the profile">
+    ```bash
+    pidgeon generate ADT^A01 --vendor epic_er --count 20
+    ```
+  </Step>
+  <Step title="Validate against the profile">
+    ```bash
+    pidgeon validate --folder ./test-data --profile epic_er
+    ```
+  </Step>
+</Steps>

@@ -1,0 +1,51 @@
+---
+title: Desktop Quickstart
+description: Install Pidgeon, generate an HL7 message in Post, validate it, and see the Pro features that unlock with an account.
+---
+
+The desktop apps are the point-and-click path through the same engine the CLI uses. This walkthrough uses **Post** — the free front door — then points at the Pro features and the other three products.
+
+## Before you start
+
+- [Install Pidgeon](/getting-started/install-windows) (or on [macOS](/getting-started/install-macos)). Installing the launcher does not install the individual product apps; each is its own download.
+- Post's free generation and validation loop needs no account. Everything else on this page (Pro features, Flock, Loft, Migrate) requires a [Pidgeon account](/getting-started/account) sign-in.
+
+<Steps>
+  <Step title="Generate a message">
+    Open Post and the **Generate** panel (under **Compose**). Pick a message type (for example `ADT^A01`), set a count, and generate. The message appears in the output pane with syntax highlighting.
+  </Step>
+
+  <Step title="Validate it">
+    Open the **Validate** panel (under **Inspect**). Paste your message or load the file, choose **strict** or **compatibility** mode, and read the field-level results with fix suggestions.
+  </Step>
+
+  <Step title="Run a conformance check">
+    Open the **Conformance** panel (under **Inspect**) to probe a live FHIR endpoint against a published Implementation Guide — this is Conform, the module of Post covering US Core and Da Vinci PAS 2.1 today.
+  </Step>
+
+  <Step title="Explore the Pro features">
+    Signing in with a Pro entitlement unlocks:
+
+    - **Workflow Wizard** — build multi-step scenarios (admit → labs → discharge) visually
+    - **Diff** — compare two messages or directories with field-level highlighting
+    - **AI Triage** — plain-English explanations of validation failures (on-device or BYOK)
+    - **Reports** — export HTML validation and conformance reports for stakeholders
+    - Full reference datasets (LOINC, SNOMED CT, NDC, RxNorm, HCPCS)
+  </Step>
+</Steps>
+
+## Desktop apps and CLI share the same engine
+
+Anything you do in a desktop app has a CLI equivalent, and CLI artifacts (reports, configs, profiles) are readable from the desktop apps:
+
+```bash
+pidgeon generate ADT^A01 --count 10 --vendor epic_er
+pidgeon validate --folder ./messages --mode strict
+pidgeon conform --endpoint https://api.example.org/fhir --ig davinci-pas-2.1 --ci
+```
+
+## Next steps
+
+- [Your Pidgeon account](/getting-started/account) — see your plan and entitlements
+- [Get started with Flock](/getting-started/flock), [Loft](/getting-started/loft), or [Migrate](/getting-started/migrate)
+- [Build test scenarios with the Workflow Wizard](/guides/build-test-scenarios)

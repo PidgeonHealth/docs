@@ -1,0 +1,43 @@
+---
+title: Flock Overview
+description: Seed test databases that look like production in minutes — not months. Zero PHI, instant compliance approval.
+---
+
+Connect to your database, and Flock generates populations that match your schema — with realistic demographics, comorbidity correlations, and temporal coherence built in. Output as SQL INSERT (FK-ordered), CSV, HL7 streams, or FHIR Bundles.
+
+## Key Features
+
+- **Schema-aware** — Connects to your database, analyzes the schema, and generates data that fits your table structures
+- **Epidemiologically grounded** — Age, gender, race, and geographic distributions match real US Census data
+- **Comorbidity correlation** — Diabetes correlates with hypertension, obesity with sleep apnea
+- **Temporal coherence** — Admissions before discharges, lab orders before results
+- **Family linkage** — Realistic household structures and family relationships
+- **Multiple outputs** — SQL INSERT (FK-ordered), CSV, HL7 streams, FHIR Bundles
+
+## Use Cases
+
+- QA and integration testing with realistic volumes
+- Development environment seeding
+- Demo environments for sales and training
+- Load testing with production-scale datasets
+- Training new staff on EHR systems
+
+## Workflow
+
+```bash
+# 1. Connect to your database
+pidgeon flock connect --provider postgres --connection-string "Host=localhost;Database=ehr;..."
+
+# 2. Optionally learn from existing data
+pidgeon flock learn --tables patients,encounters --sample-size 500
+
+# 3. Generate synthetic population
+pidgeon flock generate --count 1000 --format sql
+
+# 4. Seed the database
+pidgeon flock seed
+```
+
+## Pricing
+
+Flock is $49/mo self-serve, plus metered API usage at scale. It requires a Pidgeon account sign-in — Post's free CLI does not unlock Flock.

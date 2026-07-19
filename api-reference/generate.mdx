@@ -1,0 +1,43 @@
+---
+title: Generate Messages
+description: Generate synthetic healthcare messages via the Bridge API.
+---
+
+## POST /api/generate
+
+Generate synthetic healthcare messages. **Public** — no authentication required.
+
+### Request Body
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `messageType` | string | `"ADT^A01"` | Message type (e.g., `ADT^A01`, `Patient`, `NewRx`) |
+| `standard` | string | `"hl7"` | Standard: `hl7`, `fhir`, `ncpdp` |
+| `count` | int | `1` | Number of messages (1-100) |
+| `hl7Version` | string | `"2.3"` | HL7 version (2.3–2.8) |
+| `seed` | int | null | Reproducible seed |
+
+### Example
+
+```bash curl
+curl -X POST http://localhost:5101/api/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messageType": "ADT^A01",
+    "standard": "hl7",
+    "count": 3
+  }'
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": [
+    "MSH|^~\\&|PIDGEON|FACILITY|RECEIVING|DEST|20260222143021||ADT^A01|MSG00001|P|2.3\rEVN|A01|20260222143021\rPID|1||PAT98234^^^MRN||JOHNSON^MARIA^A||19870415|F\rPV1|1|I|ER^101^A",
+    "MSH|^~\\&|PIDGEON|FACILITY|RECEIVING|DEST|20260222143021||ADT^A01|MSG00002|P|2.3\rEVN|A01|20260222143021\rPID|1||PAT44521^^^MRN||SMITH^JAMES^R||19550923|M\rPV1|1|I|MED^204^B"
+  ],
+  "error": null
+}
+```

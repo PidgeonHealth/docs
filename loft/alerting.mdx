@@ -1,0 +1,61 @@
+---
+title: Alerting
+description: Get notified through PagerDuty, email, or webhook the moment an interface starts failing — not hours later.
+---
+
+Five channels, three severity levels, deduplication, and escalation routing. Configurable per interface.
+
+## Alert Channels
+
+| Channel | Supported |
+|---------|:-----:|
+| Local log | Yes |
+| Webhook (Slack, Teams, etc.) | Yes |
+| Email (SMTP) | Yes |
+| PagerDuty | Yes |
+
+Alert payloads are redacted before they go out to any channel — message content never leaves your network.
+
+<Tip>Use the webhook channel to integrate with Slack, Microsoft Teams, or any service that accepts incoming webhooks.</Tip>
+
+## Advanced Alert Features
+
+- **Deduplication** — Suppresses repeat alerts for the same issue within a configurable window
+- **Escalation** — Routes alerts based on severity to different channels or on-call groups
+- **Detailed payloads** — Each alert includes file path, severity, error/warning counts, message type, sending application, and full error list
+
+## Severity Levels
+
+| Level | Description |
+|-------|-------------|
+| `critical` | Interface down or failure rate exceeds threshold |
+| `warning` | Elevated error rate or anomalous throughput |
+| `info` | Informational events (interface started, config changed) |
+
+## Alert Lifecycle
+
+Alerts follow a lifecycle: **triggered** → **acknowledged** → **resolved**.
+
+```bash
+# List recent alerts
+pidgeon loft alerts --since 6h
+
+# List critical alerts only
+pidgeon loft alerts --severity critical
+
+# Acknowledge an alert via the local Bridge API
+curl -X POST http://localhost:5100/api/loft/alerts/{id}/acknowledge
+```
+
+## Example Alert
+
+```text
+CRITICAL: Validation failure rate exceeded threshold
+Interface: ER Interface
+Message: 12.3% failure rate in the last 15 minutes (threshold: 5%)
+Triggered: 2026-02-22T14:15:00Z
+Failed messages: 47
+Top errors: PID.5 empty (23), PV1.2 invalid (18), DG1 missing (6)
+```
+
+<Note>Acknowledging an alert records that a human reviewed it but does not resolve the underlying issue. Use [AI Triage](/api-reference/ai-triage) for recommended fixes.</Note>

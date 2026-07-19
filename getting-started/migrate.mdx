@@ -1,0 +1,50 @@
+---
+title: Get started with Migrate
+description: Run a sample FHIR Bulk Data export with preflight checks, de-identification, reconciliation, and resume.
+---
+
+Migrate moves healthcare data between systems via FHIR R4 Bulk Data Access (NDJSON per the HL7 IG): export from a source EHR, convert, and load into a successor system. It is built for migration projects, not synthetic data; if you need test populations, that's [Flock](/getting-started/flock).
+
+Migrate requires a Pidgeon account sign-in.
+
+## Before you start
+
+- [Install Migrate](/getting-started/install-windows) (or on [macOS](/getting-started/install-macos)) and sign in.
+- You can walk the whole loop against a sample source first. Real source credentials are optional until you're ready.
+
+## One loop: preflight, export, reconcile
+
+<Steps>
+  <Step title="Configure a migration">
+    From the first-run screen, choose **Configure a migration**. The **Dashboard** is the working surface: source connection, destination, and output directory.
+  </Step>
+
+  <Step title="Pass the preflight">
+    The Dashboard shows a preflight checklist before anything runs: engine round-trip validation, source connection test, and output directory selection. A migration does not start until preflight is green. Failures appear as named blockers, not crashes.
+  </Step>
+
+  <Step title="Run the export">
+    Start the export. Progress streams into the **Migration Log** dock at the bottom of the window. Optionally enable de-identification so the exported set carries no direct identifiers.
+  </Step>
+
+  <Step title="Reconcile">
+    When the run completes, review the reconciliation output: resource counts per type on the source side versus the exported set, so you can prove nothing was dropped.
+  </Step>
+
+  <Step title="Resume if interrupted">
+    If a run is interrupted (machine sleep, network drop), Migrate detects the checkpoint on next launch and offers to resume from where it stopped instead of starting over.
+  </Step>
+</Steps>
+
+## When something fails
+
+| What you see | What it means | Next action |
+|---|---|---|
+| A preflight blocker names missing source credentials | The source connection isn't configured or can't authenticate | Add credentials in the source connection panel and re-run preflight. Nothing exports until this passes. |
+| A preflight blocker names an unsupported source | The source system or endpoint shape isn't supported in this release | The blocker states what was detected. If your source should be supported, contact [support@pidgeon.health](mailto:support@pidgeon.health). |
+| The export stops mid-run | The run was interrupted; a checkpoint was written | Relaunch: Migrate offers to resume from the checkpoint. |
+
+## Next steps
+
+- [CLI quickstart](/getting-started/quickstart-cli)
+- Sidebar entries marked **Soon** (Export Wizard, Mappings, History) are not active in this beta; the Dashboard runs the full loop above.

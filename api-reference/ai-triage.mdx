@@ -1,0 +1,67 @@
+---
+title: AI Triage
+description: AI-powered failure analysis, pattern detection, and vendor upgrade checking via the Bridge API.
+---
+
+Four endpoints for AI-assisted analysis of message failures. All **public** — no authentication required.
+
+## POST /api/loft/triage
+
+Analyze a message failure and get plain-English root cause and fix suggestions.
+
+```bash curl
+curl -X POST http://localhost:5101/api/loft/triage \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messageContent": "MSH|^~\\&|...",
+    "validationErrors": ["PID.8 invalid value MALE"],
+    "interfaceContext": "Epic ER to downstream pharmacy"
+  }'
+```
+
+---
+
+## POST /api/loft/patterns
+
+Analyze recurring failure patterns across messages.
+
+```bash curl
+curl -X POST http://localhost:5101/api/loft/patterns \
+  -H "Content-Type: application/json" \
+  -d '{
+    "interfaceId": "intf-001",
+    "sinceHours": 24
+  }'
+```
+
+---
+
+## POST /api/loft/summary
+
+Generate a plain-English summary of interface health issues.
+
+```bash curl
+curl -X POST http://localhost:5101/api/loft/summary \
+  -H "Content-Type: application/json" \
+  -d '{
+    "interfaceId": "intf-001",
+    "sinceHours": 24
+  }'
+```
+
+---
+
+## POST /api/loft/upgrade-check
+
+Check whether failure patterns indicate a vendor system upgrade.
+
+```bash curl
+curl -X POST http://localhost:5101/api/loft/upgrade-check \
+  -H "Content-Type: application/json" \
+  -d '{
+    "interfaceId": "intf-001",
+    "sinceHours": 48
+  }'
+```
+
+Returns an `UpgradeDetectionResult` with confidence score and detected changes.

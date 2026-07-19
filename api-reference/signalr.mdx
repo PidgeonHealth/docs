@@ -1,0 +1,82 @@
+---
+title: Live Updates (SignalR)
+description: Subscribe to live interface updates via the Loft SignalR hub.
+---
+
+Loft pushes live updates over a SignalR hub for dashboard integration. The hub delivers events as Loft processes each watched source; it is the transport for already-computed results, not a claim about source-pickup latency.
+
+**Hub URL**: `ws://localhost:5100/hubs/loft` (the Loft desktop app's local Bridge; no hosted hub exists)
+
+Authentication via JWT Bearer token or API Key.
+
+## Client → Server Methods
+
+| Method | Parameters | Description |
+|--------|-----------|-------------|
+| `SubscribeToInterface` | `interfaceId: string` | Subscribe to updates for a specific interface |
+| `UnsubscribeFromInterface` | `interfaceId: string` | Unsubscribe from interface updates |
+| `SubscribeToAll` | — | Subscribe to all interface updates |
+| `UnsubscribeFromAll` | — | Unsubscribe from all updates |
+
+## Server → Client Events
+
+| Event | Description |
+|-------|-------------|
+| `AlertReceived` | New alert triggered on a monitored interface |
+| `MetricUpdate` | Interface metrics changed (throughput, error rate) |
+| `InterfaceStatusChanged` | Interface status changed (healthy, degraded, down) |
+
+## JavaScript Example
+
+```javascript
+import { HubConnectionBuilder } from "@microsoft/signalr";
+
+const connection = new HubConnectionBuilder()
+  .withUrl("http://localhost:5100/hubs/loft", {
+    accessTokenFactory: () => "YOUR_JWT_TOKEN"
+  })
+  .withAutomaticReconnect()
+  .build();
+
+// Listen for alerts
+connection.on("AlertReceived", (alert) => {
+  console.log("Alert:", alert.severity, alert.message);
+});
+
+// Listen for metric updates
+connection.on("MetricUpdate", (metric) => {
+  console.log("Metrics:", metric.interfaceId, metric.messagesTotal);
+});
+
+// Listen for status changes
+connection.on("InterfaceStatusChanged", (status) => {
+  console.log("Status:", status.interfaceId, status.newStatus);
+});
+
+// Connect and subscribe
+await connection.start();
+await connection.invoke("SubscribeToInterface", "intf-001");
+
+// Or subscribe to all interfaces
+await connection.invoke("SubscribeToAll");
+```
+
+## .NET Example
+
+```csharp
+var connection = new HubConnectionBuilder()
+    .WithUrl("http://localhost:5100/hubs/loft", options =>
+    {
+        options.AccessTokenProvider = () => Task.FromResult("YOUR_JWT_TOKEN");
+    })
+    .WithAutomaticReconnect()
+    .Build();
+
+connection.On<AlertResponse>("AlertReceived", alert =>
+{
+    Console.WriteLine($"Alert: {alert.Severity} - {alert.Message}");
+});
+
+await connection.StartAsync();
+await connection.InvokeAsync("SubscribeToAll");
+```
