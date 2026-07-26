@@ -3,7 +3,7 @@ title: MCP Server
 description: Drive Pidgeon's HL7 / FHIR / NCPDP engine from Claude, Cursor, VS Code, or any MCP client. Two transport modes, tier-gated tools, on-device AI by default.
 ---
 
-The Pidgeon MCP server (`@pidgeonhealth/mcp`) exposes the same generate / validate / conform / seed / monitor operations you run in the CLI and the desktop apps as agent tools over the [Model Context Protocol](https://modelcontextprotocol.io). One surface, two drivers: a human works the panes in the apps; an agent reads those same operations over MCP.
+The public Pidgeon MCP adapter (`@pidgeonhealth/pidgeon-mcp`) exposes the community capabilities of the Pidgeon CLI over the [Model Context Protocol](https://modelcontextprotocol.io). In CLI mode it launches the local `pidgeon` command; in Bridge mode it connects to a running desktop Bridge and registers only the capabilities that Bridge advertises.
 
 <Note>The MCP transport is the delivery mechanism, not the entitlement. The free/paid line is enforced at Bridge authentication + a validated subscription — not at the transport. A free agent loop is never broken by a hard error; it degrades gracefully.</Note>
 
@@ -13,12 +13,12 @@ The Pidgeon MCP server (`@pidgeonhealth/mcp`) exposes the same generate / valida
 
 ## Install
 
-The server is an npm package that shells out to the Pidgeon CLI (CLI mode) or talks to a running desktop app's Bridge (Bridge mode).
+The server is an npm package that shells out to the Pidgeon CLI (CLI mode) or talks to a running desktop app's Bridge (Bridge mode). The beta release is `0.1.0-beta.1`.
 
 <Steps>
   <Step title="Install the CLI">
     ```bash
-    dotnet tool install -g pidgeon
+    dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.1
     ```
   </Step>
   <Step title="Add the server to your MCP client">
@@ -29,7 +29,7 @@ The server is an npm package that shells out to the Pidgeon CLI (CLI mode) or ta
       "mcpServers": {
         "pidgeon": {
           "command": "npx",
-          "args": ["-y", "@pidgeonhealth/mcp"],
+          "args": ["-y", "@pidgeonhealth/pidgeon-mcp@0.1.0-beta.1"],
           "env": {
             "PIDGEON_MODE": "cli"
           }
@@ -39,8 +39,6 @@ The server is an npm package that shells out to the Pidgeon CLI (CLI mode) or ta
     ```
   </Step>
 </Steps>
-
-<Note>The public package publishes with the beta. Confirm the package name and version on npm at beta publish before pinning a version.</Note>
 
 ## Two transport modes
 

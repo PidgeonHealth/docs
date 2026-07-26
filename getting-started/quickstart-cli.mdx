@@ -5,8 +5,6 @@ description: Install the CLI, generate and validate your first HL7 message, run 
 
 The CLI is one binary that exposes generate, validate, conform, and de-identify from a terminal. It follows the Unix convention (`0` success, non-zero failure), so every command below drops into a CI pipeline as-is.
 
-{/* BETA-GATE(CLI distribution): the public NuGet package ships with the beta. Confirm the package ID and version on nuget.org at beta publish, then remove this note. */}
-
 ## Prerequisites
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later
@@ -14,7 +12,7 @@ The CLI is one binary that exposes generate, validate, conform, and de-identify 
 <Steps>
   <Step title="Install the CLI">
     ```bash
-    dotnet tool install -g pidgeon
+    dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.1
     ```
 
     Verify the installation:
