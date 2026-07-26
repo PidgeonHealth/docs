@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "surface": "docs",
   "targetRepository": "PidgeonHealth/docs",
-  "upstreamSha": "ae6bba0018fa2d24395c8c72ce381d5445ed628a",
+  "upstreamSha": "3d97b68c3196d96ca917c9c2d348bad16b2aa3d3",
   "sourceRef": "origin/main",
   "manifestSha256": "40f7b66a131b5b6765bcfaac35cabaa47d69cac0e04f444cc9a96849b0437b5c",
   "projectorPath": "scripts/public-release/project.mjs",
