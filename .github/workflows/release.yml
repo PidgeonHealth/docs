@@ -58,8 +58,8 @@ jobs:
       - name: Install Mintlify CLI
         run: npm install --global mintlify
 
-      - name: Build
-        run: mintlify build
+      - name: Build and validate
+        run: mintlify validate
 
       - name: Broken-link check
         run: mintlify broken-links
