@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "surface": "docs",
   "targetRepository": "PidgeonHealth/docs",
-  "upstreamSha": "3d97b68c3196d96ca917c9c2d348bad16b2aa3d3",
+  "upstreamSha": "6d6564cf95819363f4ff13b434ca8cdaf228cb97",
   "sourceRef": "origin/main",
   "manifestSha256": "40f7b66a131b5b6765bcfaac35cabaa47d69cac0e04f444cc9a96849b0437b5c",
   "projectorPath": "scripts/public-release/project.mjs",
@@ -53,8 +53,8 @@
     },
     {
       "path": "SECURITY.md",
-      "sha256": "8a512507d3ea20d64014b4cc18d8ae0ff3d8e4dd1bc20b99ee1f59b1451f0034",
-      "size": 2648,
+      "sha256": "324e616e71df9fb955ed6033a94c3f479cb339601e076ba7643797a2c46cf170",
+      "size": 2650,
       "mode": "100644",
       "source": "config/public-projections/scaffold/shared/SECURITY.md",
       "license": "Pidgeon-Public-Documentation"
