@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "surface": "docs",
   "targetRepository": "PidgeonHealth/docs",
-  "upstreamSha": "54adac98b9e9a0296e11f00cc99d7752c691bc0c",
+  "upstreamSha": "ae6bba0018fa2d24395c8c72ce381d5445ed628a",
   "sourceRef": "origin/main",
   "manifestSha256": "40f7b66a131b5b6765bcfaac35cabaa47d69cac0e04f444cc9a96849b0437b5c",
   "projectorPath": "scripts/public-release/project.mjs",
-  "projectorSha256": "c96f26914304c9f5c369443192b943c8e197f5efb5fe2c2b73fcc923c97a7043",
+  "projectorSha256": "f45498479728274e9a1e844bd83ca25a05c35b17c487e0544ffbfd2e10c942b8",
   "compositionManifestPath": null,
   "compositionManifestSha256": null,
   "secretScanner": "pidgeon-public-projection-v1",
@@ -29,8 +29,8 @@
     },
     {
       "path": "LICENSE",
-      "sha256": "aa1c351f9d2cbfc60989b46c56cd409babf7ab997da9a16150472bba1855f480",
-      "size": 15115,
+      "sha256": "fd590ce7c5df3e6a1f38481cfc0c244b3a192c8a4c79fd7cf95676ef2c81cf34",
+      "size": 14848,
       "mode": "100644",
       "source": "config/public-projections/scaffold/shared/LICENSE",
       "license": "MPL-2.0"
@@ -309,16 +309,16 @@
     },
     {
       "path": "getting-started/install-windows.mdx",
-      "sha256": "99a34cbab6c9005736a64c9aa27721fd15fe0bc8dadcd996178eb7496b51e465",
-      "size": 4622,
+      "sha256": "e57c20a9ec583201507ab3632ab65a7de2fe008534cd81c211e3da123e2dcb6e",
+      "size": 4638,
       "mode": "100644",
       "source": "pidgeon-docs/getting-started/install-windows.mdx",
       "license": "Pidgeon-Public-Documentation"
     },
     {
       "path": "getting-started/introduction.mdx",
-      "sha256": "fc8e691fc35c8c6f611c114323ccd01551b1c8395d4f5e52e6b19c52aff5ec60",
-      "size": 4593,
+      "sha256": "9f2605ab71324fad1434fc9b7ec29568a3102581acce7320875ad54adb14e86f",
+      "size": 4662,
       "mode": "100644",
       "source": "pidgeon-docs/getting-started/introduction.mdx",
       "license": "Pidgeon-Public-Documentation"
@@ -357,8 +357,8 @@
     },
     {
       "path": "getting-started/quickstart-cli.mdx",
-      "sha256": "4bcf725d6bb40e7836a86a835d337f58e39703f10fca5eec1ca41eda5b80bcd5",
-      "size": 4023,
+      "sha256": "ee6e75a9a11fc2b25dbf7b146fc2cf464a597b3da8c42c90f80587fae7621146",
+      "size": 3884,
       "mode": "100644",
       "source": "pidgeon-docs/getting-started/quickstart-cli.mdx",
       "license": "Pidgeon-Public-Documentation"
@@ -381,32 +381,32 @@
     },
     {
       "path": "guides/de-identify-real-messages.mdx",
-      "sha256": "72d87600ad76daf1e91e5f52a5e93a09332fd481862c1a29d512bc1f47db22f0",
-      "size": 3710,
+      "sha256": "a05ab9205d58bac803d11a544ba48575c40f811ddd1c9a52b9beb8d3d0e14880",
+      "size": 3743,
       "mode": "100644",
       "source": "pidgeon-docs/guides/de-identify-real-messages.mdx",
       "license": "Pidgeon-Public-Documentation"
     },
     {
       "path": "guides/generate-realistic-test-data.mdx",
-      "sha256": "e296c0d6e5c615517d479999e803dca1bd014ac6398890cae27d6afdaf367c2d",
-      "size": 3350,
+      "sha256": "2c52393f7dd6968676d30d17795877c0a46c07b3fedd72837d940e7fac7202c5",
+      "size": 3383,
       "mode": "100644",
       "source": "pidgeon-docs/guides/generate-realistic-test-data.mdx",
       "license": "Pidgeon-Public-Documentation"
     },
     {
       "path": "guides/monitor-mirth-with-loft.mdx",
-      "sha256": "20c2067c0055d1237dede84c878dd53064ecfab6ad8c0cc75123acaee4039f86",
-      "size": 3751,
+      "sha256": "53003b9a10fcae411aa0b7a928dfbc5f6b0ceb1fa8515ccbd62c0e2a7b97c8bc",
+      "size": 3784,
       "mode": "100644",
       "source": "pidgeon-docs/guides/monitor-mirth-with-loft.mdx",
       "license": "Pidgeon-Public-Documentation"
     },
     {
       "path": "guides/seed-database-with-flock.mdx",
-      "sha256": "0dd7139e95d0cf96b411378de6d4b16b7d2d018199bbe754f333a1e4ce6562ae",
-      "size": 3854,
+      "sha256": "6f8b1236e30903ec26e8f0e696fc543b89bba4b324524865142c529c98821107",
+      "size": 3887,
       "mode": "100644",
       "source": "pidgeon-docs/guides/seed-database-with-flock.mdx",
       "license": "Pidgeon-Public-Documentation"
@@ -533,8 +533,8 @@
     },
     {
       "path": "mcp/overview.mdx",
-      "sha256": "d54d71600211578b9b8b39d97fa76a7aa357a80790b33e1c1db0b0518ff041c3",
-      "size": 5931,
+      "sha256": "53506bd93254492f5de891f36b82bd3c77f9fb33765ba725e90dcea37e8189ce",
+      "size": 5875,
       "mode": "100644",
       "source": "pidgeon-docs/mcp/overview.mdx",
       "license": "Pidgeon-Public-Documentation"

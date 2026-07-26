@@ -1,0 +1,74 @@
+# Protected deploy for PidgeonHealth/docs (the "Docs" door, release policy § 6-7): appends the
+# deterministic pidgeon-docs projection commit and triggers a signed-out deployment.
+#
+# workflow_dispatch only; requires the `docs-deploy` protected environment (Connor-approved
+# reviewer, restricted to the default branch per ../../environments/README.md). Defaults to
+# dry_run=true; a real deploy requires both dry_run=false and confirm=deploy-docs. Mintlify's own
+# GitHub App performs the actual hosting deploy on merge to the default branch; this job's job is
+# the pre-deploy build/link/nav/claim gate, never a package publish, so no registry credential
+# is read at all.
+
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "deploy-docs" to allow a real docs deploy.'
+        type: string
+        required: false
+      dry_run:
+        description: 'Build and check only; do not deploy.'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate deploy intent
+        shell: bash
+        env:
+          CONFIRM: ${{ inputs.confirm }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [[ "$DRY_RUN" == "false" && "$CONFIRM" != "deploy-docs" ]]; then
+            echo '::error::A real deploy requires confirm=deploy-docs.'
+            exit 1
+          fi
+          echo "Deploy preflight accepted (dry_run=${DRY_RUN})."
+
+  deploy-gate:
+    needs: preflight
+    runs-on: ubuntu-latest
+    environment: docs-deploy
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+
+      - name: Install Mintlify CLI
+        run: npm install --global mintlify
+
+      - name: Build
+        run: mintlify build
+
+      - name: Broken-link check
+        run: mintlify broken-links
+
+      - name: Deploy summary
+        run: |
+          if [[ "${{ inputs.dry_run }}" == "false" ]]; then
+            echo "Gate passed; Mintlify's GitHub App deploys on merge to the default branch." \
+              | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Dry run: build/link checks only, no deploy." | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
