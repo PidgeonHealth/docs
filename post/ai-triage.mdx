@@ -3,13 +3,13 @@ title: AI Triage
 description: Stop deciphering cryptic validation errors. Get plain-English root cause analysis and fix suggestions, on-device by default.
 ---
 
-<Note>Pro feature — requires a Pidgeon account with Post Pro entitlement.</Note>
+<Note>Pro feature. Requires a Pidgeon account with Post Pro entitlement. AI Triage ships with the Post desktop app and the licensed CLI, not the free `dotnet tool install` build.</Note>
 
-Pass validation failures through an on-device model for root cause analysis — including vendor-specific context like "this is a common Epic-to-downstream mapping issue." On-device is the default posture: $0 marginal cost, and no message content leaves your machine unless you explicitly opt into a cloud provider.
+Pass validation failures through an on-device model for root cause analysis, including vendor-specific context like "this is a common Epic-to-downstream mapping issue." On-device is the default posture: $0 marginal cost, and no message content leaves your machine unless you explicitly opt into a cloud provider.
 
 ## Setup
 
-AI Triage runs on-device out of the box; no configuration is required. To opt into a cloud provider instead (BYOK — your keys, your cost control), set the egress policy and your provider key:
+AI Triage runs on-device out of the box; no configuration is required. To opt into a cloud provider instead (BYOK, your keys, your cost control), set the egress policy and your provider key:
 
 ```bash
 pidgeon ai egress --mode byok-cloud --baa-opt-in true
@@ -18,13 +18,17 @@ export PIDGEON_OPENAI_KEY="sk-..."
 export PIDGEON_ANTHROPIC_KEY="sk-ant-..."
 ```
 
-`pidgeon ai egress` (no arguments) shows the current PHI-egress policy. Every call that resolves to a non-local provider is audit-logged. See [CLI Reference](/cli/post-commands) for the full set of AI modes.
+`pidgeon ai egress` (no arguments) shows the current PHI-egress policy. Every call that resolves to a non-local provider is audit-logged. See [AI Commands](/cli/ai-commands) for the full set of AI modes and providers.
 
 ## Usage
 
+Triage a message that fails validation:
+
 ```bash
-pidgeon validate --file broken.hl7 --ai-triage
+pidgeon ai triage broken.hl7
 ```
+
+You can also open a validated message in the Post desktop app and run triage from the AI Triage panel. Both drive the same on-device analysis.
 
 ## Example Output
 
@@ -44,4 +48,4 @@ Similar issues found: 23 messages in the last 24 hours
 
 ## API
 
-The AI Triage API is available at `POST /api/loft/triage`. See the [API Reference](/api-reference/ai-triage) for details.
+The Post Bridge exposes AI Triage at `POST /api/loft/triage` on `localhost:5101`. That route is unauthenticated because the Bridge is a single-user loopback sidecar: it only listens on `localhost` for the signed-in user, and the AI Triage feature itself stays gated behind Post Pro. See the [API Reference](/api-reference/ai-triage) for the request and response shape.

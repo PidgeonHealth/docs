@@ -1,18 +1,23 @@
 ---
 title: CLI Quickstart
-description: Install the CLI, generate and validate your first HL7 message, run a FHIR conformance check, and wire the exit codes into CI. Free, no account required.
+description: Install the free CLI, generate and validate your first HL7 message, and wire the exit codes into CI. No account required.
 ---
 
-The CLI is one binary that exposes generate, validate, conform, and de-identify from a terminal. It follows the Unix convention (`0` success, non-zero failure), so every command below drops into a CI pipeline as-is.
+The CLI is one binary that generates, validates, and de-identifies test messages from a terminal. It follows the Unix convention (`0` success, non-zero failure), so every command below drops into a CI pipeline as-is.
+
+<Info>
+The free CLI (the community NuGet build) ships 12 commands: `generate`, `validate`, `deident`, `data`, `artifacts`, `lookup`, `find`, `path`, `run`, `session`, `completions`, and `capabilities`. `conform`, `flock`, `loft`, `migrate`, `ai`, `diff`, and `config` are delivered through the desktop apps. If you run only `dotnet tool install` and then type `pidgeon conform`, it won't be there; run those from the CLI bundled with the desktop apps, or from the matching app panel.
+</Info>
 
 ## Prerequisites
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later
+- [.NET 8 runtime or SDK](https://dotnet.microsoft.com/download/dotnet/8.0) for the `dotnet tool` install below
+- The public NuGet package is the cross-platform beta install path. The current GitHub release also includes a signed Windows ZIP.
 
 <Steps>
   <Step title="Install the CLI">
     ```bash
-    dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.1
+    dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.2
     ```
 
     Verify the installation:
@@ -64,16 +69,6 @@ The CLI is one binary that exposes generate, validate, conform, and de-identify 
     Each issue includes expected/actual values, a fix suggestion, and a `pidgeon lookup` tip that opens the built-in standards reference. `--mode strict` checks against the published spec; `--mode compatibility` tolerates common real-world deviations.
   </Step>
 
-  <Step title="Run a conformance check">
-    Probe a live FHIR endpoint against a published Implementation Guide and get a pass/fail with an HTML scorecard:
-
-    ```bash
-    pidgeon conform --endpoint https://api.example.org/fhir --ig davinci-pas-2.1 --ci
-    ```
-
-    Current IG scope includes US Core and Da Vinci PAS 2.1. With `--ci`, must-support warnings also produce a non-zero exit so your pipeline gate catches them; without `--ci` they stay warnings.
-  </Step>
-
   <Step title="De-identify real messages">
     If you have real messages to work with, de-identify them first:
 
@@ -95,14 +90,18 @@ The CLI is one binary that exposes generate, validate, conform, and de-identify 
   </Step>
 </Steps>
 
+## Running a conformance check
+
+`pidgeon conform` probes a live FHIR endpoint against a published Implementation Guide (US Core and Da Vinci PAS 2.1 today) and returns a pass/fail with a non-zero CI exit code. It's delivered through the desktop apps, not the free `dotnet tool` package, so run it from the CLI bundled with an app or from Post's Conformance panel. See [Get started with Conform](/getting-started/conform).
+
 ## Exit codes
 
-The CLI emits exactly two exit codes, suitable for CI gates and shell scripting:
+The free CLI emits exactly two exit codes, suitable for CI gates and shell scripting:
 
 | Code | Meaning | Examples |
 |---|---|---|
-| `0` | Success | Message generated; validation passed; conform report passed (without must-support warnings under `--ci`) |
-| `1` | Failure | Validation issues found in strict mode; conform report failed, or passed with must-support warnings under `--ci`; missing required argument; unknown command; endpoint/IG load error |
+| `0` | Success | Message generated; validation passed |
+| `1` | Failure | Validation issues found in strict mode; missing required argument; unknown command |
 
 A minimal CI gate:
 

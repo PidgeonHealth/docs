@@ -1,50 +1,44 @@
 ---
 title: Population Generation
-description: Generate patient populations that look like your real data — age distributions, comorbidity correlations, temporal coherence — without a single real patient.
+description: "Generate a patient population that behaves like your real data: census demographics, correlated conditions, and temporal order, with no real patient in the pipeline."
 ---
 
-Demographics from US Census, condition correlations from CDC WONDER and NHANES, temporal ordering enforced across all clinical events.
+Flock generates a cohort, not a pile of independent rows. Demographics come from US Census distributions, condition correlations from a 108-condition comorbidity matrix grounded in public epidemiology (CDC WONDER, NHANES, CDC surveillance), and temporal order is enforced across every clinical event. The result reads like a population a real facility would see, which is what makes it useful for testing.
 
 ## Demographics
 
-Population demographics are drawn from US Census data:
-- **Age distribution** — Matches census age brackets for the selected geographic region
-- **Gender ratio** — Reflects actual population ratios
-- **Race/ethnicity** — Census-derived distributions
-- **Geographic distribution** — ZIP code and county-level population data
-
-## Comorbidity Correlation
-
-Conditions are correlated realistically:
-- Diabetes → Hypertension (70% co-occurrence)
-- Obesity → Sleep apnea, Type 2 diabetes
-- Smoking → COPD, lung cancer
-- Age → Increased chronic conditions
-
-## Temporal Coherence
-
-All temporal relationships are maintained:
-- Admission timestamps precede discharge timestamps
-- Lab orders precede lab results
-- Medication start dates precede end dates
-- Patient age is consistent with date of birth
-
-## Family Linkage
-
-Realistic household structures:
-- Spouse relationships with shared addresses
-- Parent-child relationships with age-appropriate gaps
-- Emergency contact cross-references
-
-## CLI Usage
+Age, sex, race, and geography are drawn from US Census distributions for the selected region. Set the geographic focus with a state abbreviation:
 
 ```bash
-# Generate 1000 patients
-pidgeon flock generate --count 1000 --format sql --geographic-focus us
+pidgeon flock generate --count 1000 --format sql --state TX
+```
 
-# Reproducible generation
+Age brackets, sex ratios, and the race and ethnicity mix track the census figures for that region rather than a flat random spread.
+
+## Correlated conditions
+
+Conditions co-occur the way they do in real patients. The comorbidity matrix carries conditional probabilities between condition pairs, so a generated patient with type 2 diabetes is likely to also carry hypertension, obesity brings sleep apnea and fatty liver disease along with it, and a COPD patient trends toward nicotine dependence and, less often, lung cancer. This is the credibility layer, not the headline: the point of Flock is schema-aware, FK-safe, no-PHI data, and the epidemiological grounding is what keeps that data from looking synthetic.
+
+## Temporal coherence
+
+Every generated timeline holds together. Admission timestamps precede discharge timestamps, lab orders precede their results, medication start dates precede end dates, and a patient's age stays consistent with their date of birth. A downstream system that validates ordering sees data it can actually process.
+
+## Family linkage
+
+Households are modeled, not scattered. Spouses share addresses, parent and child records carry age-appropriate gaps, and emergency-contact fields reference other generated people rather than dangling.
+
+## Reproducible runs
+
+Pass a seed to get the identical population every time, which makes a generated dataset something you can commit to a test fixture:
+
+```bash
 pidgeon flock generate --count 500 --format csv --seed 42
+```
 
-# Generate as FHIR bundles
+## FHIR output
+
+```bash
 pidgeon flock generate --count 200 --format fhir --output ./fhir-data/
 ```
+
+Generates FHIR transaction Bundles across the 137 spec-validated resource types Post generates, with references resolved inside each Bundle.

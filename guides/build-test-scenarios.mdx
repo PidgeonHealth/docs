@@ -5,7 +5,7 @@ description: Define admit-to-discharge test sequences once and run them repeated
 
 <Note>The Workflow Wizard is a Pro feature, available in the Post desktop app and the CLI with a Post Pro entitlement.</Note>
 
-Testing a single ADT message doesn't prove your interface works. Real go-lives need admit → lab order → result → discharge sequences — and you need to run them repeatedly as you iterate. Define the scenario once in YAML, run it as many times as you need.
+Testing a single ADT message doesn't prove your interface works. Real go-lives need admit → lab order → result → discharge sequences, and you need to run them repeatedly as you iterate. Define the scenario once in YAML, run it as many times as you need.
 
 ## Interactive wizard
 
@@ -60,7 +60,7 @@ Execute a scenario file and save the generated messages:
 pidgeon workflow run ed-visit.yaml --output ./test-results
 ```
 
-This generates each message in sequence with the specified delays and saves them to the output directory. Timestamps are coherent across all messages — the lab order timestamp is after admission, results after the order, and so on.
+This generates each message in sequence with the specified delays and saves them to the output directory. Timestamps are coherent across all messages: the lab order timestamp is after admission, results after the order, and so on.
 
 ## Validation checkpoints
 
@@ -113,4 +113,4 @@ The Post desktop app's Workflow Wizard provides a visual builder where you can:
 
 - [Generate test data](/guides/generate-realistic-test-data) for individual message types
 - [Monitor your interfaces](/guides/monitor-mirth-with-loft) with Loft while running scenarios
-- [Compare environments](/post/validation) using diff to verify test results
+- [Compare environments](/post/diff) using diff to verify test results

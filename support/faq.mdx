@@ -51,11 +51,11 @@ description: Accounts, data handling, supported standards, SmartScreen, the Brid
   </Accordion>
 
   <Accordion title="What is the Bridge?">
-    The Bridge is the local engine sidecar each desktop app starts: Loft on `localhost:5100`, Post on `localhost:5101`, Flock on `localhost:5102`. It binds to loopback only. When an app reports the Bridge as offline, open Settings → Connection in that app and retry.
+    The Bridge is the local engine sidecar each desktop app starts: Loft on `localhost:5100`, Post on `localhost:5101`, Flock on `localhost:5102`, Migrate on `localhost:5103`, and Conform on `localhost:5104`. The Bridge binds to loopback only. When an app reports the Bridge as offline, open Settings → Connection in that app and retry.
   </Accordion>
 
   <Accordion title="Can I script everything the apps do?">
-    The CLI exposes generate, validate, conform, and de-identify from a terminal with Unix exit codes (`0` success, `1` failure). Start with the [CLI quickstart](/getting-started/quickstart-cli).
+    The free CLI exposes generate, validate, and de-identify from a terminal with Unix exit codes (`0` success, `1` failure). App-delivered commands (`conform`, `flock`, `loft`, `migrate`, `ai`, `diff`, `config`) ship with the CLI bundled inside the desktop apps. Start with the [CLI quickstart](/getting-started/quickstart-cli).
   </Accordion>
 </AccordionGroup>
 

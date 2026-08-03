@@ -1,11 +1,11 @@
 ---
 title: Generate Realistic Test Data
-description: Go from zero to a full test dataset in under 5 minutes — HL7, FHIR, and NCPDP messages that match your vendor's real patterns.
+description: Go from zero to a full test dataset in under 5 minutes. HL7, FHIR, and NCPDP messages that match your vendor's real patterns.
 ---
 
 ## Prerequisites
 
-- Pidgeon CLI installed (`dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.1`)
+- Pidgeon CLI installed (`dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.2`)
 - Optionally: a vendor profile from real sample messages
 
 ## Generate your first messages
@@ -18,7 +18,7 @@ pidgeon generate ADT^A01 --count 5
 
 This produces 5 synthetic ADT^A01 messages with realistic patient demographics, encounter data, and properly structured segments (MSH, EVN, PID, PV1).
 
-<Tip>Use `--seed 42` for reproducible output — the same seed always generates the same messages.</Tip>
+<Tip>Use `--seed 42` for reproducible output. The same seed always generates the same messages.</Tip>
 
 ## Multi-standard generation
 
@@ -42,7 +42,7 @@ pidgeon generate RxFill --count 3
 ```
 </CodeGroup>
 
-<Note>HL7 v2 and FHIR R4 generation are free. NCPDP SCRIPT is closed by default — install the member-supplied standards package first (`pidgeon data install ncpdp-script --accept-license`, NCPDP membership required).</Note>
+<Note>HL7 v2 and FHIR R4 generation are free. NCPDP SCRIPT is closed by default. Install the member-supplied standards package first (`pidgeon data install ncpdp-script --accept-license`, NCPDP membership required).</Note>
 
 ## Use vendor profiles for realistic patterns
 

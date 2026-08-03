@@ -1,11 +1,11 @@
 ---
 title: Data Commands
-description: Manage healthcare reference datasets — install, import, and update LOINC, SNOMED, ICD-10, NDC, and more.
+description: Manage terminology datasets and FHIR Implementation Guide packages. Install, import, and update LOINC, SNOMED, ICD-10, NDC, US Core, Da Vinci, and more.
 ---
 
-Pidgeon uses reference datasets for realistic code generation during message creation. These commands manage your local dataset installations.
+`pidgeon data` is a free CLI command. It manages two kinds of local package: **terminology datasets** (the code systems that make generated messages pass downstream validation) and **FHIR Implementation Guide packages** (the profiles that `pidgeon conform` and FHIR validation grade against). Run `pidgeon data list` for the live catalog on your machine.
 
-## Available Datasets
+## Terminology datasets
 
 | Dataset | Codes | Size | Free | Pro |
 |---------|-------|------|------|-----|
@@ -17,41 +17,81 @@ Pidgeon uses reference datasets for realistic code generation during message cre
 | CVX | 288 entries | 1 MB | Full | Full |
 | RxNorm | Large | 1.7 GB | — | Full |
 | HCPCS | Full set | 5 MB | — | Full |
-| CPT | — | — | — | Add-on ($30/user/yr) |
+| CPT | Procedure codes | — | — | Licensed add-on |
+
+Eight terminology datasets ship; CPT is a separate licensed add-on gated by AMA royalty terms. This table is the CLI companion to [Datasets & Data Packages](/post/datasets).
+
+## FHIR Implementation Guide packages
+
+`pidgeon data` is also the IG package manager. Install a guide, and FHIR validation and `pidgeon conform` grade against its profiles.
+
+| Package | IG | Version |
+|---------|-----|---------|
+| `fhir-r4-core` | FHIR R4 base | 4.0.1 |
+| `fhir-us-core-3.1.1` | US Core | 3.1.1 |
+| `fhir-us-core-6.0` | US Core | 6.1.0 |
+| `fhir-davinci-pas-2.1` | Da Vinci Prior Auth Support | 2.1.0 |
+| `fhir-davinci-crd-2.1` | Da Vinci Coverage Requirements Discovery | 2.1.0 |
+| `fhir-davinci-dtr-2.0` | Da Vinci Documentation Templates and Rules | 2.0.0 |
+
+```bash
+pidgeon data install fhir-us-core-3.1.1
+pidgeon data install fhir-davinci-pas-2.1
+```
+
+## License-gated standards packages
+
+Some standards material is member-only and closed by default. It installs only with an explicit `--accept-license`:
+
+```bash
+# NCPDP SCRIPT (member-only XSDs; NCPDP membership required)
+pidgeon data install ncpdp-script --accept-license
+
+# X12 5010 guides
+pidgeon data install x12-5010 --accept-license
+```
+
+Until the `ncpdp-script` package is installed, NCPDP generation and validation report a license-required state rather than running. See [Message Generation](/post/message-generation#ncpdp-script-2017071).
 
 ## pidgeon data list
 
-List all available and installed datasets.
+List every available and installed package: terminology datasets, FHIR IGs, and license-gated standards.
 
 ```bash
 pidgeon data list
 ```
 
 ```text
-Dataset          Status      Version    Size
-─────────────────────────────────────────────
-LOINC            Installed   2.81       25 MB
-SNOMED CT US     Available   Sep 2025   1.5 GB
-ICD-10-CM        Installed   2026       15 MB
-ICD-9-CM         Installed   v32        8 MB
-NDC              Installed   Current    30 MB
-CVX              Installed   Current    1 MB
-RxNorm           Available   Feb 2026   1.7 GB
-HCPCS            Available   Jan 2026   5 MB
+Name                   DataType          Status      Version
+────────────────────────────────────────────────────────────
+loinc                  lab-tests         installed   2.81
+snomed                 snomed-concepts   available   Sep 2025
+icd10                  diagnoses         installed   2026
+ndc                    medications       installed   Current
+fhir-r4-core           fhir-ig           installed   4.0.1
+fhir-us-core-3.1.1     fhir-ig           available   3.1.1
+fhir-davinci-pas-2.1   fhir-ig           installed   2.1.0
+ncpdp-script           ncpdp-schemas     available   (license)
 ```
 
 ## pidgeon data install
 
-Download and install a dataset.
+Download and install a package (terminology dataset, FHIR IG, or a license-gated standards package).
 
 ```bash
-pidgeon data install <name>
+pidgeon data install <package> [--accept-license] [--all]
 ```
+
+| Flag | Description |
+|------|-------------|
+| `--accept-license` | Accept required license terms (for example UMLS, NCPDP membership). Required for member-only packages. |
+| `--all` | Install every available package. |
 
 ```bash
 pidgeon data install loinc
-pidgeon data install snomed
 pidgeon data install rxnorm
+pidgeon data install fhir-us-core-3.1.1
+pidgeon data install ncpdp-script --accept-license
 ```
 
 ## pidgeon data import

@@ -3,7 +3,7 @@ title: Conform Commands
 description: Probe a live FHIR endpoint against a published Implementation Guide from CI, with a non-zero exit code and an HTML scorecard.
 ---
 
-Conform is the FHIR conformance module of Post. `pidgeon conform` probes a live FHIR endpoint against a published Implementation Guide (US Core, Da Vinci PAS 2.1) and returns pass/fail with a non-zero CI exit code plus a self-contained HTML scorecard. It's the CI gate for CMS-0057-F.
+Conform is Pidgeon's FHIR conformance product. `pidgeon conform` probes a live FHIR endpoint against a published Implementation Guide (US Core, Da Vinci PAS 2.1) and returns pass/fail with a non-zero CI exit code plus a self-contained HTML scorecard. It's the CI gate for CMS-0057-F. For the concepts behind these flags, see the [Conform section](/conform/overview).
 
 ```bash
 pidgeon conform --endpoint <fhir-base-url> [options]
@@ -17,16 +17,25 @@ pidgeon conform --endpoint <fhir-base-url> [options]
 | `--endpoint-set` | string | — | Name of an installed conform-endpoint set (`pidgeon recipe list`) to walk every endpoint in |
 | `--resource` | string | — | Resource path `ResourceType/id` (e.g. `Patient/example`). Required unless `--walk` |
 | `--profile` | string | — | IG profile short name (e.g. `us-core-patient`) or canonical URL. Required unless `--walk` |
-| `--auth` | string | — | Authorization header value (`Bearer eyJ…`). Leave unset for unauthenticated endpoints |
+| `--auth` | string | — | Authorization header value (`Bearer eyJ…`). Leave unset for unauthenticated endpoints. Mutually exclusive with `--auth-smart-backend` |
+| `--auth-smart-backend` | flag | off | Authenticate via SMART Backend Services: discover the token endpoint, sign an RS384 client assertion, exchange it for an access token |
+| `--client-id` | string | — | Registered backend-services client id. Requires `--auth-smart-backend` |
+| `--key-file` | string | — | PEM-encoded RSA private key that signs the client assertion. Requires `--auth-smart-backend` |
+| `--scope` | string | `system/*.read` | OAuth scopes for the `client_credentials` grant |
+| `--token-endpoint` | string | — | Explicit OAuth token endpoint; skips `.well-known/smart-configuration` discovery |
 | `--walk` | flag | off | Probe every resource × profile pair declared in the endpoint's CapabilityStatement |
 | `--ci` | flag | off | CI mode: must-support warnings flip the exit to non-zero; a walk validating zero resources exits `2` |
 | `--require-full-coverage` | flag | off | Exit `2` unless every declared resource type was actually probed (walk only) |
 | `--probe-operations` | flag | off | Also POST a synthetic PAS request Bundle to `Claim/$submit` and grade the response |
 | `--check-terminology` | flag | off | Validate coded fields against a live FHIR terminology service; an unresolved code flips the exit to `1` |
+| `--terminology-endpoint` | string | `http://127.0.0.1:8080/fhir` | Cross-vocab terminology service for `--check-terminology` (ICD-10-CM / LOINC / RxNorm) |
+| `--snomed-endpoint` | string | `http://127.0.0.1:8181/fhir` | SNOMED CT terminology service; `http://snomed.info/sct` codes route here |
 | `--only-resources` | string | — | Comma-separated resource types to walk (e.g. `Patient,Encounter`). Walk only |
 | `--ig` | string | — | Filter walk probes to profiles from this IG base URL. Walk only |
-| `--output-file` | string | stdout | Write the report to a file (pair with `--output html`) |
-| `--badge` | string | — | Write a shields.io-style pass/fail SVG status badge to this path |
+| `--readiness-pack` | string | — | Grade the walk against a compiled readiness pack and write an evidence envelope. Supported: `us-core-3.1.1` (requires the `fhir-us-core-3.1.1` package). Walk only |
+| `--evidence-out` | string | `conform-evidence.json` | Path for the readiness evidence envelope JSON. Requires `--readiness-pack` |
+| `--output-file` | string | stdout | Write the report to a file instead of stdout (particularly useful for the HTML scorecard) |
+| `--badge` | string | — | Write dated pass/fail badge artifacts (SVG + shields.io endpoint JSON) whose verdict mirrors the exit code |
 
 ## Examples
 
@@ -43,6 +52,14 @@ pidgeon conform --endpoint https://api.payer.example/fhir --walk --ig http://hl7
 
 # Authenticated endpoint
 pidgeon conform --endpoint https://api.payer.example/fhir --walk --auth "Bearer eyJ..."
+
+# SMART Backend Services (system-to-system) auth
+pidgeon conform --endpoint https://api.payer.example/fhir --walk \
+  --auth-smart-backend --client-id my-client --key-file ./key.pem
+
+# Grade against the US Core 3.1.1 readiness pack and write an evidence envelope
+pidgeon conform --endpoint https://api.payer.example/fhir --walk \
+  --readiness-pack us-core-3.1.1 --evidence-out conform-evidence.json
 ```
 
 ## Exit codes
@@ -63,5 +80,7 @@ pidgeon conform --endpoint "$FHIR_URL" --walk --ci || exit 1
 
 ## Learn more
 
-- [Get started with Post](/getting-started/post) — the Conformance panel in the desktop app
-- [CLI Quickstart](/getting-started/quickstart-cli) — conform in a CI pipeline
+- [Conform overview](/conform/overview): the concepts behind these flags
+- [CMS-0057-F](/conform/cms-0057-f): required vs recommended IGs
+- [Evidence and CI](/conform/evidence-and-ci): exit codes, scorecards, readiness packs
+- [Get started with Post](/getting-started/post): the Conformance panel in the desktop app

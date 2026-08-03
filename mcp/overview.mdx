@@ -5,7 +5,7 @@ description: Drive Pidgeon's HL7 / FHIR / NCPDP engine from Claude, Cursor, VS C
 
 The public Pidgeon MCP adapter (`@pidgeonhealth/pidgeon-mcp`) exposes the community capabilities of the Pidgeon CLI over the [Model Context Protocol](https://modelcontextprotocol.io). In CLI mode it launches the local `pidgeon` command; in Bridge mode it connects to a running desktop Bridge and registers only the capabilities that Bridge advertises.
 
-<Note>The MCP transport is the delivery mechanism, not the entitlement. The free/paid line is enforced at Bridge authentication + a validated subscription — not at the transport. A free agent loop is never broken by a hard error; it degrades gracefully.</Note>
+<Note>The MCP transport is the delivery mechanism, not the entitlement. The free/paid line is enforced at Bridge authentication plus a validated subscription, not at the transport. A free agent loop is never broken by a hard error; it degrades gracefully.</Note>
 
 ## The one rule
 
@@ -18,7 +18,7 @@ The server is an npm package that shells out to the Pidgeon CLI (CLI mode) or ta
 <Steps>
   <Step title="Install the CLI">
     ```bash
-    dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.1
+    dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.2
     ```
   </Step>
   <Step title="Add the server to your MCP client">
@@ -40,20 +40,25 @@ The server is an npm package that shells out to the Pidgeon CLI (CLI mode) or ta
   </Step>
 </Steps>
 
+<Warning>
+Use `@pidgeonhealth/pidgeon-mcp`. The older `@pidgeonhealth/mcp` package is a
+contained legacy package and is not part of the governed public beta train.
+</Warning>
+
 ## Two transport modes
 
 The `PIDGEON_MODE` environment variable selects the transport, and the transport determines which tools register.
 
 | Mode | Value | What it talks to | Which tools register |
 |------|-------|------------------|----------------------|
-| **CLI** | `PIDGEON_MODE=cli` | Spawns the `pidgeon` CLI locally | Exactly the checked-in **community** tool set — the tools the free CLI can service end to end. No account, no Bridge. |
-| **Bridge** | `PIDGEON_MODE=bridge` | HTTP to a running desktop app's local Bridge | Exactly the roster the Bridge **advertises** for your resolved tier — free tools plus any Pro tools your subscription entitles. |
+| **CLI** | `PIDGEON_MODE=cli` | Spawns the `pidgeon` CLI locally | Exactly the checked-in **community** tool set: the tools the free CLI can service from start to finish. No account, no Bridge. |
+| **Bridge** | `PIDGEON_MODE=bridge` | HTTP to a running desktop app's local Bridge | Exactly the roster the Bridge **advertises** for your resolved tier: free tools plus any Pro tools your subscription entitles. |
 
-In Bridge mode, the server registers only what the Bridge advertises for your tier. If it can't reach an advertisement (older build, Bridge unreachable), it fails closed to the community set — it never materializes a Pro tool from a client-side label. See the [tool catalog](/mcp/tools) for the exact split.
+In Bridge mode, the server registers only what the Bridge advertises for your tier. If it can't reach an advertisement (older build, Bridge unreachable), it fails closed to the community set and never materializes a Pro tool from a client-side label. See the [tool catalog](/mcp/tools) for the exact split.
 
 ## On-device AI
 
-AI-assisted tools (for example `refine_hl7_segment`) default to a **bundled on-device model** — no API key, and no message content leaves the machine. Set it up once:
+AI-assisted tools (for example `refine_hl7_segment`) default to a **bundled on-device model**: no API key, and no message content leaves the machine. Set it up once:
 
 ```bash
 pidgeon ai download qwen3-4b
@@ -74,7 +79,7 @@ BYOK (a cloud provider) is optional and never required. The free `explain_error`
 
 ## Guided prompts
 
-The server ships six guided prompts that chain tools into a complete workflow. Each is honest about where the free line falls — a free agent gets the full diagnosis and never a hard stop.
+The server ships six guided prompts that chain tools into a complete workflow. Each is honest about where the free line falls: a free agent gets the full diagnosis and never a hard stop.
 
 | Prompt | Chains | Free through |
 |--------|--------|--------------|
@@ -85,7 +90,7 @@ The server ships six guided prompts that chain tools into a complete workflow. E
 | `reproduce_and_fix` | explain → validate → explain_error → refine → diff → send | Free through triage |
 | `seed_validate_monitor` | generate_population → run_workflow → validate → loft_status | Free through validation |
 
-<Note>In CLI mode, the three fully free workflows (`debug_hl7_error`, `go_live_prep`, `onboard_vendor_interface`) register out of the box — every tool they chain is in the community catalog. The other three chain Pro tools and appear in Bridge mode, advertised for your tier.</Note>
+<Note>In CLI mode, the three fully free workflows (`debug_hl7_error`, `go_live_prep`, `onboard_vendor_interface`) register out of the box; every tool they chain is in the community catalog. The other three chain Pro tools and appear in Bridge mode, advertised for your tier.</Note>
 
 ## Reference resources
 
@@ -102,5 +107,5 @@ Six read-only resources give an agent its bearings before it acts:
 
 ## Next steps
 
-- [MCP tool catalog](/mcp/tools) — the exact free, community, and Pro tool split
-- [CLI Reference](/cli/global-options) — the same operations from a terminal
+- [MCP tool catalog](/mcp/tools): the exact free, community, and Pro tool split
+- [CLI Reference](/cli/global-options): the same operations from a terminal

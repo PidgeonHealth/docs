@@ -49,22 +49,27 @@ Transaction bundles for FHIR server seeding.
 pidgeon flock generate --count 200 --format fhir --output ./fhir-data/
 ```
 
-Generates FHIR Transaction Bundles with proper reference integrity across the same 24 spec-validated resource types Post generates, including Patient, Encounter, Condition, Observation, MedicationRequest, Procedure, DiagnosticReport, AllergyIntolerance, Immunization, Organization, Practitioner, Location, and Coverage.
+Generates FHIR Transaction Bundles with proper reference integrity across the same 137 spec-validated resource types Post generates, including Patient, Encounter, Condition, Observation, MedicationRequest, Procedure, DiagnosticReport, AllergyIntolerance, Immunization, Organization, Practitioner, Location, and Coverage.
 
-## Seeding and Cleanup
+## Seeding and cleanup
+
+Seed a target database directly, or point `seed` at a directory that `generate -o` wrote:
 
 ```bash
-# Seed the connected database
-pidgeon flock seed
+# Preview the SQL without executing
+pidgeon flock seed --target postgres --connection "Host=localhost;Database=ehr;..." --dry-run
 
-# Preview SQL without executing
-pidgeon flock seed --dry-run
-
-# Remove all synthetic data
-pidgeon flock seed --cleanup
+# Seed the target database from generated records
+pidgeon flock seed --target postgres --connection "Host=localhost;Database=ehr;..." --from ./seed-data/
 ```
 
-<Warning>Cleanup removes all records tagged as synthetic. This cannot be undone.</Warning>
+Cleanup is its own command. It removes the records Flock tagged as synthetic:
+
+```bash
+pidgeon flock cleanup --provider postgres --connection "Host=localhost;Database=ehr;..."
+```
+
+<Warning>Cleanup removes every record tagged as synthetic. This cannot be undone.</Warning>
 
 ## Generation Analytics
 

@@ -1,0 +1,59 @@
+---
+title: Diff
+description: Compare two messages or two directories field by field. Field-aware for HL7, JSON-tree for FHIR, with an HTML report you can attach to a ticket.
+---
+
+<Note>Pro feature. Requires a Pidgeon account with Post Pro entitlement. Diff ships with the Post desktop app and the licensed CLI, not the free `dotnet tool install` build.</Note>
+
+When a message works in one environment and fails in another, the question is always the same: what actually changed? Diff answers it at the field level. Point it at two messages, or two directories, and it reports every field that differs, not a line-by-line text diff that buries the one field that matters.
+
+## What it compares
+
+- **HL7 v2**: field-aware. Differences are reported by segment and field position (`PID.5.1`, `PV1.44`), not raw character offsets, so a re-ordered optional field or a changed subcomponent surfaces as one clear entry.
+- **FHIR R4**: JSON-tree. Differences are reported by resource path.
+- **Directories**: compare a baseline folder against a candidate folder to diff a whole environment at once.
+
+## Usage
+
+```bash
+# Compare two messages
+pidgeon diff env-a/admit.hl7 env-b/admit.hl7
+
+# Compare two environments and write an HTML report
+pidgeon diff ./dev ./staging --report diff-report.html
+```
+
+## Ignore volatile fields
+
+Message control IDs and timestamps change on every send. Skip them so the diff shows only meaningful changes:
+
+```bash
+pidgeon diff env-a/admit.hl7 env-b/admit.hl7 --ignore MSH-7,MSH-10
+```
+
+`--ignore` takes a comma-list of segments or fields. Wildcards work too (`OBX-*` ignores every OBX field).
+
+## Severity and mode
+
+| Flag | Values | Description |
+|------|--------|-------------|
+| `--severity, -s` | `hint` (default), `warn`, `error` | Minimum severity to report. |
+| `--report, -o <path>` | HTML or JSON | Write a self-contained report; the format follows the file extension. |
+| `--basic, -b` | flag | Plain diff, without constraint validation or demographic analysis. |
+
+By default Diff runs constraint-aware analysis: it understands which fields carry coded values and flags a change that would break downstream validation, not just any change.
+
+## HTML report
+
+The `--report` output is a self-contained HTML file: the field-level change table plus triage hints, ready to attach to a ticket or hand to a stakeholder. No server, no external assets.
+
+<Note>AI-assisted diff hints are not yet available. The `--ai` flag is reserved for a future release; today Diff runs its constraint-aware field analysis without a model.</Note>
+
+## From the CLI or the app
+
+Diff is a pane in the Post desktop app and a command in the CLI. Both drive the same engine. See [Post Commands](/cli/post-commands#pidgeon-diff) for the full flag reference and the [Bridge API](/api-reference/diff) for the programmatic route.
+
+## Next steps
+
+- [Validation](/post/validation): catch spec and vendor deviations before diffing
+- [Vendor Profiles](/post/vendor-profiles): compare against your vendor's real patterns

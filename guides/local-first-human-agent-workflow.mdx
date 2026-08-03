@@ -1,0 +1,64 @@
+---
+title: Local-first human and agent workflow
+description: Divide healthcare interoperability work so an agent can help with inspectable evidence while the human keeps scope and accountability.
+---
+
+An agent is most useful in healthcare interoperability when it can inspect a
+bounded task and produce evidence the operator can review. It is least useful
+when a plausible answer quietly replaces the source material or the human
+decision.
+
+## Divide the work deliberately
+
+| Stage | Human responsibility | Agent-assisted work |
+| --- | --- | --- |
+| Frame | Define the question, allowed data, environment, and acceptance rule | Turn the question into a proposed checklist or command plan |
+| Prepare | Select synthetic fixtures or approved local inputs | Generate repeatable synthetic cases and enumerate controlled variations |
+| Execute | Approve the operation and its scope | Run local generation, validation, comparison, or reference commands |
+| Inspect | Review source input, findings, and exceptions | Organize results and point to the evidence behind each finding |
+| Decide | Accept, reject, escalate, or revise | Record the decision context without making the decision itself |
+
+## Keep the evidence local
+
+Pidgeon's local workflows can run with no cloud message-content egress. Keep
+message content and detailed technical evidence on the controlled machine, and
+pass only the minimum bounded context to an agent or external service that the
+team has approved.
+
+<Warning>
+“Local-first” describes the workflow boundary, not a universal promise that no
+Pidgeon surface ever uses a network. Account, update, licensing, and explicitly
+enabled provider features have their own documented boundaries.
+</Warning>
+
+## Make every finding inspectable
+
+An agent-supported finding should carry:
+
+- the input or stable fixture identifier;
+- the exact tool and version;
+- the command or operation;
+- the relevant rule or comparison;
+- the observed output;
+- uncertainty or missing context; and
+- the human disposition.
+
+If the evidence cannot be inspected, the result is a suggestion, not a
+technical conclusion.
+
+## Use the community interfaces
+
+The public `pidgeon` CLI provides a scriptable local interface. The governed
+`@pidgeonhealth/pidgeon-mcp` adapter exposes community capabilities to a
+compatible MCP client while keeping the underlying operation in the local CLI
+or an explicitly selected desktop Bridge.
+
+Start with the [public packages quickstart](/guides/public-packages-quickstart)
+and use synthetic data for the first controlled run.
+
+## Preserve the human gate
+
+Do not treat these tools as clinical decision support, an autonomous
+remediation system, or a substitute for implementation ownership. The agent
+can accelerate preparation, execution, and explanation. The accountable human
+still defines the boundary and signs off on what happens next.

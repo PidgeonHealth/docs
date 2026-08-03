@@ -3,9 +3,11 @@ title: Loft Status & Reports
 description: Get overall Loft monitoring status and generate reports via the Bridge API.
 ---
 
+<Note>Loft is a Pro product. These routes are served by the Loft desktop app's local Bridge on loopback (`localhost:5100`) for the signed-in user, which resolves the Professional tier locally, so a local call needs no API key. This is not a hosted API and is not reachable from another machine. A request below the Professional tier returns `402`, never a hard `403`.</Note>
+
 ## GET /api/loft/status
 
-Get overall monitoring status across all interfaces. **Public**.
+Get overall monitoring status across all interfaces.
 
 ```bash curl
 curl http://localhost:5100/api/loft/status
@@ -13,7 +15,7 @@ curl http://localhost:5100/api/loft/status
 
 ## GET /api/loft/report
 
-Generate a monitoring report. **Public**.
+Generate a monitoring report.
 
 | Query Param | Type | Default | Description |
 |-------------|------|---------|-------------|

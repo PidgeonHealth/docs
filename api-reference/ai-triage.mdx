@@ -3,7 +3,7 @@ title: AI Triage
 description: AI-powered failure analysis, pattern detection, and vendor upgrade checking via the Bridge API.
 ---
 
-Four endpoints for AI-assisted analysis of message failures. All **public** — no authentication required.
+Four endpoints for AI-assisted analysis of message failures. AI Triage is a **Post Pro feature**. These Bridge routes are unauthenticated because the Bridge is a single-user loopback sidecar: it listens only on `localhost` for the signed-in user, so there is no network surface to authenticate against. The feature entitlement is enforced in the app, not on the loopback route.
 
 ## POST /api/loft/triage
 

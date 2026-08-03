@@ -1,23 +1,26 @@
 ---
 title: Troubleshooting
-description: What each app shows when the Bridge is offline, input is invalid, or credentials are missing — and the next action for every case.
+description: What each app shows when the Bridge is offline, input is invalid, or credentials are missing, plus the next action for every case.
 ---
 
-Every Pidgeon app fails the same way on purpose: the window chrome and navigation stay on screen, the error is bounded and names what happened, and there's a clear next action — usually a **Retry**. You should never see a blank wall. This page lists, per surface, what a failure actually looks like and what to do.
+Every Pidgeon app fails the same way on purpose: the window chrome and navigation stay on screen, the error is bounded and names what happened, and there's a clear next action, usually a **Retry**. You should never see a blank wall. This page lists, per surface, what a failure actually looks like and what to do.
 
 ## First thing to check: the Bridge
 
-Each desktop app starts a local engine sidecar — the **Bridge** — on a loopback port. Most "the app won't do anything" reports are a Bridge that isn't running yet or has stopped.
+Each desktop app starts a local engine sidecar (the **Bridge**) on a loopback port. Most "the app won't do anything" reports are a Bridge that isn't running yet or has stopped.
 
 | App | Bridge port | How the app reaches it |
 |---|---|---|
 | Loft | `localhost:5100` | HTTP health poll |
 | Post | `localhost:5101` | HTTP API |
 | Flock | `localhost:5102` | HTTP health poll |
-| Migrate | (Tauri-invoke) | desktop bridge call, not an HTTP port |
-| Pidgeon launcher | — | no Bridge of its own; probes each product directly |
+| Conform | `localhost:5104` | HTTP API (standalone app in beta; conformance runs in Post today) |
+| Migrate | `localhost:5103` | HTTP API |
+| Pidgeon launcher | none | no Bridge of its own; probes each product directly |
 
-When an app reports the Bridge offline, the fix is the same: make sure the app finished starting, then use the in-app **Retry** (or **Settings → Connection**). The Bridge binds to loopback only — nothing listens on your network.
+When an app reports the Bridge offline, the fix is the same: make sure the app finished starting, then use the in-app **Retry** (or **Settings → Connection**). The Bridge binds to loopback only; nothing listens on your network.
+
+Conformance runs inside Post today, on Post's `5101` Bridge, so conformance failures surface under [Post](#post) below. The standalone Conform app on `5104` is in beta and not yet downloadable.
 
 ## Post
 
@@ -46,7 +49,7 @@ When an app reports the Bridge offline, the fix is the same: make sure the app f
 | What you see | What it means | Next action |
 |---|---|---|
 | A banner **"Bridge API unreachable"** and a second **"Tauri bridge unavailable"**, both with **Retry**; a red **"Bridge offline"** footer pill | Migrate's desktop bridge call isn't resolving | Retry once the app has fully started. |
-| The **"Start export wizard"** button is **disabled** | The wizard is gated until the Bridge is available (it does not crash) | Restore the Bridge connection; the button enables when the app can reach it. |
+| The **"Start export wizard"** button is **disabled** | The wizard is gated until the Bridge is available (it does not crash) | Restore the Bridge connection; the button becomes active when the app can reach it. |
 | **"No migrations yet"** empty state | No migration has been run on this machine | Expected on a fresh install; run the Dashboard preflight to begin. |
 
 ## Pidgeon launcher
@@ -59,7 +62,7 @@ When an app reports the Bridge offline, the fix is the same: make sure the app f
 
 ## CLI
 
-The CLI follows Unix conventions: exit `0` on success, exit `1` on failure — so it slots straight into CI gates.
+The CLI follows Unix conventions: exit `0` on success, exit `1` on failure, so it slots straight into CI gates.
 
 | What you see | What it means | Next action |
 |---|---|---|
@@ -68,7 +71,7 @@ The CLI follows Unix conventions: exit `0` on success, exit `1` on failure — s
 | Strict-mode validation exits `1` | The message has conformance issues | Read the reported issues; exit `1` is the intended CI signal, not a tool crash. |
 
 <Note>
-On macOS, if the installed tool can't find a runtime, set `DOTNET_ROOT` to your dotnet install path (for example `/usr/local/share/dotnet`) before running `pidgeon`.
+On macOS or Linux, if the `dotnet tool` install can't find a runtime, set `DOTNET_ROOT` to your dotnet install path before running `pidgeon`. For example `/usr/local/share/dotnet` on macOS, or `/usr/share/dotnet` (or `$HOME/.dotnet` for a manual install) on Linux, depending on how you installed .NET. The current public beta uses the .NET tool as its cross-platform install path; the separate signed ZIP in `0.1.0-beta.2` is a Windows artifact.
 </Note>
 
 ## Account portal
@@ -80,4 +83,4 @@ On macOS, if the installed tool can't find a runtime, set `DOTNET_ROOT` to your 
 
 ## Still stuck?
 
-Email [support@pidgeon.health](mailto:support@pidgeon.health) with the app name, version (status bar), your OS, whether the Bridge status pill showed online or offline, and what you expected versus what happened. Check [Known issues](/support/known-issues) first — your problem may already have a workaround.
+Email [support@pidgeon.health](mailto:support@pidgeon.health) with the app name, version (status bar), your OS, whether the Bridge status pill showed online or offline, and what you expected versus what happened. Check [Known issues](/support/known-issues) first; your problem may already have a workaround.

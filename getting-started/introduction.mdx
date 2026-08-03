@@ -1,59 +1,69 @@
 ---
 title: Introduction
-description: Pidgeon Health replaces manual test data creation, production data copying, and blind interface monitoring with a single platform — zero PHI, zero setup.
+description: Pidgeon Health replaces manual test data creation, production data copying, and blind interface monitoring with one engine and five products. Zero PHI on the synthetic path.
 ---
 
-If you work with HL7, FHIR, or NCPDP, you've probably spent hours creating test messages by hand, copied production data you shouldn't have, or discovered an interface was down because a nurse called. Pidgeon replaces all of that.
+If you work with HL7, FHIR, or NCPDP, you've probably spent hours building test messages by hand, copied production data you shouldn't have, or found out an interface was down because a nurse called. Pidgeon replaces all of that.
 
-## Four Products, One Engine
+## Five products, one engine
 
 <CardGroup cols={2}>
   <Card title="Post" icon="paper-plane">
-    **Testing & Validation** — Generate HL7 v2.3–v2.8, FHIR R4, and NCPDP SCRIPT messages in seconds, validate against the published spec or real vendor patterns, de-identify on-device. Includes **Conform**, the FHIR implementation-guide conformance checker.
+    **Testing and validation.** Generate HL7 v2.3–v2.8, FHIR R4, and NCPDP SCRIPT messages in seconds, validate against the published spec or real vendor patterns, and de-identify on-device.
 
-    *Free generation and validation, no account required. Pro unlocks the Workflow Wizard, Diff, AI Triage, and full datasets.*
+    *Free generation and validation, no account required. Pro adds the Workflow Wizard, Diff, AI Triage, and full datasets.*
+  </Card>
+  <Card title="Conform" icon="circle-check">
+    **FHIR conformance.** Prove a live FHIR endpoint satisfies the Implementation Guides a program requires, from CI, with a non-zero exit code and an evidence scorecard. The wedge is CMS-0057-F.
+
+    *Conformance evidence against named IG versions, never a compliance certification.*
   </Card>
   <Card title="Flock" icon="users">
-    **Synthetic Population Engine** — Seed test databases with schema-aware, FK-safe patient populations. Compliance signs off in minutes because there's no PHI to review.
+    **Synthetic population engine.** Seed test databases with schema-aware, FK-safe patient populations. There's no PHI to review, so compliance signs off in minutes.
 
     *Output as SQL, CSV, HL7 streams, or FHIR Bundles.*
   </Card>
   <Card title="Loft" icon="tower-observation">
-    **Interface Observability** — Loft watches your configured sources, flags suspect interface messages for human review, and alerts your team. Every catch lands in a review queue with a suggested fix.
+    **Interface observability.** Loft watches your configured sources, flags suspect interface messages for human review, and alerts your team. Every catch lands in a review queue with a suggested fix.
 
     *Built for teams running Mirth, Rhapsody, and similar engines.*
   </Card>
   <Card title="Migrate" icon="arrow-right-arrow-left">
-    **FHIR Bulk Data Migration** — Move healthcare data between systems via FHIR R4 Bulk Data Access (NDJSON per the HL7 IG), with preflight checks, de-identification, reconciliation, and resume.
+    **FHIR Bulk Data migration.** Move healthcare data between systems via FHIR R4 Bulk Data Access (NDJSON per the HL7 IG), with preflight checks, de-identification, reconciliation, and resume.
 
     *Built for migration projects, not synthetic test data.*
   </Card>
 </CardGroup>
 
-Post, Flock, Loft, and Migrate are desktop apps, opened directly or through **Pidgeon** — the launcher app that shows every product's install and entitlement status in one grid. See [Get started with Pidgeon (the launcher)](/getting-started/launcher).
+The five products are desktop apps, opened directly or through **Pidgeon**, the launcher that shows every product's install and entitlement status in one grid. See [Get started with Pidgeon (the launcher)](/getting-started/launcher).
 
-## How the Products Connect
+<Note>
+Conform is Pidgeon's newest product. Its conformance capability ships today in the CLI (`pidgeon conform`) and the Conformance panel in Post. The standalone Conform desktop app is in beta and not yet available to download.
+</Note>
 
-All four products share a core engine — configure it once, use it everywhere:
+## How the products connect
 
-- **Shared parsing and validation** — The same HL7/FHIR/NCPDP parsers power Post's validation, Flock's output, Loft's message analysis, and Migrate's conversion
-- **Shared de-identification** — On-device PHI removal available across every product
-- **Shared vendor profiles** — Learn your vendor's patterns once, apply them across generation, validation, and monitoring
-- **Cross-product workflows** — Generate a population with Flock, test the messages with Post, monitor the feed with Loft
+The products share one engine, so you configure it once and use it everywhere:
 
-Each product has its own buyer and budget — this is a shared engine with a retention story, not a purchasing pipeline you walk end to end.
+> Flock models it. Post exercises it. Conform proves it. Migrate moves it. Loft protects it.
 
-## Who Is Pidgeon For?
+- **Shared parsing and validation.** The same HL7/FHIR/NCPDP parsers power Post's validation, Conform's profile checks, Flock's output, Loft's message analysis, and Migrate's conversion.
+- **Shared de-identification.** On-device PHI removal, available across every product.
+- **Shared vendor profiles.** Learn your vendor's patterns once, apply them across generation, validation, and monitoring.
+
+Each product has its own buyer and budget. This is a shared engine with a retention story, not a pipeline one customer walks end to end.
+
+## Who is Pidgeon for?
 
 <CardGroup cols={2}>
   <Card title="Integration Engineers" icon="code">
     Stop hand-crafting test messages. Generate realistic data on demand, validate against your vendor's actual patterns, and go into go-lives prepared.
   </Card>
   <Card title="Consultants" icon="briefcase">
-    Carry your testing toolkit from client to client. Vendor profiles are portable across engagements — no more starting from scratch at every new site.
+    Carry your testing toolkit from client to client. Vendor profiles are portable across engagements, so you're not starting from scratch at every new site.
   </Card>
   <Card title="IT Directors & Compliance" icon="shield-check">
-    Eliminate PHI from test environments without a 4-month approval process. Monitor interface health from a single dashboard instead of waiting for incident reports.
+    Keep PHI out of test environments without a four-month approval process. Watch interface health from one place instead of waiting for incident reports.
   </Card>
   <Card title="QA & Testing Teams" icon="vial">
     Seed test databases that look like production in minutes. New developers are productive on day one instead of spending their first week building test data.
@@ -62,8 +72,8 @@ Each product has its own buyer and budget — this is a shared engine with a ret
 
 ## Free CLI, desktop apps for everyone else
 
-- **CLI** — Always free. Install the `Pidgeon.CLI` tool with `dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.1` and you're generating messages in under a minute.
-- **Desktop apps** — Post, Flock, Loft, and Migrate for the majority who'd rather point and click. Post's core loop (generate, validate, conform) works with no account; Post Pro starts at $29/mo, and Flock, Loft, and Migrate require a Pidgeon account sign-in.
+- **CLI.** Always free. Install the `Pidgeon.CLI` tool with `dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.2`. The free CLI carries the core commands (generate, validate, de-identify, and more); the product-specific commands ship with their desktop apps.
+- **Desktop apps.** Post, Flock, Loft, and Migrate for the majority who'd rather point and click. Post's core loop (generate, validate, run a conformance check) works with no account; Post Pro starts at $29/mo, and Flock, Loft, and Migrate require a Pidgeon account sign-in.
 
 <CardGroup cols={2}>
   <Card title="CLI Quickstart" icon="terminal" href="/getting-started/quickstart-cli">

@@ -1,0 +1,39 @@
+---
+title: Mapping and analysis
+description: Control per-field mapping with YAML, assess a migration with the analyst workflow, and submit a C-CDA to an IHE XDS.b registry.
+---
+
+## Mapping YAML
+
+`migrate run` ships sane defaults, and you can override per-field retain, redact, and date-shift policy with a mapping YAML:
+
+```bash
+pidgeon migrate run --source "..." --output ./export --mapping ./my-mapping.yml
+```
+
+The mapping controls how each source field is carried, redacted, or date-shifted, per customer. `--source-adapter` selects the source EHR adapter (default `centricity`).
+
+## Analyst: assess before you cut over
+
+`migrate analyst` is a deterministic, read-only analysis workflow. It assesses a source, reviews the mapping and loss catalog, converts a bounded sample (1–25 rows, so a run is fast and reproducible), clusters exceptions, analyzes reconciliation, and assembles cutover-readiness evidence. Results are local evidence artifacts; nothing is written back to the source.
+
+```bash
+pidgeon migrate analyst <subcommand> [options]
+```
+
+Use it to answer "what will this migration lose, and where" before you commit to a cutover.
+
+## to-xds: FHIR bundle to IHE XDS.b
+
+`migrate to-xds` reads a FHIR R4 bundle, generates a C-CDA, and submits it to an IHE XDS.b registry via ITI-41 Provide and Register:
+
+```bash
+pidgeon migrate to-xds --bundle ./bundle.json
+```
+
+With `--verify`, on by default, it confirms the round-trip by ITI-18 FindDocuments and ITI-43 Retrieve, and asserts the retrieved document is byte-identical to what it submitted.
+
+## Next
+
+- [Bulk Data export](/migrate/bulk-data)
+- [Migrate CLI reference](/cli/migrate-commands)

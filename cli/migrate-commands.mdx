@@ -3,13 +3,13 @@ title: Migrate Commands
 description: Export healthcare data to FHIR R4 Bulk Data NDJSON, with de-identification, reconciliation, and resume.
 ---
 
-Migrate moves healthcare data between systems via FHIR R4 Bulk Data Access (NDJSON per the HL7 IG). v1 ships the `run` export workflow reading from Centricity / athenaPractice 23.0 `FHIR_*` views.
+Migrate moves healthcare data between systems via FHIR R4 Bulk Data Access (NDJSON per the HL7 IG). v1 ships the `run` export workflow reading from Centricity / athenaPractice 23.0 `FHIR_*` views. For the concepts behind these commands, see the [Migrate section](/migrate/overview).
 
-<Note>Migrate requires a Pidgeon account sign-in. It is built for migration projects, not synthetic test data — for populations, see [Flock](/cli/flock-commands).</Note>
+<Note>Migrate requires a Pidgeon account sign-in. It is built for migration projects, not synthetic test data. For populations, see [Flock](/cli/flock-commands).</Note>
 
 ## pidgeon migrate run
 
-Export from a source EHR to FHIR R4 Bulk Data NDJSON — one file per resource type plus a `manifest.json` conforming to the HL7 FHIR Bulk Data Access IG.
+Export from a source EHR to FHIR R4 Bulk Data NDJSON, one file per resource type plus a `manifest.json` conforming to the HL7 FHIR Bulk Data Access IG.
 
 ```bash
 pidgeon migrate run --source <connection-string> --output <dir> [options]
@@ -43,7 +43,7 @@ pidgeon migrate run --source "Host=localhost;Database=centricity;..." --output .
 
 ## pidgeon migrate analyst
 
-Deterministic migration analysis: assess a source, review the mapping and loss catalog, convert a bounded sample, cluster exceptions, analyze reconciliation, and assemble cutover-readiness evidence. Read/derive-only — results are local evidence artifacts.
+Deterministic migration analysis: assess a source, review the mapping and loss catalog, convert a bounded sample, cluster exceptions, analyze reconciliation, and assemble cutover-readiness evidence. Read/derive-only; results are local evidence artifacts.
 
 ```bash
 pidgeon migrate analyst <subcommand> [options]
@@ -67,4 +67,4 @@ pidgeon migrate to-xds --bundle <bundle.json> [options]
 
 ## Desktop app
 
-The Migrate desktop app runs the same `run` workflow with a preflight checklist, a live migration log, and reconciliation — see [Get started with Migrate](/getting-started/migrate).
+The Migrate desktop app runs the same `run` workflow with a preflight checklist, a live migration log, and reconciliation. See [Get started with Migrate](/getting-started/migrate).

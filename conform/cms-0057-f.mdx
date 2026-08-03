@@ -1,0 +1,61 @@
+---
+title: CMS-0057-F
+description: What the CMS Interoperability and Prior Authorization final rule requires, the FHIR baseline it names, and what Conform checks today.
+---
+
+CMS-0057-F, the CMS Interoperability and Prior Authorization final rule (2024), requires impacted payers to operate a set of FHIR APIs. Impacted payers are Medicare Advantage organizations, state Medicaid and CHIP agencies, and QHP issuers on the federally-facilitated exchanges. The API compliance dates are generally January 1, 2027.
+
+## What the rule requires
+
+The rule requires four payer FHIR APIs:
+
+- **Patient Access API**
+- **Provider Access API**
+- **Payer-to-Payer API**
+- **Prior Authorization API**
+
+The required standards baseline is FHIR R4.0.1, US Core 3.1.1, SMART App Launch 1.0, and Bulk Data 1.0 (45 CFR 170.215, as adopted).
+
+## Required vs recommended
+
+Not everything in the Da Vinci ecosystem is mandated, and keeping that straight decides what you test against.
+
+| Standard | Status under CMS-0057-F |
+|---|---|
+| FHIR R4.0.1 | **Required** baseline |
+| US Core 3.1.1 | **Required** baseline |
+| SMART App Launch 1.0 | **Required** baseline |
+| Bulk Data 1.0 | **Required** baseline |
+| Da Vinci PAS 2.1 | **Recommended** (CMS standards/IG FAQ) |
+| Da Vinci CRD 2.1 | **Recommended** |
+| Da Vinci DTR 2.0 | **Recommended** |
+| US Core 6.1 | Ecosystem target, a permitted updated version |
+
+## What Conform covers today
+
+Conform ships the Implementation Guides that matter for this rule:
+
+| IG | Package | Role |
+|---|---|---|
+| US Core 3.1.1 | `fhir-us-core-3.1.1` | CMS-0057-F required baseline |
+| US Core 6.0 | `fhir-us-core-6.0` | Ecosystem target (USCDI v3) |
+| Da Vinci PAS 2.1 | `fhir-davinci-pas-2.1` | Prior authorization |
+| Da Vinci CRD 2.1 | `fhir-davinci-crd-2.1` | Coverage requirements discovery |
+| Da Vinci DTR 2.0 | `fhir-davinci-dtr-2.0` | Documentation templates and rules |
+
+Install an IG package with `pidgeon data install <package>`, then point Conform at your endpoint. The US Core 3.1.1 readiness pack grades a walk against the required baseline and writes an evidence envelope. See [Evidence and CI](/conform/evidence-and-ci).
+
+## What Conform does not do
+
+Conform tests conformance to these Implementation Guides. It does not:
+
+- certify CMS-0057-F compliance, or assert that an endpoint is "compliant";
+- exercise SMART App Launch or OIDC end-user authorization flows (it authenticates with a static bearer token or SMART Backend Services);
+- run the complete Bulk Data kick-off, poll, and download lifecycle.
+
+The evidence it produces states what was tested and what was not. Treat it as conformance evidence you present, not a verdict on the regulation as a whole.
+
+## Next
+
+- [Running conformance](/conform/running-conformance)
+- [Evidence and CI](/conform/evidence-and-ci)

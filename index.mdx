@@ -1,22 +1,25 @@
 ---
 title: Pidgeon Health Documentation
-description: Generate realistic test messages in seconds, validate against real vendor patterns, and stop copying production data into test environments.
+description: Generate realistic test messages, prove FHIR conformance, seed databases, migrate data, and monitor live interfaces. Fully synthetic, zero PHI on the synthetic path.
 ---
 
-Stop copying production data into test environments. Generate realistic HL7, FHIR, and NCPDP messages in seconds — fully synthetic, zero PHI, zero compliance risk.
+Stop copying production data into test environments. One engine, five products: generate realistic HL7, FHIR, and NCPDP messages, prove your FHIR endpoints conform, seed test databases, move data between systems, and watch live interfaces. The synthetic path carries no PHI, so there's nothing to mask and no security review to clear.
 
 <CardGroup cols={2}>
   <Card title="Post" icon="paper-plane" href="/post/message-generation">
-    **Testing Tool** — Generate HL7 v2.3–v2.8, FHIR R4, and NCPDP SCRIPT messages, validate, de-identify, and check FHIR conformance with Conform. Free CLI + free generation/validation in the desktop app; Pro unlocks the rest.
+    **Testing tool.** Generate HL7 v2.3–v2.8, FHIR R4, and NCPDP SCRIPT messages, validate against the published spec, and de-identify on-device. Free CLI and free generation/validation in the desktop app; Pro adds the rest.
+  </Card>
+  <Card title="Conform" icon="circle-check" href="/conform/overview">
+    **FHIR conformance.** Prove a live FHIR endpoint satisfies the Implementation Guides CMS-0057-F requires, from CI, with a non-zero exit code and an evidence scorecard. Conformance evidence, not certification.
   </Card>
   <Card title="Flock" icon="users" href="/flock/overview">
-    **Population Engine** — Seed test databases with clinically realistic patient populations. Epidemiologically grounded. Compliance signs off in minutes, not months.
+    **Population engine.** Seed test databases with schema-aware, FK-safe patient populations. No PHI to review, so compliance signs off in minutes.
   </Card>
   <Card title="Loft" icon="tower-observation" href="/loft/overview">
-    **Observability** — Know when your interfaces break before clinical staff calls you. Loft watches configured sources, alerts your team, and queues suspect messages for human review.
+    **Observability.** Know when an interface breaks before clinical staff calls. Loft watches configured sources, alerts your team, and queues suspect messages for human review.
   </Card>
-  <Card title="Migrate" icon="arrow-right-arrow-left" href="/getting-started/migrate">
-    **Bulk Data Migration** — Move production data between systems via FHIR R4 Bulk Data Access, with preflight checks, de-identification, and reconciliation.
+  <Card title="Migrate" icon="arrow-right-arrow-left" href="/migrate/overview">
+    **Bulk data migration.** Move production data between systems via FHIR R4 Bulk Data Access, with preflight checks, de-identification, and reconciliation.
   </Card>
 </CardGroup>
 
@@ -27,7 +30,7 @@ Stop copying production data into test environments. Generate realistic HL7, FHI
     First message in under a minute. Always free.
   </Card>
   <Card title="Try the desktop apps" icon="browser" href="/getting-started/quickstart-desktop">
-    Point-and-click generation, validation, and conformance checks in Post.
+    Point-and-click generation, validation, and conformance checks.
   </Card>
   <Card title="API Reference" icon="code" href="/api-reference/introduction">
     Integrate with the local Bridge sidecar each desktop app runs.

@@ -3,9 +3,11 @@ title: Loft Alerts
 description: Query and acknowledge monitoring alerts via the Bridge API.
 ---
 
+<Note>Loft is a Pro product. These routes are served by the Loft desktop app's local Bridge on loopback (`localhost:5100`) for the signed-in user, which resolves the Professional tier locally, so a local call needs no API key. This is not a hosted API and is not reachable from another machine. A request below the Professional tier returns `402`, never a hard `403`.</Note>
+
 ## GET /api/loft/alerts
 
-List alerts with optional filters. **Public**.
+List alerts with optional filters.
 
 | Query Param | Type | Default | Description |
 |-------------|------|---------|-------------|
@@ -23,7 +25,7 @@ curl "http://localhost:5100/api/loft/alerts?severity=critical&sinceHours=6"
   "success": true,
   "data": [
     {
-      "id": "alert-5012",
+      "id": "7d9c1e46-3b0a-4c2e-9f1a-2b6d5e4f8a10",
       "interfaceId": "intf-001",
       "interfaceName": "ER Interface",
       "severity": "critical",
@@ -41,8 +43,8 @@ curl "http://localhost:5100/api/loft/alerts?severity=critical&sinceHours=6"
 
 ## POST /api/loft/alerts/{id}/acknowledge
 
-Acknowledge an alert. **Public**.
+Acknowledge an alert. The `{id}` is the alert's GUID.
 
 ```bash curl
-curl -X POST http://localhost:5100/api/loft/alerts/alert-5012/acknowledge
+curl -X POST http://localhost:5100/api/loft/alerts/7d9c1e46-3b0a-4c2e-9f1a-2b6d5e4f8a10/acknowledge
 ```

@@ -3,7 +3,9 @@ title: Loft Interfaces
 description: CRUD operations and metrics for monitored healthcare integration interfaces.
 ---
 
-Manage monitored interfaces. All endpoints are **public**.
+Manage monitored interfaces.
+
+<Note>Loft is a Pro product. These routes are served by the Loft desktop app's local Bridge on loopback (`localhost:5100`) for the signed-in user, which resolves the Professional tier locally, so a local call needs no API key. This is not a hosted API and is not reachable from another machine. A request below the Professional tier returns `402`, never a hard `403`.</Note>
 
 ## GET /api/loft/interfaces
 
@@ -21,7 +23,7 @@ Create a new interface.
 |-------|------|---------|-------------|
 | `name` | string | Required | Display name |
 | `directoryPath` | string | Required | Filesystem path to watch |
-| `profileName` | string | — | Vendor profile for validation |
+| `profileName` | string | none | Vendor profile for validation |
 | `filePattern` | string | `"*.hl7"` | Glob pattern for message files |
 
 ```bash curl
@@ -80,4 +82,4 @@ Get interface metrics.
 curl "http://localhost:5100/api/loft/interfaces/intf-001/metrics?sinceHours=12"
 ```
 
-Response includes `messagesTotal`, `messagesSuccessful`, `messagesFailed`, `successRate`, `averageLatencyMs`, `p99LatencyMs`.
+Response includes `totalMessagesProcessed`, `totalErrors`, `totalSuccesses`, `errorRate`, `lastMessageAt`, `startedAt`, `uptimeSeconds`, and an `hourlyBreakdown` array (each bucket has `hour`, `messagesProcessed`, `errors`, and `successes`).

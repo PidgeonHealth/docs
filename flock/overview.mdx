@@ -1,43 +1,57 @@
 ---
 title: Flock Overview
-description: Seed test databases that look like production in minutes — not months. Zero PHI, instant compliance approval.
+description: Seed a test database that looks like production without copying a single real record. No PHI, no production-snapshot sign-off to wait on.
 ---
 
-Connect to your database, and Flock generates populations that match your schema — with realistic demographics, comorbidity correlations, and temporal coherence built in. Output as SQL INSERT (FK-ordered), CSV, HL7 streams, or FHIR Bundles.
+An empty test database doesn't catch real bugs. A database full of copied production data is a compliance problem and a security review you have to sit through. Flock is the third option: point it at your schema and it generates a synthetic population that fits your tables, keeps every foreign key valid, and contains no PHI because no real record ever entered the pipeline.
 
-## Key Features
+## One loop: schema in, seeded database out
 
-- **Schema-aware** — Connects to your database, analyzes the schema, and generates data that fits your table structures
-- **Epidemiologically grounded** — Age, gender, race, and geographic distributions match real US Census data
-- **Comorbidity correlation** — Diabetes correlates with hypertension, obesity with sleep apnea
-- **Temporal coherence** — Admissions before discharges, lab orders before results
-- **Family linkage** — Realistic household structures and family relationships
-- **Multiple outputs** — SQL INSERT (FK-ordered), CSV, HL7 streams, FHIR Bundles
-
-## Use Cases
-
-- QA and integration testing with realistic volumes
-- Development environment seeding
-- Demo environments for sales and training
-- Load testing with production-scale datasets
-- Training new staff on EHR systems
-
-## Workflow
+Flock reads your database schema, a live connection or a SQL DDL file, and maps the foreign keys into a dependency graph. It generates records in that dependency order so every reference resolves. You get the population as FK-ordered SQL INSERTs, CSV, HL7 v2 message streams, or FHIR transaction Bundles, and you can seed a connected database directly.
 
 ```bash
 # 1. Connect to your database
-pidgeon flock connect --provider postgres --connection-string "Host=localhost;Database=ehr;..."
+pidgeon flock connect --provider postgres --connection "Host=localhost;Database=ehr;..."
 
-# 2. Optionally learn from existing data
-pidgeon flock learn --tables patients,encounters --sample-size 500
+# 2. Optionally learn distributions from existing rows
+pidgeon flock learn --sample 500
 
-# 3. Generate synthetic population
-pidgeon flock generate --count 1000 --format sql
+# 3. Generate a synthetic population
+pidgeon flock generate --count 1000 --format sql --output ./seed-data/
 
-# 4. Seed the database
-pidgeon flock seed
+# 4. Seed the target database
+pidgeon flock seed --target postgres --connection "Host=localhost;Database=ehr;..." --from ./seed-data/
 ```
 
-## Pricing
+## Why the data looks real
 
-Flock is $49/mo self-serve, plus metered API usage at scale. It requires a Pidgeon account sign-in — Post's free CLI does not unlock Flock.
+The generated cohort isn't uniform noise. Demographics track US Census age, sex, race, and geographic distributions, and clinical content is grounded in a 108-condition comorbidity matrix built from public epidemiology (CDC WONDER, NHANES, CDC surveillance). Diabetes pulls in hypertension, obesity pulls in sleep apnea, and temporal order holds across the record: admissions precede discharges, lab orders precede results, medication start dates precede end dates. That grounding is why a QA run against Flock data surfaces the failures a hand-built handful of test patients never will. It is a credibility proof-point, not the headline. The headline is schema-aware, FK-safe, no-PHI data in your target format.
+
+## When something fails
+
+| What you see | What it means | Next action |
+|---|---|---|
+| `connect` returns a provider error | The provider value or connection string didn't resolve | Use `postgres`, `sqlserver`, or `mysql`, and confirm the connection string. See [Schema Intelligence](/flock/schema-intelligence). |
+| A foreign key fails on seed | The target schema drifted from what Flock introspected | Re-run `connect` against the current schema, then regenerate. |
+| Generation stops at a record cap | You hit your plan's generation limit | Reduce `--count`, or check your plan in the account portal. |
+
+## Getting Flock
+
+Flock is a paid product and requires a Pidgeon account sign-in. Post's free CLI (message generation and validation) does not include Flock; the `flock` command is delivered through the Flock desktop app and the Pro CLI. See [Get started with Flock](/getting-started/flock).
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Schema Intelligence" icon="database" href="/flock/schema-intelligence">
+    How Flock classifies tables and maps foreign keys.
+  </Card>
+  <Card title="Population Generation" icon="users" href="/flock/population-generation">
+    Demographics, correlated conditions, and temporal coherence.
+  </Card>
+  <Card title="Output Formats" icon="file-export" href="/flock/output-formats">
+    SQL, CSV, HL7 v2, and FHIR Bundles.
+  </Card>
+  <Card title="Seed a database" icon="seedling" href="/guides/seed-database-with-flock">
+    From an empty schema to a seeded population.
+  </Card>
+</CardGroup>
