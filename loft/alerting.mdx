@@ -1,30 +1,32 @@
 ---
 title: Alerting
-description: Get notified through PagerDuty, email, or webhook the moment an interface starts failing — not hours later.
+description: Get notified through PagerDuty, email, Slack, or a webhook the moment an interface starts failing, not hours later.
 ---
 
-Five channels, three severity levels, deduplication, and escalation routing. Configurable per interface.
+Six channels, three severity levels, deduplication, and escalation routing. Configurable per interface.
 
-## Alert Channels
+## Alert channels
 
-| Channel | Supported |
-|---------|:-----:|
-| Local log | Yes |
-| Webhook (Slack, Teams, etc.) | Yes |
-| Email (SMTP) | Yes |
-| PagerDuty | Yes |
+| Channel | Delivery | Egress |
+|---------|----------|--------|
+| Local log | Console, or a log file on the machine | Stays on device |
+| Webhook | HTTP POST to any endpoint that accepts JSON | Off-device |
+| Slack | Formatted message to a Slack incoming webhook | Off-device |
+| Microsoft Teams | Formatted card to a Teams incoming webhook | Off-device |
+| Email | SMTP (or SendGrid) to a recipient list | Off-device |
+| PagerDuty | Events API v2 with a routing key | Off-device |
 
-Alert payloads are redacted before they go out to any channel — message content never leaves your network.
+Payloads sent to an off-device channel are scrubbed of message content before they leave the machine. Local log channels keep the full detail. Message content never leaves your network.
 
-<Tip>Use the webhook channel to integrate with Slack, Microsoft Teams, or any service that accepts incoming webhooks.</Tip>
+<Tip>Slack and Teams are their own channels: each formats the alert for that service. Use the generic Webhook channel for anything else that accepts an incoming webhook.</Tip>
 
-## Advanced Alert Features
+## Routing and deduplication
 
-- **Deduplication** — Suppresses repeat alerts for the same issue within a configurable window
-- **Escalation** — Routes alerts based on severity to different channels or on-call groups
-- **Detailed payloads** — Each alert includes file path, severity, error/warning counts, message type, sending application, and full error list
+- **Deduplication**: suppresses repeat alerts for the same issue within a configurable window.
+- **Escalation**: routes alerts by severity to different channels or on-call groups.
+- **Payload contents**: each alert carries the file path, severity, error and warning counts, message type, sending application, and the failing rules with their locations.
 
-## Severity Levels
+## Severity levels
 
 | Level | Description |
 |-------|-------------|
@@ -32,7 +34,7 @@ Alert payloads are redacted before they go out to any channel — message conten
 | `warning` | Elevated error rate or anomalous throughput |
 | `info` | Informational events (interface started, config changed) |
 
-## Alert Lifecycle
+## Alert lifecycle
 
 Alerts follow a lifecycle: **triggered** → **acknowledged** → **resolved**.
 
@@ -47,7 +49,7 @@ pidgeon loft alerts --severity critical
 curl -X POST http://localhost:5100/api/loft/alerts/{id}/acknowledge
 ```
 
-## Example Alert
+## Example alert
 
 ```text
 CRITICAL: Validation failure rate exceeded threshold

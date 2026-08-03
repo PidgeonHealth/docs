@@ -1,13 +1,13 @@
 ---
 title: MCP Tool Catalog
-description: The exact free, community, and Pro tool split the Pidgeon MCP server exposes — matching the checked-in community catalog and the Bridge-advertised roster.
+description: The exact free, community, and Pro tool split the Pidgeon MCP server exposes, matching the checked-in community catalog and the Bridge-advertised roster.
 ---
 
 The server ships **22 tools**: 13 free and 9 Pro. Which ones register depends on the [transport mode](/mcp/overview#two-transport-modes). This page is the human-readable companion to the generated `MANIFEST.md` and the checked-in community catalog; the live, machine-readable roster for your session is always `pidgeon://version`.
 
 ## Community tools (CLI mode)
 
-With `PIDGEON_MODE=cli` — no account, no Bridge — the server registers **exactly these eleven** tools: the ones the free CLI's command catalog can service end to end. Nothing else appears; a Pro tool never materializes from a client-side label.
+With `PIDGEON_MODE=cli` (no account, no Bridge) the server registers **exactly these eleven** tools: the ones the free CLI's command catalog can service from start to finish. Nothing else appears; a Pro tool never materializes from a client-side label.
 
 | Tool | What it does |
 |------|--------------|
@@ -21,13 +21,13 @@ With `PIDGEON_MODE=cli` — no account, no Bridge — the server registers **exa
 | `manage_data_packages` | List and install reference data packages. |
 | `search_artifacts` | Search local starter recipes, installed recipes, and data packages. |
 | `pidgeon_status` | Local environment and capability diagnostics. |
-| `describe_tool` | Return the full contract for any tool by name — free and uncapped, and it describes Pro tools without unlocking them. |
+| `describe_tool` | Return the full contract for any tool by name. Free and uncapped, and it describes Pro tools without granting access to them. |
 
-<Note>`generate_message` in CLI mode is single-patient and volume-capped, with graceful degradation as you approach the cap — never a hard failure that breaks an agent loop.</Note>
+<Note>`generate_message` in CLI mode is single-patient and volume-capped, with graceful degradation as you approach the cap, never a hard failure that breaks an agent loop.</Note>
 
 ## Free tools added in Bridge mode
 
-With `PIDGEON_MODE=bridge` and a running desktop app, the Bridge advertises the full free tier — the eleven community tools plus these two (their substrate runs in the Bridge, so the CLI alone can't service them):
+With `PIDGEON_MODE=bridge` and a running desktop app, the Bridge advertises the full free tier: the eleven community tools plus these two (their substrate runs in the Bridge, so the CLI alone can't service them):
 
 | Tool | What it does |
 |------|--------------|
@@ -38,7 +38,7 @@ With `PIDGEON_MODE=bridge` and a running desktop app, the Bridge advertises the 
 
 ## Pro tools
 
-These nine are server-advertised only after authentication, for a resolved subscription tier. They require a [Pidgeon account](/getting-started/account) with an active subscription — the **Agentic Seat** ($49/mo per developer or agent seat), or usage-metered credits.
+These nine are server-advertised only after authentication, for a resolved subscription tier. They require a [Pidgeon account](/getting-started/account) with an active subscription: the **Agentic Seat** (per developer or agent seat) or usage-metered credits.
 
 | Tool | What it does |
 |------|--------------|
@@ -54,9 +54,9 @@ These nine are server-advertised only after authentication, for a resolved subsc
 
 ## How the split is enforced
 
-The community set is a checked-in, fail-closed allowlist — registration by reflection or filesystem discovery is forbidden for the public composition. In Bridge mode the server registers exactly what the Bridge advertises for your tier; when a tier changes, the advertisement refreshes and newly entitled tools unlock. There is no way to surface a tool the active composition doesn't include.
+The community set is a checked-in, fail-closed allowlist; registration by reflection or filesystem discovery is forbidden for the public composition. In Bridge mode the server registers exactly what the Bridge advertises for your tier; when a tier changes, the advertisement refreshes and newly entitled tools appear. There is no way to surface a tool the active composition doesn't include.
 
 ## Next steps
 
-- [MCP Server overview](/mcp/overview) — install, transport modes, prompts, and resources
-- [Your Pidgeon account](/getting-started/account) — plan and entitlements
+- [MCP Server overview](/mcp/overview): install, transport modes, prompts, and resources
+- [Your Pidgeon account](/getting-started/account): plan and entitlements

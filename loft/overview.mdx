@@ -3,29 +3,30 @@ title: Loft Overview
 description: Know when your interfaces break before clinical staff calls you. Loft watches configured sources and flags content-level failures for human review.
 ---
 
+<div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+  <img src="/images/brand/icons/loft.png" alt="" width="48" height="48" />
+  <img src="/images/brand/wordmarks/loft.png" alt="Loft" style={{ height: '30px', width: 'auto' }} />
+</div>
+
 Loft watches the messages flowing through your interfaces and catches what engine dashboards miss: a silently malformed med order, a misrouted lab result. Every catch lands in a review queue with a suggested fix. A human approves or rejects every remediation; Loft never changes a message on its own.
 
 ## What Loft does
 
-1. **Configure sources**: point Loft at your integration engine's output directories or pickup folders
-2. **Validate on pickup**: every new message picked up from a watched source is parsed and validated against your vendor profile
-3. **Alert on failures**: configurable alerting via local log, webhook, email, Slack, or PagerDuty
-4. **Track trends**: dashboards show throughput, error rates, and anomalies over time
-5. **Review and remediate**: flagged messages land in a review queue with a suggested fix for a human to accept or reject
-6. **Export evidence**: build an audit trail of catches, reviews, and outcomes
+1. **Configure sources**: point Loft at your integration engine's output directories or pickup folders.
+2. **Validate on pickup**: every new message picked up from a watched source is parsed and validated against your vendor profile.
+3. **Alert on failures**: six channels (local log, webhook, Slack, Microsoft Teams, email, PagerDuty). See [Alerting](/loft/alerting).
+4. **Track trends**: dashboards show throughput, error rates, and anomalies over time.
+5. **Review and remediate**: flagged messages land in a review queue with a suggested fix for a human to accept or reject.
+6. **Export evidence**: build an audit trail of catches, reviews, and outcomes.
 
-Message content stays on your network. Loft processes watched sources locally; alert payloads are redacted before they leave the machine.
+Message content stays on your network. Loft processes watched sources locally, and payloads to off-device alert channels are scrubbed of message content before they leave the machine.
 
-## Getting Started
+## Getting started
+
+Watch a directory from the CLI:
 
 ```bash
-# CLI quick start
-pidgeon loft watch --directory /var/mirth/outbound/er --profile epic_er
-
-# Or create interfaces via API
-curl -X POST http://localhost:5100/api/loft/interfaces \
-  -H "Content-Type: application/json" \
-  -d '{"name": "ER Interface", "directoryPath": "/var/loft/er", "profileName": "epic_er"}'
+pidgeon loft watch --path /var/mirth/outbound/er --profile epic_er
 ```
 
-See [Get started with Loft](/getting-started/loft) for the desktop app walkthrough, or [Monitor Mirth with Loft](/guides/monitor-mirth-with-loft) for a step-by-step Mirth setup.
+To create a persistent interface through the Loft desktop app's local Bridge, see [Interface Monitoring](/loft/interface-monitoring) for the full request. Then read [Get started with Loft](/getting-started/loft) for the desktop app walkthrough, or [Monitor Mirth with Loft](/guides/monitor-mirth-with-loft) for a step-by-step Mirth setup.

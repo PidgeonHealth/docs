@@ -1,0 +1,56 @@
+---
+title: Conform overview
+description: Prove a FHIR implementation satisfies the Implementation Guides a program requires, explain the gaps, and keep the evidence. The CI gate you don't have to build.
+---
+
+<div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+  <img src="/images/brand/icons/conform.png" alt="" width="48" height="48" />
+  <img src="/images/brand/wordmarks/conform.png" alt="Conform" style={{ height: '30px', width: 'auto' }} />
+</div>
+
+Conform checks a live FHIR endpoint against the published Implementation Guides a program requires, tells you which elements pass and which fall short, and writes the result as evidence you can attach to a ticket, a CI run, or a contract. It produces conformance evidence against named IG versions. It is not a compliance certification.
+
+The wedge is CMS-0057-F. Impacted payers must operate FHIR APIs with compliance dates generally January 1, 2027, and each of those APIs has to conform to specific IG versions. Conform is the check you run against a live endpoint to see where you stand. See [CMS-0057-F](/conform/cms-0057-f) for what the rule actually requires.
+
+## Where Conform runs
+
+<CardGroup cols={2}>
+  <Card title="From the CLI" icon="terminal" href="/conform/running-conformance">
+    `pidgeon conform` walks an endpoint from your terminal or a CI pipeline and returns a non-zero exit code on failure. No account, no hosted deployment.
+  </Card>
+  <Card title="Inside Post" icon="paper-plane" href="/getting-started/post">
+    The Conformance panel in Post wires an endpoint, runs the walk, and reads results per rule. Same engine, point-and-click.
+  </Card>
+</CardGroup>
+
+<Note>
+Conform is becoming Pidgeon's fifth product. The standalone Conform desktop app is in beta and not yet available to download. Today you run conformance from the CLI and the Conformance panel in Post, which keeps a quick endpoint check and hands the deeper evidence work to Conform.
+</Note>
+
+## What it checks
+
+- **Structural conformance** to a profile: cardinality, datatypes, fixed and pattern values, bindings, slicing, and a measured FHIRPath subset.
+- **Must-support elements**, reported honestly. One sampled instance is evidence of presence, never proof of full must-support capability.
+- **The PAS `$submit` operation**, with `--probe-operations`, graded against the PAS response Bundle profile.
+- **Coded fields** against a live terminology service, with `--check-terminology`.
+
+Every run can emit a self-contained HTML scorecard, a JSON report for machines, and a dated pass/fail badge. See [Evidence and CI](/conform/evidence-and-ci).
+
+## Evidence, not certification
+
+Conform reports conformance against the IG versions you name. It does not certify CMS-0057-F compliance and never labels an endpoint "compliant." That line is deliberate: the evidence is yours to present, and it stays honest about what was and wasn't tested.
+
+## Where Conform sits in the suite
+
+Pidgeon is five products on one engine:
+
+> Flock models it. Post exercises it. Conform proves it. Migrate moves it. Loft protects it.
+
+Conform is the "proves it" step. Once Post has built and exercised an exchange, Conform demonstrates that the FHIR side satisfies its contract.
+
+## Next
+
+- [CMS-0057-F](/conform/cms-0057-f): what the rule requires, and what Conform covers today
+- [Running conformance](/conform/running-conformance): endpoints, profiles, walks, and auth
+- [Evidence and CI](/conform/evidence-and-ci): exit codes, scorecards, readiness packs
+- [Conform CLI reference](/cli/conform-commands)

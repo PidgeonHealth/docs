@@ -38,7 +38,8 @@
             "icon": "download",
             "pages": [
               "getting-started/install-windows",
-              "getting-started/install-macos"
+              "getting-started/install-macos",
+              "getting-started/install-linux"
             ]
           },
           {
@@ -47,6 +48,7 @@
             "pages": [
               "getting-started/launcher",
               "getting-started/post",
+              "getting-started/conform",
               "getting-started/flock",
               "getting-started/loft",
               "getting-started/migrate"
@@ -58,11 +60,22 @@
             "pages": [
               "post/message-generation",
               "post/validation",
+              "post/diff",
               "post/de-identification",
               "post/vendor-profiles",
               "post/workflow-wizard",
               "post/ai-triage",
               "post/datasets"
+            ]
+          },
+          {
+            "group": "Conform (Conformance)",
+            "icon": "circle-check",
+            "pages": [
+              "conform/overview",
+              "conform/cms-0057-f",
+              "conform/running-conformance",
+              "conform/evidence-and-ci"
             ]
           },
           {
@@ -85,9 +98,21 @@
             ]
           },
           {
+            "group": "Migrate (Bulk Data Migration)",
+            "icon": "arrow-right-arrow-left",
+            "pages": [
+              "migrate/overview",
+              "migrate/bulk-data",
+              "migrate/mapping"
+            ]
+          },
+          {
             "group": "Guides & Tutorials",
             "icon": "book-open",
             "pages": [
+              "guides/public-packages-quickstart",
+              "guides/healthcare-interface-test-data-field-guide",
+              "guides/local-first-human-agent-workflow",
               "guides/generate-realistic-test-data",
               "guides/de-identify-real-messages",
               "guides/build-test-scenarios",
@@ -122,7 +147,8 @@
             "pages": [
               "api-reference/generate",
               "api-reference/validate",
-              "api-reference/diff"
+              "api-reference/diff",
+              "api-reference/ai-triage"
             ]
           },
           {
@@ -132,7 +158,6 @@
               "api-reference/loft-interfaces",
               "api-reference/loft-alerts",
               "api-reference/loft-status",
-              "api-reference/ai-triage",
               "api-reference/analytics",
               "api-reference/traces"
             ]
@@ -142,14 +167,6 @@
             "icon": "users",
             "pages": [
               "api-reference/flock"
-            ]
-          },
-          {
-            "group": "Admin & Enterprise",
-            "icon": "shield-check",
-            "pages": [
-              "api-reference/admin",
-              "api-reference/enterprise"
             ]
           },
           {
@@ -174,6 +191,7 @@
               "cli/flock-commands",
               "cli/loft-commands",
               "cli/migrate-commands",
+              "cli/ai-commands",
               "cli/data-commands",
               "cli/config-commands"
             ]

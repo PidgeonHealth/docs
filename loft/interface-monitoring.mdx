@@ -1,15 +1,17 @@
 ---
 title: Interface Monitoring
-description: Point Loft at your Mirth output directories and know immediately when something breaks — before the help desk does.
+description: Point Loft at your Mirth output directories and know when something breaks before the help desk does.
 ---
 
 One command to start watching. Every new message file picked up from a watched source is parsed and validated against your vendor profile, with metrics tracked per interface.
 
-## Creating Interfaces
+## Creating interfaces
+
+The CLI `pidgeon loft watch` runs an ad-hoc watch and validates `.hl7` files as they land. To create a persistent interface that survives restarts and appears in the desktop app's **Sources** panel, POST to the local Bridge. This is the canonical create example; the [Loft Interfaces API reference](/api-reference/loft-interfaces) documents every field.
 
 <CodeGroup>
 ```bash CLI
-pidgeon loft watch --directory /var/mirth/outbound/er --profile epic_er --file-pattern "*.hl7"
+pidgeon loft watch --path /var/mirth/outbound/er --profile epic_er
 ```
 
 ```bash API
@@ -24,20 +26,25 @@ curl -X POST http://localhost:5100/api/loft/interfaces \
 ```
 </CodeGroup>
 
-## Interface Metrics
+## Interface metrics
 
 Each interface tracks:
-- **Messages total** — Total messages processed
-- **Success rate** — Percentage passing validation
-- **Error rate** — Messages with validation failures
-- **Throughput** — Messages per minute/hour
-- **Latency** — Average and p99 processing time
+
+| Metric | What it measures |
+|--------|------------------|
+| Total messages processed | Messages parsed from the source |
+| Total successes | Messages that passed validation |
+| Total errors | Messages that failed validation |
+| Error rate | Failed messages as a fraction of the total |
+| Hourly breakdown | Per-hour processed, errors, and successes |
 
 ```bash
 curl "http://localhost:5100/api/loft/interfaces/{id}/metrics?sinceHours=24"
 ```
 
-## Managing Interfaces
+The response also carries `lastMessageAt`, `startedAt`, and `uptimeSeconds`. See the [Loft Interfaces API reference](/api-reference/loft-interfaces) for the full shape.
+
+## Managing interfaces
 
 ```bash
 # List all interfaces
@@ -52,7 +59,7 @@ curl -X PUT http://localhost:5100/api/loft/interfaces/{id} \
 curl -X DELETE http://localhost:5100/api/loft/interfaces/{id}
 ```
 
-## Status Overview
+## Status overview
 
 ```bash
 # CLI

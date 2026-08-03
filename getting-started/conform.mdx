@@ -1,0 +1,60 @@
+---
+title: Get started with Conform
+description: Run FHIR conformance evidence today from the CLI or the Conformance panel in Post. The standalone Conform app is in beta.
+---
+
+Conform proves a FHIR implementation satisfies the Implementation Guides a program requires and leaves you the evidence. It is Pidgeon's fifth product, focused on the CMS-0057-F readiness wedge.
+
+<Note>
+The standalone Conform desktop app is in beta and not yet available to download. You can run the full conformance capability today from the CLI (`pidgeon conform`) and the Conformance panel in Post.
+</Note>
+
+## Run it today
+
+<CardGroup cols={2}>
+  <Card title="From the CLI" icon="terminal" href="/conform/running-conformance">
+    Walk an endpoint in one command, with a non-zero exit code for CI.
+  </Card>
+  <Card title="Inside Post" icon="paper-plane" href="/getting-started/post">
+    Wire an endpoint in the Conformance panel and read results per rule.
+  </Card>
+</CardGroup>
+
+## One loop: install, walk, keep the evidence
+
+<Steps>
+  <Step title="Install the IG you're testing against">
+    ```bash
+    pidgeon data install fhir-us-core-3.1.1
+    ```
+    US Core 3.1.1 is the CMS-0057-F required baseline. See [CMS-0057-F](/conform/cms-0057-f) for the full IG map.
+  </Step>
+  <Step title="Walk the endpoint">
+    ```bash
+    pidgeon conform --endpoint https://api.payer.example/fhir --walk --ci
+    ```
+    `--walk` probes every resource × profile pair the endpoint's CapabilityStatement declares; `--ci` makes must-support warnings fail the run.
+  </Step>
+  <Step title="Keep the evidence">
+    ```bash
+    pidgeon conform --endpoint https://api.payer.example/fhir --walk \
+      --readiness-pack us-core-3.1.1 --evidence-out conform-evidence.json \
+      --output-file scorecard.html
+    ```
+    You get a machine-readable evidence envelope and a self-contained HTML scorecard.
+  </Step>
+</Steps>
+
+## When something fails
+
+| What you see | What it means | Next action |
+|---|---|---|
+| Exit code `2` | The walk validated zero resources. Nothing was declared in the CapabilityStatement, or every declared type returned an empty search | Confirm the endpoint's CapabilityStatement and that the resources exist. A run that tested nothing is not evidence. |
+| `MUSTSUPPORT-<path>` findings under `--ci` | A must-support element was absent from the sampled instance | These flip the exit code by design. Populate the element, or record it as a known gap in the evidence envelope. |
+| `CONFORM_STUB_PROFILE` warning | A resource validated against an embedded subset because the IG package wasn't installed | Install the owning IG package with `pidgeon data install <package>` and re-run. |
+
+## Next
+
+- [Conform overview](/conform/overview)
+- [Running conformance](/conform/running-conformance)
+- [Evidence and CI](/conform/evidence-and-ci)

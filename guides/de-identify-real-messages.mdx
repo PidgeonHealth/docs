@@ -1,6 +1,6 @@
 ---
 title: De-identify Real Messages
-description: Replace manual MRN scrubbing with a single command. On-device processing — no PHI ever leaves your machine.
+description: Replace manual MRN scrubbing with a single command. On-device processing, so no PHI ever leaves your machine.
 ---
 
 <Warning>
@@ -9,7 +9,7 @@ De-identification assists with HIPAA compliance but does not guarantee it. Alway
 
 ## Prerequisites
 
-- Pidgeon CLI installed (`dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.1`)
+- Pidgeon CLI installed (`dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.2`)
 - A directory of real HL7 messages to de-identify
 
 ## Basic de-identification
@@ -92,7 +92,7 @@ pidgeon deident --in ./inbox --out ./clean --date-shift 30d --keep-ids
     ```
   </Step>
   <Step title="Use in testing">
-    The de-identified messages retain the same structure, segment ordering, and field patterns as the originals — ideal for integration testing.
+    The de-identified messages retain the same structure, segment ordering, and field patterns as the originals, which is what integration testing needs.
   </Step>
 </Steps>
 

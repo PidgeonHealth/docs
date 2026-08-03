@@ -3,7 +3,9 @@ title: Traces & Gaps
 description: Trace patient journeys across interfaces, detect message gaps, and measure interface latency.
 ---
 
-Five endpoints for message tracing and gap detection. All **public**.
+Five endpoints for message tracing and gap detection.
+
+<Note>Loft is a Pro product. These routes are served by the Loft desktop app's local Bridge on loopback (`localhost:5100`) for the signed-in user, which resolves the Professional tier locally, so a local call needs no API key. This is not a hosted API and is not reachable from another machine. A request below the Professional tier returns `402`, never a hard `403`.</Note>
 
 ## GET /api/loft/traces
 
@@ -30,9 +32,9 @@ curl "http://localhost:5100/api/loft/traces?patient_id=MRN12345&since=2026-02-01
     "patientId": "MRN12345",
     "totalSpanMs": 14400000,
     "events": [
-      {"interface": "ER ADT", "messageType": "ADT^A01", "timestamp": "2026-02-20T08:30:00Z", "status": "valid"},
-      {"interface": "Lab", "messageType": "ORU^R01", "timestamp": "2026-02-20T09:15:00Z", "status": "valid"},
-      {"interface": "ER ADT", "messageType": "ADT^A03", "timestamp": "2026-02-20T12:30:00Z", "status": "valid"}
+      {"interfaceName": "ER ADT", "messageType": "ADT^A01", "timestamp": "2026-02-20T08:30:00Z", "validationStatus": "valid"},
+      {"interfaceName": "Lab", "messageType": "ORU^R01", "timestamp": "2026-02-20T09:15:00Z", "validationStatus": "valid"},
+      {"interfaceName": "ER ADT", "messageType": "ADT^A03", "timestamp": "2026-02-20T12:30:00Z", "validationStatus": "valid"}
     ],
     "gaps": []
   },

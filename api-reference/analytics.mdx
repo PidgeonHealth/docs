@@ -3,7 +3,9 @@ title: Analytics
 description: Time-series queries, dashboards, reports, and CSV exports for Loft interface analytics.
 ---
 
-Seven endpoints for analytics and reporting. All **public**.
+Seven endpoints for analytics and reporting.
+
+<Note>Loft is a Pro product. These routes are served by the Loft desktop app's local Bridge on loopback (`localhost:5100`) for the signed-in user, which resolves the Professional tier locally, so a local call needs no API key. This is not a hosted API and is not reachable from another machine. A request below the Professional tier returns `402`, never a hard `403`.</Note>
 
 ## GET /api/loft/analytics/timeseries
 
@@ -11,7 +13,7 @@ Query time-series data for an interface.
 
 | Query Param | Type | Default | Description |
 |-------------|------|---------|-------------|
-| `interfaceId` | string | — | Filter to specific interface |
+| `interfaceId` | string | all | Filter to a specific interface |
 | `since` | ISO 8601 | 24h ago | Start time |
 | `until` | ISO 8601 | Now | End time |
 | `granularity` | string | `"oneHour"` | `oneMinute`, `oneHour`, `oneDay` |
@@ -41,7 +43,7 @@ curl "http://localhost:5100/api/loft/analytics/topn?metric=messagesFailed&n=5"
 
 ## POST /api/loft/analytics/query
 
-Custom filter query with advanced criteria.
+Custom filter query with additional criteria.
 
 ```bash curl
 curl -X POST http://localhost:5100/api/loft/analytics/query \
@@ -91,7 +93,7 @@ Export analytics data as CSV.
 
 | Query Param | Type | Default | Description |
 |-------------|------|---------|-------------|
-| `interfaceId` | string | — | Interface to export |
+| `interfaceId` | string | all | Interface to export |
 | `since` | ISO 8601 | 24h ago | Start time |
 | `until` | ISO 8601 | Now | End time |
 | `granularity` | string | `"oneHour"` | Data resolution |

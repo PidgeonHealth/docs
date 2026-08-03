@@ -1,9 +1,9 @@
 ---
 title: Datasets & Data Packages
-description: Generated messages use real ICD-10 codes, real LOINC identifiers, and real NDC numbers — not placeholder values that fail downstream validation.
+description: Generated messages use real ICD-10 codes, real LOINC identifiers, and real NDC numbers, not placeholder values that fail downstream validation.
 ---
 
-Eight datasets ship with Pidgeon, from ICD-10 diagnosis codes to NDC drug products. Free tier includes basic subsets; Pro unlocks full datasets plus RxNorm, HCPCS, and CPT.
+Eight terminology datasets ship with Pidgeon, from ICD-10 diagnosis codes to NDC drug products. The free tier includes basic subsets; Pro includes the full datasets plus RxNorm and HCPCS. CPT is a separate licensed add-on (a ninth dataset), gated by AMA royalty terms.
 
 ## Available Datasets
 
@@ -17,9 +17,11 @@ Eight datasets ship with Pidgeon, from ICD-10 diagnosis codes to NDC drug produc
 | CVX | 288 vaccine codes | Full | Full |
 | RxNorm | Drug terminology | — | Full |
 | HCPCS | Procedure/service codes | — | Full |
-| CPT | Procedure codes | — | Add-on ($30/user/yr) |
+| CPT | Procedure codes | — | Licensed add-on |
 
 <Info>The CPT dataset requires a separate license add-on due to AMA royalty requirements.</Info>
+
+<Note>`pidgeon data` also manages FHIR Implementation Guide packages (US Core, Da Vinci PAS/CRD/DTR) and the license-gated NCPDP SCRIPT package. See [Data Commands](/cli/data-commands) for the full package catalog and install flags.</Note>
 
 ## Managing Datasets
 

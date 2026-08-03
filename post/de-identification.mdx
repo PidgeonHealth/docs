@@ -1,9 +1,9 @@
 ---
 title: De-identification
-description: Stop manually scrubbing MRNs and patient names from production messages. De-identify on-device — no PHI ever leaves your machine.
+description: Stop manually scrubbing MRNs and patient names from production messages. De-identify on-device, so no PHI ever leaves your machine.
 ---
 
-Four methods — from simple Safe Harbor removal to full synthetic replacement — covering 80+ PHI fields across 10 HL7 segment types. Everything runs locally.
+Four methods, from Safe Harbor removal to full synthetic replacement, covering 80+ PHI fields across 10 HL7 segment types. Everything runs locally.
 
 <Warning>This tool assists with de-identification but does not guarantee HIPAA Safe Harbor compliance on its own. Always review output and consult your compliance team.</Warning>
 
@@ -14,7 +14,7 @@ Four methods — from simple Safe Harbor removal to full synthetic replacement �
     Removes all 18 HIPAA Safe Harbor identifiers. The simplest and most conservative approach.
   </Accordion>
   <Accordion title="Safe Harbor Plus" icon="shield">
-    Removes identifiers **and** replaces them with realistic synthetic values. The result looks like a real message — useful for testing downstream systems that reject empty fields.
+    Removes identifiers **and** replaces them with synthetic values. The result looks like a real message, which helps when testing downstream systems that reject empty fields.
   </Accordion>
   <Accordion title="Expert Determination" icon="chart-bar">
     Statistical approach using k-anonymity and l-diversity analysis. Configurable risk thresholds let you balance data utility against re-identification risk. Produces equivalence class analysis and risk scoring reports.
@@ -62,9 +62,9 @@ pidgeon deident --in ./real --out ./safe --date-shift 30d --keep-ids
 
 Post can assess re-identification risk for your de-identified output:
 
-- **k-anonymity scoring** — Measures whether individuals can be singled out
-- **l-diversity analysis** — Checks sensitive attribute diversity within equivalence classes
-- **Compliance reporting** — HTML and JSON reports suitable for audit documentation
+- **k-anonymity scoring**: measures whether individuals can be singled out
+- **l-diversity analysis**: checks sensitive attribute diversity within equivalence classes
+- **Compliance reporting**: HTML and JSON reports suitable for audit documentation
 
 ## Consistency Across Batches
 

@@ -1,7 +1,9 @@
 ---
 title: Post Commands
-description: CLI commands for message generation, validation, de-identification, diff, and workflow management with Pidgeon Post.
+description: CLI commands for message generation, validation, de-identification, diff, and workflow management with Post.
 ---
+
+<Note>`generate`, `validate`, and `deident` are in the free CLI (`dotnet tool install --global Pidgeon.CLI`). `diff` and `workflow` ship with the Post desktop app and the licensed CLI, not the free `dotnet tool` build. Each Pro command below says so.</Note>
 
 ## pidgeon generate
 
@@ -19,12 +21,12 @@ The standard is auto-detected from the message type: `ADT^A01` → HL7, `Patient
 | `--count, -c <n>` | int | `1` | Number of messages to generate |
 | `--seed, -s <n>` | int | Random | Reproducible seed value |
 | `--vendor, -v <name>` | string | — | Vendor profile for realistic patterns |
-| `--mode, -m <mode>` | string | `procedural` | Generation mode: `procedural`, `local-ai`, `api-ai` |
+| `--mode, -m <mode>` | string | `procedural` | Generation mode: `procedural`, `model` (on-device AI), `api` (cloud AI) |
 | `--hl7-version` | string | `2.3` | HL7 version: `2.3`, `2.3.1`, `2.4`, `2.5`, `2.5.1`, `2.6`, `2.7`, `2.8` |
 | `--output, -o <path>` | string | stdout | Output file or directory |
 | `--format, -f <fmt>` | string | `auto` | Output format: `auto`, `hl7`, `json`, `ndjson` |
 
-<Note>Generation modes `local-ai` and `api-ai` are Pro features requiring a Pidgeon account with Post Pro entitlement, or BYOK configuration.</Note>
+<Note>Generation modes `model` (on-device) and `api` (cloud, BYOK) are Pro features requiring a Pidgeon account with Post Pro entitlement. The AI modes ship with the desktop app and the licensed CLI, not the free `dotnet tool` build.</Note>
 
 ```bash
 # Generate 10 HL7 admission messages
@@ -58,9 +60,11 @@ Files can be passed as positional arguments (with wildcard support) or via `--fi
 | `<files...>` | positional | — | Files to validate (supports wildcards) |
 | `--file, -f <path>` | string | — | Single file to validate |
 | `--folder <path>` | string | — | Directory to validate |
-| `--mode <mode>` | string | `strict` | `strict` or `compatibility` |
+| `--mode, -m <mode>` | string | `strict` | `strict` or `compatibility` |
+| `--standard, -s <name>` | string | auto-detect | Force a standard: `hl7`, `fhir`, `ncpdp` |
 | `--ig <profile>` | string | — | FHIR implementation guide |
-| `--profile <name>` | string | — | Vendor profile for validation |
+| `--profile, -p <name>` | string | — | Vendor profile for validation |
+| `--report <path>` | string | — | Write an HTML report, or JSON when the path ends in `.json` |
 
 ```bash
 # Strict validation
@@ -108,9 +112,9 @@ pidgeon deident --in ./real --out ./safe --date-shift 90d --salt "project-x"
 
 ## pidgeon diff
 
-<Note>Pro feature — requires a Pidgeon account with Post Pro entitlement.</Note>
+<Note>Pro feature. Requires a Pidgeon account with Post Pro entitlement, and ships with the Post desktop app and the licensed CLI, not the free `dotnet tool` build.</Note>
 
-Compare messages or directories with field-level analysis.
+Compare messages or directories with field-level analysis. Field-aware for HL7, JSON-tree for FHIR.
 
 ```bash
 pidgeon diff <left> <right> [options]
@@ -124,23 +128,30 @@ Paths can be passed as positional arguments or via `--left`/`--right`.
 | `<left> <right>` | positional | — | Files or directories to compare |
 | `--left, -l <path>` | string | — | Left file or directory |
 | `--right, -r <path>` | string | — | Right file or directory |
-| `--report, -o <path>` | string | — | Generate HTML report |
-| `--ai, -a` | flag | auto | Enable AI analysis |
-| `--no-ai` | flag | — | Force algorithmic only |
+| `--report, -o <path>` | string | — | Write an HTML or JSON diff report |
+| `--ignore, -i <fields>` | string | — | Comma-list of fields/segments to skip (for example `MSH-7,PID-3`) |
+| `--severity, -s <level>` | string | `hint` | Minimum severity to report: `hint`, `warn`, `error` |
+| `--ai, -a` | flag | off | Turn on AI hints (coming in a future release) |
+| `--no-ai` | flag | — | Force algorithmic-only analysis |
 
 ```bash
 # Compare two messages
 pidgeon diff env-a/admit.hl7 env-b/admit.hl7
 
+# Ignore volatile header fields
+pidgeon diff env-a/admit.hl7 env-b/admit.hl7 --ignore MSH-7,MSH-10
+
 # Generate HTML diff report
 pidgeon diff ./dev ./staging --report diff-report.html
 ```
+
+<Note>AI-assisted diff hints are not yet available. The `--ai` flag is reserved for a future release; today diff runs constraint-aware field analysis without a model.</Note>
 
 ---
 
 ## pidgeon workflow
 
-<Note>Pro feature — requires a Pidgeon account with Post Pro entitlement.</Note>
+<Note>Pro feature. Requires a Pidgeon account with Post Pro entitlement, and ships with the Post desktop app and the licensed CLI, not the free `dotnet tool` build.</Note>
 
 Create and run multi-step clinical test scenarios.
 

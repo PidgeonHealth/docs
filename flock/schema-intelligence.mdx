@@ -1,40 +1,49 @@
 ---
 title: Schema Intelligence
-description: Point Flock at your database and it figures out the schema — table relationships, healthcare classifications, and column semantics — automatically.
+description: "Point Flock at your database and it maps the schema for you: table relationships, healthcare classifications, and column semantics."
 ---
 
-Classifies tables as patient, encounter, clinical, financial, or reference — then maps foreign keys and infers column semantics like MRN fields, coded values, and date columns.
+Flock reads your schema before it generates anything. It classifies each table as patient, encounter, clinical, financial, or reference, maps the foreign keys into a dependency graph, and infers what each column holds: MRN fields, coded values, date columns, free text. That graph is what keeps every generated row FK-safe.
 
-## Supported Databases
+## Supported databases
 
-| Database | Provider String |
-|----------|----------------|
+Flock introspects three database engines. Schema inference, sample extraction, and seeding are implemented for each.
+
+| Database | `--provider` value |
+|----------|--------------------|
 | PostgreSQL | `postgres` |
 | SQL Server | `sqlserver` |
+| MySQL | `mysql` |
+
+<Note>MariaDB connects through the `mysql` provider. `postgresql` and `mssql` are accepted as aliases for `postgres` and `sqlserver`.</Note>
 
 ## Connect
 
 ```bash
 pidgeon flock connect \
   --provider postgres \
-  --connection-string "Host=localhost;Port=5432;Database=ehr;Username=dev;Password=${DB_PASSWORD}"
+  --connection "Host=localhost;Port=5432;Database=ehr;Username=dev;Password=${DB_PASSWORD}"
 ```
 
-## What Flock Detects
+## What Flock reads
 
-- **Table classification** — Patient, encounter, clinical, financial, or reference tables
-- **Relationship mapping** — Foreign key detection and dependency ordering
-- **Column type inference** — Identifies MRN fields, date columns, coded values, free text
-- **Healthcare patterns** — Recognizes common EHR table naming conventions
+Connecting runs a full introspection pass against the database catalog:
+
+- **Table classification.** Each table is tagged patient, encounter, clinical, financial, or reference from its columns and naming.
+- **Relationship mapping.** Foreign keys become a dependency order, so an insert never precedes the row it references.
+- **Column semantics.** Flock identifies MRN fields, date columns, coded values, and free text from types and constraints.
+- **Healthcare patterns.** Common EHR naming conventions are recognized so the classification holds on real vendor schemas.
+
+Run `pidgeon flock schema --classify` to print the classification, or `pidgeon flock schema --visualize` to emit the schema as a Mermaid ER diagram.
 
 ## API
 
 ```bash
-# Connect and analyze
+# Connect and introspect
 curl -X POST http://localhost:5102/api/flock/connect \
   -H "Content-Type: application/json" \
   -d '{"provider": "postgres", "connectionString": "Host=localhost;Database=ehr;..."}'
 
-# Retrieve analyzed schema
+# Retrieve the classified schema
 curl http://localhost:5102/api/flock/schema
 ```

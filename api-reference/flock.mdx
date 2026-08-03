@@ -1,9 +1,9 @@
 ---
 title: Flock API
-description: Synthetic population generation endpoints — connect to databases, learn patterns, generate populations, and seed data.
+description: "Synthetic population generation endpoints on the local Flock Bridge: connect to a database, learn distributions, generate a population, and seed data."
 ---
 
-Twelve endpoints for synthetic population generation. All **public**.
+These endpoints are served by the Flock Bridge sidecar on `localhost:5102`. The Bridge listens only on loopback for the signed-in user, so the routes are unauthenticated locally. Flock itself is a Pro feature and requires a Pidgeon account.
 
 ## POST /api/flock/connect
 
@@ -11,7 +11,7 @@ Connect to a database and analyze its schema.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `provider` | string | `postgres`, `mysql`, `sqlserver` |
+| `provider` | string | `postgres`, `sqlserver`, `mysql` |
 | `connectionString` | string | Database connection string |
 
 ```bash curl
@@ -30,12 +30,16 @@ curl http://localhost:5102/api/flock/schema
 
 ## POST /api/flock/learn
 
-Learn statistical patterns from existing sample data.
+Learn statistical distributions from existing rows.
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `sampleSize` | int | `500` | Rows to sample per table |
 
 ```bash curl
 curl -X POST http://localhost:5102/api/flock/learn \
   -H "Content-Type: application/json" \
-  -d '{"tables": ["patients", "encounters"], "sampleSize": 500}'
+  -d '{"sampleSize": 500}'
 ```
 
 ## GET /api/flock/profiles
@@ -60,15 +64,16 @@ Start a generation job. Returns a job ID for polling.
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `count` | int | `100` | Number of patients |
-| `format` | string | `"sql"` | `sql`, `csv`, `hl7`, `fhir` |
-| `geographicFocus` | string | `"us"` | Geographic distribution |
+| `count` | int | `1000` | Number of patients |
+| `format` | string | `"sql"` | `sql`, `csv`, `hl7`, `fhir`, `pas-bundle` |
+| `geographicFocus` | string | null | Geographic focus (for example a state abbreviation) |
 | `seed` | int | null | Reproducible seed |
+| `profile` | string | null | Learned data profile name |
 
 ```bash curl
 curl -X POST http://localhost:5102/api/flock/generate \
   -H "Content-Type: application/json" \
-  -d '{"count": 1000, "format": "sql", "geographicFocus": "us"}'
+  -d '{"count": 1000, "format": "sql", "geographicFocus": "TX"}'
 ```
 
 ## GET /api/flock/generate/{id}
@@ -89,22 +94,27 @@ curl http://localhost:5102/api/flock/generate/job-123/analytics
 
 ## POST /api/flock/seed
 
-Seed the connected database with generated data.
+Seed the connected database with the generated population.
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `connectionString` | string | required | Target database connection |
+| `provider` | string | `postgres` | Database provider |
 
 ```bash curl
 curl -X POST http://localhost:5102/api/flock/seed \
   -H "Content-Type: application/json" \
-  -d '{"jobId": "job-123"}'
+  -d '{"connectionString": "Host=localhost;Database=ehr;...", "provider": "postgres"}'
 ```
 
 ## POST /api/flock/seed/dry-run
 
-Preview SQL without executing.
+Preview the seed plan without executing.
 
 ```bash curl
 curl -X POST http://localhost:5102/api/flock/seed/dry-run \
   -H "Content-Type: application/json" \
-  -d '{"jobId": "job-123"}'
+  -d '{"connectionString": "Host=localhost;Database=ehr;...", "provider": "postgres"}'
 ```
 
 ## DELETE /api/flock/seed/cleanup
@@ -114,7 +124,7 @@ Remove all synthetic data from the database.
 | Query Param | Type | Description |
 |-------------|------|-------------|
 | `connectionString` | string | Database connection |
-| `provider` | string | Database type |
+| `provider` | string | Database provider |
 
 ```bash curl
 curl -X DELETE "http://localhost:5102/api/flock/seed/cleanup?connectionString=Host%3Dlocalhost%3BDatabase%3Dehr&provider=postgres"
@@ -122,7 +132,7 @@ curl -X DELETE "http://localhost:5102/api/flock/seed/cleanup?connectionString=Ho
 
 ## GET /api/flock/compliance/{id}
 
-Get a compliance report for a generation job.
+Get the no-PHI attestation for a generation job. It confirms the population is synthetic-only and reports whether any PHI was detected.
 
 ```bash curl
 curl http://localhost:5102/api/flock/compliance/job-123

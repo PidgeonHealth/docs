@@ -1,44 +1,62 @@
 ---
 title: Flock Commands
-description: CLI commands for Flock synthetic population generation — connect to databases, learn patterns, generate populations, and seed data.
+description: "CLI commands for Flock synthetic population generation: connect to a database, learn distributions, generate a population, and seed the data."
 ---
+
+<Note>`flock` is a Pro command delivered through the Flock desktop app, not the free community CLI. If you installed only `dotnet tool install --global Pidgeon.CLI`, the `flock` subcommand is not present. It requires a Pidgeon account sign-in.</Note>
 
 ## pidgeon flock connect
 
-Connect to a database and analyze its schema.
+Connect to a database and introspect its schema.
 
 ```bash
-pidgeon flock connect --provider <type> --connection-string <str>
+pidgeon flock connect --provider <type> --connection <str>
 ```
 
-| Flag | Type | Description |
-|------|------|-------------|
-| `--provider <type>` | string | Database type: `postgres`, `mysql`, `sqlserver` |
-| `--connection-string <str>` | string | Database connection string |
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--provider <type>` | string | `postgres` | Database provider: `postgres`, `sqlserver`, `mysql` |
+| `--connection <str>` | string | required | Database connection string |
 
 ```bash
 pidgeon flock connect \
   --provider postgres \
-  --connection-string "Host=localhost;Port=5432;Database=ehr;Username=dev;Password=${DB_PASSWORD}"
+  --connection "Host=localhost;Port=5432;Database=ehr;Username=dev;Password=${DB_PASSWORD}"
 ```
+
+<Note>MariaDB connects through the `mysql` provider; `postgresql` and `mssql` are accepted as aliases.</Note>
+
+---
+
+## pidgeon flock schema
+
+View and classify the introspected schema.
+
+```bash
+pidgeon flock schema [--classify] [--visualize]
+```
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--classify` | flag | `false` | Classify tables by healthcare domain |
+| `--visualize` | flag | `false` | Emit the schema as a Mermaid ER diagram |
 
 ---
 
 ## pidgeon flock learn
 
-Learn statistical patterns from existing sample data.
+Learn statistical distributions from existing rows.
 
 ```bash
-pidgeon flock learn [options]
+pidgeon flock learn [--sample <n>]
 ```
 
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--tables <list>` | string | All tables | Comma-separated list of tables to analyze |
-| `--sample-size <n>` | int | `100` | Number of rows to sample per table |
+| `--sample <n>` | int | `500` | Number of rows to sample per table |
 
 ```bash
-pidgeon flock learn --tables patients,encounters,diagnoses --sample-size 500
+pidgeon flock learn --sample 500
 ```
 
 ---
@@ -53,17 +71,20 @@ pidgeon flock generate [options]
 
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--count <n>` | int | `100` | Number of patients to generate |
-| `--format <fmt>` | string | `sql` | Output format: `sql`, `csv`, `hl7`, `fhir` |
-| `--geographic-focus <region>` | string | `us` | Geographic distribution |
-| `--seed <n>` | int | Random | Reproducible seed |
-| `--output <path>` | string | stdout | Output file or directory |
+| `--count`, `-c <n>` | int | `100` | Number of patients to generate |
+| `--format`, `-f <fmt>` | string | `sql` | Output format: `sql`, `csv`, `hl7`, `fhir`, `pas-bundle` |
+| `--schema <path>` | string | optional | Path to a SQL DDL or JSON schema |
+| `--state <abbr>` | string | optional | State abbreviation for geographic focus (for example `TX`, `CA`) |
+| `--seed <n>` | int | random | Seed for reproducible output |
+| `--profile <name>` | string | optional | Use a learned data profile |
+| `--output`, `-o <path>` | string | stdout | Output directory for generated files |
+| `--from-config <name>` | string | optional | Run a saved population config (supersedes `--count` / `--format` / `--state` / `--seed` / `--profile`) |
 
 ```bash
 # Generate 1000 patients as SQL
 pidgeon flock generate --count 1000 --format sql --output ./seed-data/
 
-# Generate as FHIR bundles
+# Generate as FHIR Bundles
 pidgeon flock generate --count 500 --format fhir --output ./fhir-data/
 
 # Reproducible output
@@ -74,33 +95,53 @@ pidgeon flock generate --count 1000 --format csv --seed 42
 
 ## pidgeon flock seed
 
-Seed a connected database with generated data.
+Seed a target database with generated data.
 
 ```bash
-pidgeon flock seed [options]
+pidgeon flock seed --target <type> --connection <str> [options]
 ```
 
-| Flag | Type | Description |
-|------|------|-------------|
-| `--dry-run` | flag | Preview SQL without executing |
-| `--cleanup` | flag | Remove previously seeded synthetic data |
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--target <type>` | string | `postgres` | Database provider: `postgres`, `sqlserver`, `mysql` |
+| `--connection <str>` | string | required | Target database connection string |
+| `--dry-run` | flag | `false` | Generate SQL without executing |
+| `--from <path>` | string | optional | Seed records written by `flock generate -o` instead of the in-process job |
 
 ```bash
 # Preview what would be inserted
-pidgeon flock seed --dry-run
+pidgeon flock seed --target postgres --connection "Host=localhost;Database=ehr;..." --dry-run
 
-# Seed the database
-pidgeon flock seed
-
-# Clean up synthetic data
-pidgeon flock seed --cleanup
+# Seed from a directory that generate wrote
+pidgeon flock seed --target postgres --connection "Host=localhost;Database=ehr;..." --from ./seed-data/
 ```
+
+---
+
+## pidgeon flock cleanup
+
+Remove synthetic data from a target database.
+
+```bash
+pidgeon flock cleanup --provider <type> --connection <str>
+```
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--connection <str>` | string | required | Target database connection string |
+| `--provider <type>` | string | `postgres` | Database provider |
+
+```bash
+pidgeon flock cleanup --provider postgres --connection "Host=localhost;Database=ehr;..."
+```
+
+<Warning>Cleanup removes every record tagged as synthetic. This cannot be undone.</Warning>
 
 ---
 
 ## pidgeon flock status
 
-Check the status of a running generation job.
+Show the installed Flock data packages.
 
 ```bash
 pidgeon flock status

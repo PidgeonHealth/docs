@@ -7,7 +7,9 @@ Loft pushes live updates over a SignalR hub for dashboard integration. The hub d
 
 **Hub URL**: `ws://localhost:5100/hubs/loft` (the Loft desktop app's local Bridge; no hosted hub exists)
 
-Authentication via JWT Bearer token or API Key.
+<Note>Loft is a Pro product. The hub is served by the Loft desktop app's local Bridge on loopback for the signed-in user. It is not a hosted hub and is not reachable from another machine.</Note>
+
+The connection authenticates as the signed-in user with a JWT Bearer token or API key.
 
 ## Client → Server Methods
 
@@ -15,8 +17,8 @@ Authentication via JWT Bearer token or API Key.
 |--------|-----------|-------------|
 | `SubscribeToInterface` | `interfaceId: string` | Subscribe to updates for a specific interface |
 | `UnsubscribeFromInterface` | `interfaceId: string` | Unsubscribe from interface updates |
-| `SubscribeToAll` | — | Subscribe to all interface updates |
-| `UnsubscribeFromAll` | — | Unsubscribe from all updates |
+| `SubscribeToAll` | none | Subscribe to all interface updates |
+| `UnsubscribeFromAll` | none | Unsubscribe from all updates |
 
 ## Server → Client Events
 

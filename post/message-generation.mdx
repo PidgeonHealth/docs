@@ -1,9 +1,9 @@
 ---
 title: Message Generation
-description: Generate realistic HL7, FHIR, and NCPDP test messages in seconds — no manual creation, no production data copying, no compliance risk.
+description: Generate HL7, FHIR, and NCPDP test messages in seconds. No manual creation, no production data copying, no compliance risk.
 ---
 
-Every code uses real reference datasets — ICD-10, LOINC, NDC, SNOMED CT, CVX, RxNorm, HCPCS — so generated messages pass downstream validation the same way production data would.
+Every code comes from a real reference dataset (ICD-10, LOINC, NDC, SNOMED CT, CVX, RxNorm, HCPCS), so generated messages pass downstream validation the same way production data would.
 
 ## Supported Standards
 
@@ -21,7 +21,7 @@ pidgeon generate Bundle
 ```
 
 ```bash NCPDP SCRIPT
-# NCPDP is license-gated — see below
+# NCPDP is license-gated (see below)
 pidgeon generate NewRx
 pidgeon generate RxFill
 pidgeon generate CancelRx
@@ -32,46 +32,46 @@ pidgeon generate CancelRx
 
 ## HL7 v2 Coverage
 
-Post's HL7 v2 parsing and generation is structurally broad, but the number that matters is what's proven end-to-end: generate → validate → round-trip against the published spec. That verified set is **279 HL7 message-type × version combinations** — 38 message types, each across some or all of HL7 v2.3 through v2.8 — from the engine's own runtime capability matrix, not a hand-maintained table:
+Post's HL7 v2 parsing and generation is structurally broad. The number that matters is what's proven from generation through validation and round-trip against the published spec: **279 HL7 message-type × version combinations** across 38 message types, each covering some or all of HL7 v2.3 through v2.8. It comes from the engine's own runtime capability matrix, not a hand-maintained table:
 
 ```bash
 pidgeon --output-format json capabilities --standard hl7
 ```
 
 <AccordionGroup>
-  <Accordion title="ADT — Admit, Discharge, Transfer" icon="bed">
+  <Accordion title="ADT: Admit, Discharge, Transfer" icon="bed">
     `ADT^A01` Admission, `ADT^A02` Transfer, `ADT^A03` Discharge, `ADT^A04` Registration, `ADT^A05` Pre-admit, `ADT^A08` Update patient info, `ADT^A11` Cancel admit, `ADT^A12` Cancel transfer, `ADT^A13` Cancel discharge
   </Accordion>
   <Accordion title="Orders & Results" icon="flask">
     `ORM^O01` General order, `ORU^R01` Observation result, `OML^O21` Lab order (multi-order), `RSP^K11`/`K21`/`K22` Query responses, `QBP^Q11`/`Q21`/`Q22` Query by parameter
   </Accordion>
-  <Accordion title="RDE / RGV / RAS — Pharmacy" icon="pills">
+  <Accordion title="RDE / RGV / RAS: Pharmacy" icon="pills">
     `RDE^O11` Pharmacy/treatment encoded order, `RDE^O25` Pharmacy/treatment refill authorization, `RGV^O15` Pharmacy/treatment give, `RAS^O17` Pharmacy/treatment administration
   </Accordion>
-  <Accordion title="SIU — Scheduling" icon="calendar">
+  <Accordion title="SIU: Scheduling" icon="calendar">
     `SIU^S12` New appointment, `SIU^S13` Request rescheduling, `SIU^S14` Modification notification, `SIU^S15` Cancellation notification, `SIU^S17` Deletion notification
   </Accordion>
-  <Accordion title="MDM — Medical Documents" icon="file-medical">
+  <Accordion title="MDM: Medical Documents" icon="file-medical">
     `MDM^T02` Original with content, `MDM^T04`/`T06`/`T08`/`T10` document addenda, status changes, and replacements
   </Accordion>
-  <Accordion title="BAR / DFT — Financial & Billing" icon="file-invoice-dollar">
+  <Accordion title="BAR / DFT: Financial & Billing" icon="file-invoice-dollar">
     `BAR^P01` Add patient account, `BAR^P02` Purge patient account, `BAR^P05` Update account, `DFT^P03` Post detail financial transaction
   </Accordion>
-  <Accordion title="VXU — Immunization" icon="syringe">
+  <Accordion title="VXU: Immunization" icon="syringe">
     `VXU^V04` Unsolicited vaccination update
   </Accordion>
-  <Accordion title="ACK — Acknowledgment" icon="check">
+  <Accordion title="ACK: Acknowledgment" icon="check">
     `ACK` general acknowledgment
   </Accordion>
 </AccordionGroup>
 
 <Tip>Shell-safe syntax is supported: `ADT-A01`, `ADT_A01`, and `ADT.A01` all work as alternatives to `ADT^A01`.</Tip>
 
-<Note>This list is the current spec-validated set, not a ceiling — Post's parser handles a broader range of HL7 v2 structurally. Run `pidgeon capabilities` for the live matrix rather than trusting this page to stay current.</Note>
+<Note>These 38 message types are the current spec-validated set, not a ceiling. Post's parser handles a broader range of HL7 v2 structurally. Run `pidgeon capabilities` for the live matrix rather than trusting this page to stay current.</Note>
 
 ## FHIR R4 Resources
 
-**24 resource types** at spec-validated level, spanning clinical, administrative, and financial domains:
+**137 resource types** at spec-validated level, spanning clinical, administrative, and financial domains. Common types by domain:
 
 <AccordionGroup>
   <Accordion title="Patient & Demographics" icon="user">
@@ -97,13 +97,15 @@ pidgeon --output-format json capabilities --standard hl7
   </Accordion>
 </AccordionGroup>
 
+<Note>The accordion lists common resource types. The full spec-validated set is 137; run `pidgeon capabilities --standard fhir` for the live matrix.</Note>
+
 ```bash
 pidgeon --output-format json capabilities --standard fhir
 ```
 
 ## NCPDP SCRIPT 2017071
 
-<Warning>NCPDP SCRIPT generation is **closed by default** and license-gated. NCPDP's SCRIPT XSDs are member-only, so the standards material is not shipped: confirm your NCPDP membership, then run `pidgeon data install ncpdp-script --accept-license` to enable generation. Until the package is installed, NCPDP is reported as license-required.</Warning>
+<Warning>NCPDP SCRIPT generation is **closed by default** and license-gated. NCPDP's SCRIPT XSDs are member-only, so the standards material is not shipped: confirm your NCPDP membership, then run `pidgeon data install ncpdp-script --accept-license` to install the package. Until it is installed, NCPDP is reported as license-required rather than emitting a message.</Warning>
 
 Once enabled, the SCRIPT transaction set spans the prescription workflow with XML serialization and structural validation:
 
@@ -122,7 +124,7 @@ Once enabled, the SCRIPT transaction set spans the prescription workflow with XM
   </Accordion>
 </AccordionGroup>
 
-<Note>Run `pidgeon --output-format json capabilities --standard ncpdp` for the exact enabled set on your machine — it reports the license-required state until the `ncpdp-script` package is installed.</Note>
+<Note>Run `pidgeon --output-format json capabilities --standard ncpdp` for the exact enabled set on your machine. It reports the license-required state until the `ncpdp-script` package is installed.</Note>
 
 ## Generation Modes
 
@@ -135,19 +137,19 @@ Once enabled, the SCRIPT transaction set spans the prescription workflow with XM
     ```
   </Accordion>
 
-  <Accordion title="Local AI (Pro)" icon="microchip">
-    Uses a local AI model for enhanced clinical narratives and realistic note text.
+  <Accordion title="On-device model (Pro)" icon="microchip">
+    Uses a local AI model for clinical narratives and free-text note content. On-device by default, so no message content leaves the machine.
 
     ```bash
-    pidgeon generate ORU^R01 --mode local-ai
+    pidgeon generate ORU^R01 --mode model
     ```
   </Accordion>
 
-  <Accordion title="API AI (Pro)" icon="cloud">
-    Cloud AI provider for highest quality clinical narratives. Requires BYOK configuration.
+  <Accordion title="Cloud API (Pro)" icon="cloud">
+    Routes narrative generation to a configured cloud provider (BYOK). Off-device inference requires an explicit opt-in.
 
     ```bash
-    pidgeon generate MDM^T02 --mode api-ai
+    pidgeon generate MDM^T02 --mode api
     ```
   </Accordion>
 </AccordionGroup>

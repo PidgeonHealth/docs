@@ -1,14 +1,14 @@
 ---
 title: Seed a Database with Flock
-description: Go from empty test database to production-realistic patient population in minutes — zero PHI, instant compliance approval.
+description: Go from an empty test database to a production-realistic patient population in minutes, with no PHI and no production snapshot to get signed off.
 ---
 
 An empty test database doesn't catch real bugs. A database full of copied production data is a compliance violation. Flock gives you the third option: realistic synthetic populations seeded directly into your schema.
 
 ## Prerequisites
 
-- Pidgeon CLI installed (`dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.1`)
-- A database with an existing schema (PostgreSQL, MySQL, or SQL Server)
+- Pidgeon CLI installed (`dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.2`), plus the Flock desktop app or Pro CLI (the `flock` command is not in the free community build)
+- A database with an existing schema (PostgreSQL, SQL Server, or MySQL)
 - Database credentials with read/write access
 
 ## Step 1: Connect to your database
@@ -16,7 +16,7 @@ An empty test database doesn't catch real bugs. A database full of copied produc
 ```bash
 pidgeon flock connect \
   --provider postgres \
-  --connection-string "Host=localhost;Port=5432;Database=ehr_dev;Username=dev;Password=${DB_PASSWORD}"
+  --connection "Host=localhost;Port=5432;Database=ehr_dev;Username=dev;Password=${DB_PASSWORD}"
 ```
 
 Flock analyzes the schema and reports:
@@ -26,41 +26,46 @@ Flock analyzes the schema and reports:
 
 ## Step 2: Learn patterns from existing data (optional)
 
-If your database already has sample data, Flock can learn the statistical distribution patterns:
+If your database already has sample data, Flock can learn its statistical distributions:
 
 ```bash
-pidgeon flock learn --tables patients,encounters,diagnoses --sample-size 500
+pidgeon flock learn --sample 500
 ```
 
 This creates a profile that captures:
-- Column value distributions (age ranges, gender ratios)
+- Column value distributions (age ranges, sex ratios)
 - Referential patterns (which diagnosis codes appear together)
 - Temporal patterns (encounter durations, admission-to-discharge intervals)
 
 ## Step 3: Generate a synthetic population
 
-Generate 1,000 patients with related records:
+Generate 1,000 patients with related records, writing them to a directory the seed step can read:
 
 ```bash
 pidgeon flock generate \
   --count 1000 \
   --format sql \
-  --geographic-focus us \
-  --seed 42
+  --state TX \
+  --seed 42 \
+  --output ./seed-data/
 ```
 
 Flock generates:
-- **Demographics**: Age, gender, race, and geography distributions matching US Census data
-- **Comorbidities**: Realistic disease correlations (diabetes with hypertension, obesity with sleep apnea)
-- **Temporal coherence**: Admissions before discharges, lab orders before results
-- **Family linkage**: Realistic household structures and family relationships
+- **Demographics**: age, sex, race, and geography distributions matching US Census data
+- **Correlated conditions**: realistic disease correlations (diabetes with hypertension, obesity with sleep apnea)
+- **Temporal coherence**: admissions before discharges, lab orders before results
+- **Family linkage**: household structures and family relationships
 
 ## Step 4: Preview with dry-run
 
 Before writing anything, preview the generated SQL:
 
 ```bash
-pidgeon flock seed --dry-run
+pidgeon flock seed \
+  --target postgres \
+  --connection "Host=localhost;Port=5432;Database=ehr_dev;Username=dev;Password=${DB_PASSWORD}" \
+  --from ./seed-data/ \
+  --dry-run
 ```
 
 This outputs the SQL INSERT statements in foreign-key order without executing them. Review to confirm the data looks correct.
@@ -68,29 +73,25 @@ This outputs the SQL INSERT statements in foreign-key order without executing th
 ## Step 5: Seed the database
 
 ```bash
-pidgeon flock seed
+pidgeon flock seed \
+  --target postgres \
+  --connection "Host=localhost;Port=5432;Database=ehr_dev;Username=dev;Password=${DB_PASSWORD}" \
+  --from ./seed-data/
 ```
 
-Flock inserts records in FK-dependency order so referential integrity is maintained. All synthetic records are tagged for easy identification and cleanup.
+Flock inserts records in FK-dependency order so referential integrity holds, and reports the rows inserted per table. All synthetic records are tagged for later identification and cleanup.
 
 ## Step 6: Verify the results
 
-Check that data was seeded correctly:
+The seed command prints an FK-safe insert summary (rows per table, in dependency order). To confirm independently, count the tagged rows in your database:
 
 ```bash
-# Check job analytics
-pidgeon flock status
-```
-
-Or via the API:
-
-```bash
-curl http://localhost:5102/api/flock/generate/{jobId}/analytics
+psql "$DATABASE_URL" -c "SELECT count(*) FROM patients;"
 ```
 
 ## Alternative output formats
 
-Flock can generate data in multiple formats beyond SQL:
+Flock can generate data in formats beyond SQL:
 
 <CodeGroup>
 ```bash SQL INSERT
@@ -115,16 +116,18 @@ pidgeon flock generate --count 1000 --format fhir --output ./seed-data/
 Remove all Flock-generated records when you're done:
 
 ```bash
-pidgeon flock seed --cleanup
+pidgeon flock cleanup \
+  --provider postgres \
+  --connection "Host=localhost;Port=5432;Database=ehr_dev;Username=dev;Password=${DB_PASSWORD}"
 ```
 
 Or via the API:
 
 ```bash
-curl -X DELETE "http://localhost:5102/api/flock/seed/cleanup?connectionString=Host%3Dlocalhost%3B..."
+curl -X DELETE "http://localhost:5102/api/flock/seed/cleanup?connectionString=Host%3Dlocalhost%3BDatabase%3Dehr_dev&provider=postgres"
 ```
 
-<Warning>Cleanup removes all records tagged as synthetic. This cannot be undone.</Warning>
+<Warning>Cleanup removes every record tagged as synthetic. This cannot be undone.</Warning>
 
 ## Next steps
 

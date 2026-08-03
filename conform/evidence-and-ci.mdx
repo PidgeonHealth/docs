@@ -1,0 +1,69 @@
+---
+title: Evidence and CI
+description: Conform's exit codes, HTML scorecard, readiness packs and evidence envelopes, and a CI gate you can drop into a pipeline.
+---
+
+Conform is built to run in CI and leave evidence behind. The exit code gates a pipeline; the scorecard and evidence envelope are the artifacts you keep.
+
+## Exit codes
+
+Conform extends the CLI's `0`/`1` convention with a coverage code, so a gate can tell "failed" apart from "tested nothing":
+
+| Code | Meaning |
+|------|---------|
+| `0` | The report passed |
+| `1` | The report failed; or, under `--ci`, passed with a must-support or stub-profile warning; or an endpoint/IG load error; or a failed `--probe-operations` or `--check-terminology` probe |
+| `2` | No coverage: under `--ci`, a walk validated zero resources. `--require-full-coverage` widens this to "any declared type was skipped." A real failure (`1`) always outranks the coverage gate |
+
+`--ci` is the flag that makes warnings count. Must-support warnings (rule ids prefixed `MUSTSUPPORT-`) and stub-profile warnings flip a passing report to a non-zero exit, so a subtle gap fails the build instead of sliding through.
+
+## A CI gate
+
+```bash
+pidgeon conform --endpoint "$FHIR_URL" --walk --ci || exit 1
+```
+
+In GitHub Actions:
+
+```yaml
+- name: FHIR conformance
+  run: |
+    pidgeon data install fhir-us-core-3.1.1
+    pidgeon conform --endpoint "${{ secrets.FHIR_URL }}" --walk --ci \
+      --output-file scorecard.html
+- uses: actions/upload-artifact@v4
+  with:
+    name: conform-scorecard
+    path: scorecard.html
+```
+
+## Scorecard and badge
+
+- `--output-file scorecard.html` writes a self-contained HTML scorecard you can attach to a ticket or hand to a stakeholder.
+- `--badge conform-badge.svg` writes a dated pass/fail badge (an SVG plus a shields.io endpoint JSON) whose verdict mirrors the exit code.
+
+## Readiness packs and evidence envelopes
+
+A readiness pack grades a walk against a compiled requirement set and writes a machine-readable evidence envelope with honest not-tested states:
+
+```bash
+pidgeon conform --endpoint https://api.payer.example/fhir --walk \
+  --readiness-pack us-core-3.1.1 \
+  --evidence-out conform-evidence.json
+```
+
+`us-core-3.1.1` is the CMS-0057-F required baseline pack and needs the `fhir-us-core-3.1.1` package installed. The envelope records each cited assertion as passed, failed, or not tested, so the gaps are explicit rather than implied.
+
+## Operation and terminology probes
+
+- `--probe-operations` POSTs a synthetic PAS request Bundle to `Claim/$submit` and grades the response against the PAS response Bundle profile. A failed probe flips the exit to `1`.
+- `--check-terminology` validates coded fields against a live terminology service (see [Running conformance](/conform/running-conformance)).
+
+## Rule IDs you'll see
+
+Conform reports findings with stable rule ids: `FHIR-PROFILE` (a structural profile violation), `MUSTSUPPORT-<element path>` (a must-support element absent from the sampled instance), `CONFORM_STUB_PROFILE` (validated against an embedded subset because the IG package wasn't installed), and `PROFILE_NOT_FOUND`. Under `--ci`, the must-support and stub-profile findings are the ones that flip the exit code.
+
+## Next
+
+- [Conform CLI reference](/cli/conform-commands)
+- [Running conformance](/conform/running-conformance)

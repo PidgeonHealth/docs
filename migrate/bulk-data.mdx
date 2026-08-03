@@ -1,0 +1,48 @@
+---
+title: Bulk Data export
+description: Export a source EHR to FHIR R4 Bulk Data NDJSON with de-identification, reconciliation, dry-run, and resume.
+---
+
+`migrate run` exports from a source EHR to FHIR R4 Bulk Data NDJSON: one file per resource type plus a `manifest.json` conforming to the HL7 FHIR Bulk Data Access IG.
+
+```bash
+pidgeon migrate run --source <connection-string> --output <dir> [options]
+```
+
+v1 reads from Centricity / athenaPractice 23.0 `FHIR_*` views over a Postgres or SQL Server database, auto-detected by shape. The default resource set is Patient, Encounter, Observation, Condition, MedicationRequest, and Procedure; narrow or widen it with `--resources`.
+
+## De-identify on the way out
+
+Add `--deidentify` and Migrate runs every emitted resource through on-device de-identification before it's written. Cross-resource references stay coherent, so a de-identified Encounter still points at the right de-identified Patient.
+
+```bash
+pidgeon migrate run --source "Host=localhost;Database=centricity;..." --output ./export \
+  --deidentify --deident-date-shift +30d
+```
+
+`--deident-salt` fixes the hashing salt so references stay consistent across runs; `--deident-date-shift` shifts every date by a uniform offset.
+
+## Reconcile
+
+Every run reconciles resource counts per type: what the source held versus what was exported, so you can prove nothing was dropped. In the desktop app this is the reconciliation view; from the CLI it's part of the run output and the manifest.
+
+## Dry run first
+
+`--dry-run` reads, transforms, and reconciles without writing NDJSON. The manifest is still emitted, so you can validate the mapping and the counts before a real export.
+
+```bash
+pidgeon migrate run --source "..." --output ./export --dry-run
+```
+
+## Resume an interrupted run
+
+If a run is interrupted, Migrate writes a `.checkpoint.json` in the output directory. Re-run with `--resume` to continue from the checkpoint instead of starting over.
+
+```bash
+pidgeon migrate run --source "..." --output ./export --resume
+```
+
+## Next
+
+- [Mapping and analysis](/migrate/mapping)
+- [Migrate CLI reference](/cli/migrate-commands)

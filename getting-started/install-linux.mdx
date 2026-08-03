@@ -1,0 +1,70 @@
+---
+title: Install on Linux
+description: Install the Pidgeon CLI on Linux with the published .NET tool. Linux is a CLI target; there are no Linux desktop apps.
+---
+
+On Linux, Pidgeon is the CLI. The desktop apps (Post, Flock, Loft, Migrate, and the Pidgeon launcher) run on macOS and Windows only. The CLI gives you the free generation, validation, and de-identification loop from a terminal, and it drops straight into CI.
+
+Current CLI beta release: `0.1.0-beta.2`.
+
+## What the free CLI includes
+
+The community CLI ships 12 commands: `generate`, `validate`, `deident`, `data`, `artifacts`, `lookup`, `find`, `path`, `run`, `session`, `completions`, and `capabilities`. That covers synthetic message generation, spec validation, on-device de-identification, standards lookup, and data-package management.
+
+`conform`, `flock`, `loft`, `migrate`, `ai`, `diff`, and `config` are delivered through the desktop apps, which are macOS and Windows only. If you install the CLI with `dotnet tool` on Linux and run `pidgeon conform`, it won't be there. Run conformance from the CLI that ships with the desktop apps, or from the Conformance panel in Post.
+
+## Requirements
+
+- A 64-bit Linux distribution (x64 or arm64)
+- For the `dotnet tool` install: the [.NET 8 runtime or SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- AI features are not part of the free CLI, so no extra RAM is required
+
+## Install with the .NET tool
+
+Cross-platform, kept current through NuGet. Needs the .NET 8 runtime on the machine.
+
+<Steps>
+  <Step title="Install the tool">
+    ```bash
+    dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.2
+    ```
+  </Step>
+
+  <Step title="Put the tools directory on your PATH">
+    Global .NET tools install to `~/.dotnet/tools`. If `pidgeon` isn't found after install, add that directory to your shell profile:
+
+    ```bash
+    echo 'export PATH="$PATH:$HOME/.dotnet/tools"' >> ~/.bashrc
+    source ~/.bashrc
+    ```
+  </Step>
+
+  <Step title="Verify">
+    ```bash
+    pidgeon --version
+    ```
+
+    If `pidgeon` runs but reports that it can't find a runtime, set `DOTNET_ROOT` to your dotnet install path. See [Troubleshooting](/support/troubleshooting) for the exact fix.
+  </Step>
+</Steps>
+
+<Note>
+The `0.1.0-beta.2` GitHub release includes a signed Windows ZIP, but it does not
+include a Linux archive. Use the published .NET tool on Linux until a Linux
+self-contained artifact appears in a later release.
+</Note>
+
+<Note>
+The CLI runs the engine in-process. There is no Bridge sidecar and no local port on Linux. The loopback Bridge ports (Loft `5100`, Post `5101`, Flock `5102`, Migrate `5103`, Conform `5104`) belong to the macOS and Windows desktop apps.
+</Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="CLI Quickstart" icon="terminal" href="/getting-started/quickstart-cli">
+    Generate and validate your first message, then wire the exit codes into CI.
+  </Card>
+  <Card title="Capabilities" icon="list-check" href="/cli/global-options">
+    See the full command surface and global options.
+  </Card>
+</CardGroup>

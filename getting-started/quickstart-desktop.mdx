@@ -1,9 +1,9 @@
 ---
 title: Desktop Quickstart
-description: Install Pidgeon, generate an HL7 message in Post, validate it, and see the Pro features that unlock with an account.
+description: Install Pidgeon, generate an HL7 message in Post, validate it, and see what a Pro account adds.
 ---
 
-The desktop apps are the point-and-click path through the same engine the CLI uses. This walkthrough uses **Post** — the free front door — then points at the Pro features and the other three products.
+The desktop apps are the point-and-click path through the same engine the CLI uses. This walkthrough uses **Post**, the free front door, then points at the Pro features and the rest of the suite: Flock, Loft, Migrate, and Conform.
 
 ## Before you start
 
@@ -20,17 +20,19 @@ The desktop apps are the point-and-click path through the same engine the CLI us
   </Step>
 
   <Step title="Run a conformance check">
-    Open the **Conformance** panel (under **Inspect**) to probe a live FHIR endpoint against a published Implementation Guide — this is Conform, the module of Post covering US Core and Da Vinci PAS 2.1 today.
+    Open the **Conformance** panel (under **Inspect**) to probe a live FHIR endpoint against a published Implementation Guide (US Core and Da Vinci PAS 2.1 today). This is Conform, Pidgeon's fifth product. Its conformance capability runs inside Post now; the standalone Conform app is in beta and not yet downloadable.
   </Step>
 
   <Step title="Explore the Pro features">
-    Signing in with a Pro entitlement unlocks:
+    Signing in with a Pro entitlement adds:
 
-    - **Workflow Wizard** — build multi-step scenarios (admit → labs → discharge) visually
-    - **Diff** — compare two messages or directories with field-level highlighting
-    - **AI Triage** — plain-English explanations of validation failures (on-device or BYOK)
-    - **Reports** — export HTML validation and conformance reports for stakeholders
-    - Full reference datasets (LOINC, SNOMED CT, NDC, RxNorm, HCPCS)
+    - **Workflow Wizard**: build multi-step scenarios (admit, labs, discharge) visually
+    - **Diff**: compare two messages or directories with field-level highlighting
+    - **AI Triage**: plain-English explanations of validation failures, on-device or BYOK
+    - **Reports**: export HTML validation and conformance reports for stakeholders
+    - Expanded reference datasets (LOINC, SNOMED CT, NDC, RxNorm, HCPCS)
+
+    AI Triage is a Post Pro feature. The local Bridge route it uses is unauthenticated because the Bridge only listens on loopback for the signed-in user.
   </Step>
 </Steps>
 
@@ -44,8 +46,10 @@ pidgeon validate --folder ./messages --mode strict
 pidgeon conform --endpoint https://api.example.org/fhir --ig davinci-pas-2.1 --ci
 ```
 
+The `conform` command ships with the CLI bundled inside the desktop apps, not the free `dotnet tool` package. See the [CLI quickstart](/getting-started/quickstart-cli) for what the free CLI includes.
+
 ## Next steps
 
-- [Your Pidgeon account](/getting-started/account) — see your plan and entitlements
-- [Get started with Flock](/getting-started/flock), [Loft](/getting-started/loft), or [Migrate](/getting-started/migrate)
+- [Your Pidgeon account](/getting-started/account): see your plan and entitlements
+- Get started with [Flock](/getting-started/flock), [Loft](/getting-started/loft), [Migrate](/getting-started/migrate), or [Conform](/getting-started/conform)
 - [Build test scenarios with the Workflow Wizard](/guides/build-test-scenarios)

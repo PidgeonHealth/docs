@@ -1,0 +1,109 @@
+---
+title: AI Commands
+description: Manage on-device AI models, configure a BYOK provider, set the PHI-egress policy, and run message operations like triage, explain, and fix.
+---
+
+<Note>`pidgeon ai` is a Post Pro feature and is hardware dependent. It ships with the Post desktop app and the licensed CLI, not the free `dotnet tool install` build. Every AI operation runs on-device by default; nothing leaves the machine without an explicit opt-in.</Note>
+
+The `ai` family manages the on-device model, configures an optional cloud provider (BYOK), sets the egress policy that governs where inference is allowed to run, and runs message operations (triage a failure, explain a message, apply field-level fixes).
+
+## Model management
+
+On-device inference needs a local model. Set one up in one step:
+
+```bash
+# Pick the model that fits this machine, download it if needed, and make it active
+pidgeon ai setup
+```
+
+Or manage models directly:
+
+```bash
+pidgeon ai list --available        # Downloadable model catalog
+pidgeon ai list --installed        # Models installed locally
+pidgeon ai download qwen3-4b       # Download and install a model
+pidgeon ai download qwen3-4b --background   # Large downloads run in the background
+pidgeon ai info qwen3-4b           # Model details (size, RAM, capabilities)
+pidgeon ai remove qwen3-4b         # Remove a locally installed model
+```
+
+### On-device models
+
+Two bundled models are validated today:
+
+| Model | Fit |
+|-------|-----|
+| `qwen3-4b` | The default on-device model on a typical laptop (16 GB RAM recommended). |
+| `smollm2-1.7b` | The small-RAM fallback for 8 GB machines. |
+
+Run `pidgeon ai list --available` for the full downloadable catalog on your machine.
+
+<Note>Gemma 4 support (`gemma4-e4b`, `gemma4-12b`) is being validated and may appear in the catalog. Confirm availability with `pidgeon ai list --available` before relying on it.</Note>
+
+## Provider configuration (BYOK)
+
+Point the AI operations at a cloud provider instead of the on-device model. Bring your own key, so cost control stays with you.
+
+```bash
+pidgeon ai configure --provider openai --model gpt-4o --api-key sk-...
+pidgeon ai status              # Show the configured provider and connection health
+pidgeon ai test-connection     # Send a synthetic canary request (provider billing may apply)
+pidgeon ai remove-credential   # Delete a provider credential from this device
+```
+
+Supported providers: `openai`, `anthropic`, `openrouter`, `ollama`, `azure`, `gemini`, or any OpenAI-compatible endpoint (`openai-compatible`). For an OpenAI-compatible server, pass `--endpoint` and `--model`; many in-tenant servers are keyless. Use `--locus in-network` for a server you run yourself and `--locus cloud` for a compatibility-API SaaS. The locus is declared, never inferred from the address.
+
+## Message operations
+
+Each verb takes a message file (HL7, FHIR JSON, or NCPDP XML):
+
+| Command | What it does |
+|---------|--------------|
+| `pidgeon ai triage <file>` | Analyze validation failures and suggest fixes. Accepts `--mode` and `--vendor`. |
+| `pidgeon ai explain <file>` | Explain a message in plain English. |
+| `pidgeon ai fix <file>` | Recommend field-level fixes and apply the approved changes. |
+| `pidgeon ai enrich <file>` | Fill sparse optional fields with realistic values. |
+| `pidgeon ai suggest <field> <context>` | Suggest a realistic value for a single field. |
+| `pidgeon ai modify <file>` | Modify a message with an AI-assisted instruction. |
+| `pidgeon ai template <file> <template>` | Apply a predefined modification template. |
+
+```bash
+# Triage a message that fails validation
+pidgeon ai triage broken.hl7
+
+# Explain what a message contains
+pidgeon ai explain admit.hl7
+```
+
+## PHI-egress policy
+
+`pidgeon ai egress` views or sets where inference is allowed to run. The default keeps all content on-device; nothing goes off-device without an explicit opt-in.
+
+```bash
+pidgeon ai egress                              # Show the current policy
+pidgeon ai egress --mode workstation-ollama    # Use a local Ollama runtime
+pidgeon ai egress --require-on-device true      # Refuse any off-device inference
+pidgeon ai egress --mode byok-cloud --baa-opt-in true   # Allow real content to a cloud provider under a BAA
+```
+
+| Flag | Values | Meaning |
+|------|--------|---------|
+| `--mode` | `bundled-on-device` (default), `workstation-ollama`, `customer-controlled`, `byok-cloud` | Where inference runs. |
+| `--baa-opt-in` | `true` / `false` | Permit real content to a `byok-cloud` provider. |
+| `--require-on-device` | `true` / `false` | Refuse any off-device inference regardless of the synthetic attestation. |
+| `--max-locus` | `on-device`, `in-network`, `cloud` | The highest locus any provider may occupy before content is refused. |
+
+Every call that resolves to a non-local provider is audit-logged with the provider, deployment mode, and content length.
+
+## Health and policy
+
+```bash
+pidgeon ai health     # Runtime daemon, active provider, capability verdict, egress ceiling, last error
+pidgeon ai settings   # Effective AI settings and their authority
+pidgeon ai policy     # The managed org policy that locks AI settings
+```
+
+## Next steps
+
+- [AI Triage in Post](/post/ai-triage): the same on-device analysis in the desktop panel
+- [Message Generation](/post/message-generation): the `model` and `api` generation modes

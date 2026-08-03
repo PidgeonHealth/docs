@@ -1,0 +1,86 @@
+---
+title: Healthcare interface test-data field guide
+description: Build synthetic positive and negative controls that expose the interface behavior tidy demo data can hide.
+---
+
+A clean sample message proves very little about the cases an integration team
+will have to explain. A useful test-data set combines repeatable synthetic
+inputs, expected outcomes, and evidence that another person can inspect.
+
+<Warning>
+Use synthetic examples for this workflow. Validation findings support technical
+review; they are not a compliance determination and do not replace the team's
+own acceptance criteria.
+</Warning>
+
+## Start with a test question
+
+Write one observable question before generating data:
+
+- Does the receiver distinguish an absent value from an empty value?
+- What happens when a repeating field appears more than once?
+- Does the route preserve an identifier without silently changing its format?
+- Can the team reproduce the same failure from the same input?
+
+Avoid starting with “make realistic data.” Realism without an expected result
+produces volume, not evidence.
+
+## Build a small control set
+
+For each question, keep at least three synthetic cases:
+
+| Control | Purpose | Expected evidence |
+| --- | --- | --- |
+| Positive | A supported ordinary case | Accepted result and preserved values |
+| Boundary | The nearest valid edge case | Accepted or flagged according to the documented rule |
+| Negative | One deliberate violation | A specific, reviewable failure rather than a generic rejection |
+
+Give every case a stable identifier and record the generator version and seed.
+Change one meaningful condition at a time so the result remains explainable.
+
+## Generate repeatable examples
+
+The community CLI can generate deterministic synthetic messages:
+
+```bash
+pidgeon generate hl7 "ADT^A01" --seed 42 --output positive.hl7
+pidgeon validate positive.hl7
+```
+
+Use a different committed fixture for each controlled variation. Do not edit a
+large message in ten places and then ask the team to infer which change caused
+the result.
+
+## Use the right product boundary
+
+- **Post** is the message and interface testing surface. Use it to create,
+  validate, compare, and review focused interchange cases.
+- **Flock** is the schema-aware population-seeding surface. Use it when the
+  test requires a coherent synthetic population shaped from schema inputs.
+
+The public CLI supports the community workflow. Product availability and
+commercial capabilities are separate from the public package release.
+
+## Keep an evidence packet
+
+For a result another engineer may need to reproduce, keep:
+
+1. the synthetic input or generator recipe;
+2. the exact package or application version;
+3. the seed and options;
+4. the expected result;
+5. the observed result;
+6. the relevant validation output; and
+7. the human review decision.
+
+That packet makes a failure discussable without turning a screenshot or an
+agent summary into the source of truth.
+
+## Review before reuse
+
+Re-run the controls when a mapping, validator, package, implementation guide,
+or receiver changes. Preserve the prior result rather than overwriting it, and
+record which change caused the new baseline.
+
+For the local review boundary, continue with the
+[human-and-agent workflow map](/guides/local-first-human-agent-workflow).

@@ -1,0 +1,38 @@
+---
+title: Migrate overview
+description: Move production healthcare data between systems via FHIR R4 Bulk Data Access, with preflight checks, de-identification, reconciliation, and resume.
+---
+
+Migrate moves production healthcare data between systems via FHIR R4 Bulk Data Access. It exports from a source EHR to NDJSON per the HL7 Bulk Data Access IG, de-identifies on the way out when you ask it to, and reconciles resource counts so you can prove nothing was dropped. It is built for migration projects, not synthetic test data. If you need test populations, that's [Flock](/flock/overview).
+
+<Note>
+Migrate requires a Pidgeon account sign-in. v1 ships the `run` export workflow reading from Centricity / athenaPractice 23.0 `FHIR_*` views.
+</Note>
+
+## What Migrate does
+
+<CardGroup cols={2}>
+  <Card title="Export to Bulk Data" icon="arrow-right-from-bracket" href="/migrate/bulk-data">
+    `migrate run` reads a source EHR and writes one NDJSON file per resource type plus a `manifest.json` conforming to the HL7 FHIR Bulk Data Access IG.
+  </Card>
+  <Card title="Analyze before you cut over" icon="magnifying-glass-chart" href="/migrate/mapping">
+    `migrate analyst` assesses a source, reviews the mapping and loss catalog, converts a bounded sample, clusters exceptions, and assembles cutover-readiness evidence.
+  </Card>
+</CardGroup>
+
+Migrate also converts a FHIR bundle to a C-CDA and submits it to an IHE XDS.b registry with `migrate to-xds`. See [Mapping and analysis](/migrate/mapping).
+
+## Not a synthetic data tool
+
+Flock generates synthetic populations for QA. Migrate moves real production data for a migration. Different job, different data, different product. The two share the engine's parsers and de-identification, not a workflow.
+
+## Local Bridge
+
+Like the other desktop apps, Migrate runs its engine in a local Bridge sidecar on `localhost:5103`, reachable only on loopback while the app is open. Its Bridge routes aren't documented in the [API reference](/api-reference/introduction) yet, so drive Migrate from the [CLI](/cli/migrate-commands) or the [desktop app](/getting-started/migrate).
+
+## Next
+
+- [Bulk Data export](/migrate/bulk-data): the `run` workflow in depth
+- [Mapping and analysis](/migrate/mapping): mapping YAML, `analyst`, and `to-xds`
+- [Migrate CLI reference](/cli/migrate-commands)
+- [Get started with Migrate](/getting-started/migrate): the desktop app loop

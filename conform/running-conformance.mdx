@@ -1,0 +1,76 @@
+---
+title: Running conformance
+description: Point Conform at a FHIR endpoint, walk it against its CapabilityStatement, and authenticate with a bearer token or SMART Backend Services.
+---
+
+`pidgeon conform` probes a live FHIR endpoint against a published Implementation Guide. Install the IG you're testing against, then either target a single resource or walk the whole endpoint.
+
+## Install the IG you're testing against
+
+Conform grades against the IG packages you have installed:
+
+```bash
+pidgeon data install fhir-us-core-3.1.1
+```
+
+Other packages: `fhir-us-core-6.0`, `fhir-davinci-pas-2.1`, `fhir-davinci-crd-2.1`, `fhir-davinci-dtr-2.0`. See [CMS-0057-F](/conform/cms-0057-f) for which IG maps to which requirement.
+
+## One resource against one profile
+
+```bash
+pidgeon conform --endpoint https://api.payer.example/fhir \
+  --resource Patient/123 --profile us-core-patient
+```
+
+`--profile` takes an IG short name (`us-core-patient`) or a canonical URL. `--resource` is `ResourceType/id`.
+
+## Walk the whole endpoint
+
+`--walk` reads the endpoint's CapabilityStatement and probes every resource × profile pair it declares:
+
+```bash
+pidgeon conform --endpoint https://api.payer.example/fhir --walk
+```
+
+Narrow the walk with `--only-resources Patient,Encounter`, or scope it to one IG with `--ig http://hl7.org/fhir/us/core/`.
+
+## Authenticate
+
+Most real endpoints need a token. Conform supports two paths.
+
+**Static bearer token:**
+```bash
+pidgeon conform --endpoint https://api.payer.example/fhir --walk \
+  --auth "Bearer eyJhbGciOi..."
+```
+
+**SMART Backend Services** (system-to-system). Conform discovers the token endpoint from `.well-known/smart-configuration`, signs an RS384 client assertion with your private key, and exchanges it for an access token:
+```bash
+pidgeon conform --endpoint https://api.payer.example/fhir --walk \
+  --auth-smart-backend \
+  --client-id my-backend-client \
+  --key-file ./backend-private-key.pem \
+  --scope "system/*.read"
+```
+
+Pass `--token-endpoint` to skip discovery. `--auth` and `--auth-smart-backend` are mutually exclusive.
+
+## Check coded fields against terminology
+
+`--check-terminology` validates every coded field in the fetched resources against a live FHIR terminology service. A code that doesn't resolve flips the exit code to `1`:
+
+```bash
+pidgeon conform --endpoint https://api.payer.example/fhir --walk \
+  --check-terminology \
+  --terminology-endpoint http://127.0.0.1:8080/fhir \
+  --snomed-endpoint http://127.0.0.1:8181/fhir
+```
+
+## From the Post app
+
+The Conformance panel in Post runs the same walk. Wire the endpoint, pick the IG, run it, and read the pass/fail per rule with streaming results. See [Get started with Post](/getting-started/post).
+
+## Next
+
+- [Evidence and CI](/conform/evidence-and-ci): exit codes, scorecards, readiness packs, and badges
+- [Conform CLI reference](/cli/conform-commands): every flag

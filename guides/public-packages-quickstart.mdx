@@ -1,0 +1,89 @@
+---
+title: Public packages quickstart
+description: Install the Pidgeon public beta packages and run a small local healthcare-data workflow.
+---
+
+Pidgeon's public beta gives engineers three ways into the same local-first
+workflow: the .NET engine packages, the `pidgeon` command-line tool, and a thin
+Model Context Protocol adapter. Start with the CLI unless you are embedding
+the engine into an application or connecting an MCP client.
+
+<Warning>
+These are beta packages. Pin the exact versions below, review the known limits,
+and test the workflow before relying on it in a controlled environment. The
+desktop products are distributed separately from these community packages.
+</Warning>
+
+## Choose an entry point
+
+| Need | Package | Current beta |
+| --- | --- | --- |
+| Use Pidgeon from a terminal or CI job | `Pidgeon.CLI` | `0.1.0-beta.2` |
+| Embed the engine in a .NET application | `Pidgeon.Core` | `0.1.0-beta.1` |
+| Add the provenance-cleared offline baseline data | `Pidgeon.Data.Baseline` | `0.1.0-beta.1` |
+| Connect an MCP client to the community CLI | `@pidgeonhealth/pidgeon-mcp` | `0.1.0-beta.1` |
+
+## Run the CLI locally
+
+Install the .NET tool:
+
+```bash
+dotnet tool install --global Pidgeon.CLI --version 0.1.0-beta.2
+pidgeon --version
+```
+
+Generate a deterministic synthetic HL7 v2 message, validate it, and preserve
+the output for review:
+
+```bash
+pidgeon generate hl7 "ADT^A01" --seed 42 --output sample.hl7
+pidgeon validate sample.hl7
+```
+
+The seed makes the generated example repeatable. The validation result is
+evidence about that input and the supported rules, not a certification or a
+guarantee about a production interface.
+
+## Embed Core and Baseline
+
+Add both packages when an application needs the public engine and its admitted
+offline resource set:
+
+```bash
+dotnet add package Pidgeon.Core --version 0.1.0-beta.1
+dotnet add package Pidgeon.Data.Baseline --version 0.1.0-beta.1
+```
+
+Register the baseline package explicitly with `AddPidgeonBaselineData()` in
+your dependency-injection composition. Core does not silently reach into the
+legacy data tree, and an absent required data package degrades with a typed
+result rather than pretending the resource exists.
+
+## Connect an MCP client
+
+Use the governed adapter package:
+
+```bash
+npx -y @pidgeonhealth/pidgeon-mcp@0.1.0-beta.1
+```
+
+<Warning>
+Do not substitute `@pidgeonhealth/mcp`. That name is a contained legacy
+package and is not part of the governed public beta release train.
+</Warning>
+
+The adapter shells out to the local CLI in CLI mode. It does not turn the MCP
+client into an autonomous healthcare operator: the human remains responsible
+for scope, review, and use of the resulting evidence.
+
+## Verify before expanding
+
+1. Pin the package versions in source control.
+2. Run a synthetic example without patient data.
+3. Review the generated output and validation result.
+4. Record the command, version, seed, and result when repeatability matters.
+5. Report a reproducible issue through the relevant
+   [Pidgeon Health repository](https://github.com/PidgeonHealth).
+
+Next, read the [test-data field guide](/guides/healthcare-interface-test-data-field-guide)
+or the [human-and-agent workflow map](/guides/local-first-human-agent-workflow).

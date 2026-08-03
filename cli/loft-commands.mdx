@@ -1,35 +1,40 @@
 ---
 title: Loft Commands
-description: CLI commands for Loft interface monitoring — watch directories, check status, view alerts, and generate reports.
+description: "CLI commands for Loft interface monitoring: watch directories, check status, view alerts, and generate reports."
 ---
+
+<Note>Loft is a Pro product delivered with the Loft desktop app. The `pidgeon loft` commands and the local Bridge on `localhost:5100` ship with that app. The free `dotnet tool install --global Pidgeon.CLI` build does not include `loft`.</Note>
 
 ## pidgeon loft watch
 
-Start monitoring a directory for incoming healthcare messages.
+Watch a directory for incoming `.hl7` files and validate each one as it lands.
 
 ```bash
-pidgeon loft watch --directory <path> [options]
+pidgeon loft watch --path <path> [options]
 ```
 
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--directory <path>` | string | Required | Directory to watch for messages |
-| `--profile <name>` | string | — | Vendor profile for validation |
-| `--file-pattern <glob>` | string | `*.hl7` | File pattern to match |
+| `--path <path>` | string | Required | Directory to watch for `.hl7` files |
+| `--profile <name>` | string | none | Vendor profile for validation |
+| `--mode <mode>` | string | `compatibility` | Validation mode: `strict` or `compatibility` |
+| `--alert <spec>` | string | `console` | Alert provider: `console`, `file:<path>`, or `webhook:<url>`. Repeatable. |
 
 ```bash
-# Watch a Mirth output directory
-pidgeon loft watch --directory /var/mirth/outbound/er --profile epic_er
+# Watch a Mirth output directory against a vendor profile
+pidgeon loft watch --path /var/mirth/outbound/er --profile epic_er
 
-# Watch with custom file pattern
-pidgeon loft watch --directory /var/loft/lab --file-pattern "*.txt"
+# Watch in strict mode and post failures to a webhook
+pidgeon loft watch --path /var/loft/lab --mode strict --alert webhook:https://hooks.example.org/loft
 ```
+
+The `watch` command validates `.hl7` files only, and its `--alert` flag covers the console, file, and webhook providers inline. To watch a custom file pattern, or to route to Slack, Microsoft Teams, email, or PagerDuty, create a persistent interface through the desktop app or its local Bridge. See [Interface Monitoring](/loft/interface-monitoring) and [Alerting](/loft/alerting).
 
 ---
 
 ## pidgeon loft status
 
-Show current monitoring status across all watched interfaces.
+Show current monitoring metrics across all watched interfaces.
 
 ```bash
 pidgeon loft status
@@ -39,7 +44,7 @@ pidgeon loft status
 
 ## pidgeon loft alerts
 
-List recent alerts from monitored interfaces.
+List recent alerts from the Loft metrics store.
 
 ```bash
 pidgeon loft alerts [options]
@@ -47,22 +52,24 @@ pidgeon loft alerts [options]
 
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--severity <level>` | string | All | Filter: `critical`, `warning`, `info` |
-| `--since <duration>` | string | `24h` | Time window (e.g., `1h`, `12h`, `7d`) |
+| `--since <duration>` | string | `1h` | Time window (e.g. `1h`, `12h`, `7d`) |
+| `--severity <level>` | string | All | Filter: `critical`, `warning`, `info`, `error` |
+| `--format <fmt>` | string | `table` | Output format: `table` or `json` |
+| `-o, --output <path>` | string | stdout | File path for the JSON export |
 
 ```bash
-# View critical alerts from the last 6 hours
+# Critical alerts from the last 6 hours
 pidgeon loft alerts --severity critical --since 6h
 
-# View all recent alerts
-pidgeon loft alerts --since 1h
+# All recent alerts as JSON
+pidgeon loft alerts --since 1h --format json
 ```
 
 ---
 
 ## pidgeon loft report
 
-Generate a monitoring report.
+Generate a summary report of Loft monitoring activity.
 
 ```bash
 pidgeon loft report [options]
@@ -70,13 +77,17 @@ pidgeon loft report [options]
 
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `--format <fmt>` | string | `text` | Report format: `text`, `html`, `json` |
 | `--since <duration>` | string | `24h` | Time range for the report |
+| `--format <fmt>` | string | `text` | `text`, `json`, `pdf`, `excel`, or `html` |
+
+Text and JSON print to stdout. For a PDF, Excel, or HTML file, use `pidgeon loft report generate`, which writes to a path with `-o`:
 
 ```bash
 # Text report for the last 24 hours
 pidgeon loft report
 
-# HTML report for the last week
-pidgeon loft report --format html --since 7d --output report.html
+# HTML report file for the last week
+pidgeon loft report generate --format html --since 7d --output report.html
 ```
+
+`report generate` also takes `--template` (`interface-health`, `partner-scorecard`, or `sla-compliance`). The `report schedule`, `report list`, `report run`, and `report history` subcommands manage recurring reports.

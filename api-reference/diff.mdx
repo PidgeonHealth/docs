@@ -5,7 +5,7 @@ description: Compare two healthcare messages field-by-field via the Bridge API.
 
 ## POST /api/diff
 
-Compare two messages and return field-level differences. **Public** — no authentication required.
+Compare two messages and return field-level differences. Diff is a **Post Pro feature**. The Bridge route is unauthenticated because the Bridge is a single-user loopback sidecar; the Pro entitlement is enforced in the app, not on the loopback route.
 
 ### Request Body
 
